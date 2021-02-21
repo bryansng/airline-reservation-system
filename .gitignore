@@ -72,6 +72,8 @@ desktop.ini
 
 ### All files that start with . ###
 .*
+!.prettierignore
+!.prettierrc.json
 !.gitignore
 !.env
 !.gitattributes
