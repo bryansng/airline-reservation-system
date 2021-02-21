@@ -1,6 +1,10 @@
 package dreamwok.reservation.service;
 
 import dreamwok.reservation.configuration.SecurityConfig;
+import dreamwok.reservation.core.auth.request.RegisterRequest;
+import dreamwok.reservation.core.auth.request.SignInRequest;
+import dreamwok.reservation.core.auth.response.RegisterResponse;
+import dreamwok.reservation.core.auth.response.SignInResponse;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
@@ -10,6 +14,8 @@ import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,8 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import dreamwok.reservation.model.ActionConclusion;
 import dreamwok.reservation.model.Customer;
 
 @Service
@@ -38,37 +44,39 @@ public class AuthService {
   @Autowired
   CustomerDetailsService customerDetailsService;
 
-  public ActionConclusion login(String email, String password, HttpServletRequest request) {
+  public ResponseEntity<SignInResponse> login(@RequestBody SignInRequest signInRequest, HttpServletRequest request) {
+    String email = signInRequest.getEmail();
+    String password = signInRequest.getPassword();
+
     Customer customer = customerRepository.findByEmail(email);
     Auth auth = authRepository.findByEmail(email);
     if (customer != null && auth != null) {
       if (auth.getEmail().equals(email) && securityConfig.getPasswordEncoder().matches(password, auth.getHash())) {
         securityConfig.configAuth(auth, securityConfig.getAuth(), customer.getRoles());
         authenticateUserAndSetSession(customer, request);
-        return new ActionConclusion(true, "Logged in successfully.");
+        return new ResponseEntity<>(new SignInResponse("Logged in successfully.", customer), HttpStatus.OK);
       }
-      return new ActionConclusion(false, "Failed to login. Email or password incorrect.");
+      return new ResponseEntity<>(new SignInResponse("Failed to login. Email or password incorrect.", null),
+          HttpStatus.BAD_REQUEST);
     }
-    return new ActionConclusion(false, "Failed to login. Customer does not exist.");
-    // return securityConfig.getPasswordEncoder().matches(password, aLogin.getHash());
+    return new ResponseEntity<>(new SignInResponse("Failed to login. Customer does not exist.", null),
+        HttpStatus.NOT_FOUND);
   }
 
-  public ActionConclusion register(String fullName, String email, String password, String confirmPassword,
+  public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
-    if (!password.equals(confirmPassword)) {
-      return new ActionConclusion(false, "Failed to register. Passwords do not match.");
-    }
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest.getEmail(),
+        registerRequest.getPassword(), registerRequest.getUsername(), "", "", "", "customer", "USER");
 
-    ActionConclusion acCustomerCreate = customerService.create(email, password, fullName, "", "", "", "", "",
-        "customer", "USER");
-    if (acCustomerCreate.isSuccess) {
-      Customer customer = customerRepository.findByEmail(email);
-      Auth auth = authRepository.findByEmail(email);
+    if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
+      Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
+      Auth auth = authRepository.findByEmail(registerRequest.getEmail());
       securityConfig.configAuth(auth, securityConfig.getAuth(), "USER");
       authenticateUserAndSetSession(customer, request);
-      return new ActionConclusion(true, "Registered successfully.");
+      return registerResponse;
     }
-    return acCustomerCreate;
+    return new ResponseEntity<>(new RegisterResponse("Failed to create new customer.", null),
+        HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   public void authenticateUserAndSetSession(Customer customer, HttpServletRequest request) {

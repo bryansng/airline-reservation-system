@@ -21,32 +21,28 @@ public class Customer {
   private String fullName;
   private String mobileNumber = "";
   private String address = "";
-  private String website = "";
   private String roles = "USER";
 
   @Column(nullable = true)
   private LocalDateTime bornOn;
   private LocalDateTime joinedOn = LocalDateTime.now();
   private LocalDateTime lastActiveOn = LocalDateTime.now();
-  private String bio;
   private String type = "member";
 
   @OneToOne(cascade = CascadeType.ALL)
   // @JoinColumn(referencedColumnName = "email")
   private Auth auth;
 
-  public void setAll(String email, String fullName, String mobileNumber, String address, String website, String bornOn,
-      String bio, String type) {
-    setAll(email, fullName, mobileNumber, address, website, bornOn, bio, type, this.auth);
+  public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type) {
+    setAll(email, fullName, mobileNumber, address, bornOn, type, this.auth);
   }
 
-  public void setAll(String email, String fullName, String mobileNumber, String address, String website, String bornOn,
-      String bio, String type, Auth auth) {
+  public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type,
+      Auth auth) {
     setEmail(email.equals("") ? this.email : email);
     setFullName(fullName.equals("") ? this.fullName : fullName);
     setMobileNumber(mobileNumber.equals("") ? this.mobileNumber : mobileNumber);
     setAddress(address.equals("") ? this.address : address);
-    setWebsite(website.equals("") ? this.website : website);
 
     if (bornOn.equals("")) {
       setBornOn(null);
@@ -54,7 +50,6 @@ public class Customer {
       setBornOn(Common.convertStringDateToDateTime(bornOn));
     }
 
-    setBio(bio);
     setType(type);
     setAuth(auth);
 
@@ -155,14 +150,6 @@ public class Customer {
     this.address = address;
   }
 
-  public String getWebsite() {
-    return website;
-  }
-
-  public void setWebsite(String website) {
-    this.website = website;
-  }
-
   public LocalDateTime getBornOn() {
     return bornOn;
   }
@@ -185,14 +172,6 @@ public class Customer {
 
   public void setLastActiveOn(LocalDateTime lastActiveOn) {
     this.lastActiveOn = lastActiveOn;
-  }
-
-  public String getBio() {
-    return bio;
-  }
-
-  public void setBio(String bio) {
-    this.bio = bio;
   }
 
   public String getType() {

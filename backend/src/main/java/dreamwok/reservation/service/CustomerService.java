@@ -8,8 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import dreamwok.reservation.configuration.SecurityConfig;
+import dreamwok.reservation.core.auth.response.RegisterResponse;
 
 @Service
 public class CustomerService {
@@ -41,29 +44,30 @@ public class CustomerService {
   }
 
   public ActionConclusion update(String stringId, String email, String fullName, String mobileNumber, String address,
-      String website, String bornOn, String bio, String type) {
+      String website, String bornOn, String type) {
     Long id = Common.convertStringToLong(stringId);
 
     if (customerRepository.existsById(id)) {
       Customer customer = customerRepository.getOne(id);
-      customer.setAll(email, fullName, mobileNumber, address, website, bornOn, bio, type);
+      customer.setAll(email, fullName, mobileNumber, address, bornOn, type);
       customerRepository.save(customer);
       return new ActionConclusion(true, "Updated successfully.");
     }
     return new ActionConclusion(false, "Failed to update. Customer ID does not exist.");
   }
 
-  public ActionConclusion create(String email, String password, String fullName, String mobileNumber, String address,
-      String website, String bornOn, String bio, String type, String roles) {
+  public ResponseEntity<RegisterResponse> create(String email, String password, String fullName, String mobileNumber,
+      String address, String bornOn, String type, String roles) {
     if (!customerRepository.existsByEmail(email)) {
       Customer customer = new Customer();
       Auth auth = new Auth();
       auth.setAll(email, securityConfig.getPasswordEncoder().encode(password));
-      customer.setAll(email, fullName, mobileNumber, address, website, bornOn, bio, type, auth);
+      customer.setAll(email, fullName, mobileNumber, address, bornOn, type, auth);
       customerRepository.save(customer);
-      return new ActionConclusion(true, "Created successfully.");
+      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", customer), HttpStatus.CREATED);
     }
-    return new ActionConclusion(false, "Failed to create. Customer email already exists.");
+    return new ResponseEntity<>(new RegisterResponse("Failed to create. Customer email already exists.", null),
+        HttpStatus.BAD_REQUEST);
   }
 
   public Customer createCustomer(Auth auth) {
