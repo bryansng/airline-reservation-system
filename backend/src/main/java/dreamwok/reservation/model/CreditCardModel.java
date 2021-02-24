@@ -11,19 +11,27 @@ public class CreditCardModel {
     private String id;
 
     @NotEmpty
-    private String customerIDd;
+    private String customerId;
     private String nameOnCard;
     private String cardNumber;
     private String expiryDate;
     private String securityCode;
 
-    public CreditCardModel(@NotEmpty String customerIDd, String nameOnCard, String cardNumber, String expiryDate,
+    public CreditCardModel(String customerId, String nameOnCard, String cardNumber, String expiryDate,
             String securityCode) {
-        this.customerIDd = customerIDd;
+        this.customerId = customerId;
         this.setNameOnCard(nameOnCard);
         this.setCardNumber(cardNumber);
         this.setExpiryDate(expiryDate);
         this.setSecurityCode(securityCode);
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public String getSecurityCode() {
