@@ -31,6 +31,14 @@ public class Customer {
     this.setMembershipType(membershipType);
   }
 
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
   public Membership getMembershipType() {
     return membershipType;
   }
