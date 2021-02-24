@@ -5,25 +5,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
-public class CreditCardModel {
+import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
+
+public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @NotEmpty
-    private String customerIDd;
+    private String customerId;
     private String nameOnCard;
     private String cardNumber;
     private String expiryDate;
     private String securityCode;
 
-    public CreditCardModel(@NotEmpty String customerIDd, String nameOnCard, String cardNumber, String expiryDate,
+    public CreditCard(@NotEmpty String customerId, String nameOnCard, String cardNumber, String expiryDate,
             String securityCode) {
-        this.customerIDd = customerIDd;
+        this.customerId = customerId;
         this.setNameOnCard(nameOnCard);
         this.setCardNumber(cardNumber);
         this.setExpiryDate(expiryDate);
         this.setSecurityCode(securityCode);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getSecurityCode() {
@@ -56,5 +62,12 @@ public class CreditCardModel {
 
     public void setNameOnCard(String nameOnCard) {
         this.nameOnCard = nameOnCard;
+    }
+
+    public void updateCard(CreditCardRequest newCard) {
+        this.cardNumber = newCard.getCardNumber();
+        this.nameOnCard = newCard.getNameOnCard();
+        this.securityCode = newCard.getSecurityCode();
+        this.expiryDate = newCard.getExpiryDate();
     }
 }

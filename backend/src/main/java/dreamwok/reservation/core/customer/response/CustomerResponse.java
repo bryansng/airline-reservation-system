@@ -1,4 +1,4 @@
-package dreamwok.reservation.core.auth.response;
+package dreamwok.reservation.core.customer.response;
 
 import dreamwok.reservation.model.Customer;
 

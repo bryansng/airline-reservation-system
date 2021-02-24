@@ -65,8 +65,9 @@ public class AuthService {
 
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest.getEmail(),
-        registerRequest.getPassword(), registerRequest.getUsername(), "", "", "", "customer", "USER");
+    Customer newCustomer = new Customer(registerRequest.getEmail(), "Braddy", "Yeoh", "123 Road", "123", "member");
+
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(newCustomer);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
@@ -90,7 +91,6 @@ public class AuthService {
   public void addCustomerToModel(Model model, Authentication authentication) {
     if (isAuthenticated(authentication)) {
       Customer customer = getCustomerFromUserObject(authentication);
-      setCustomerActiveOn(customer);
       // System.out.println("is authenticated");
       model.addAttribute("customer", customer);
       model.addAttribute("customerInitials", customer.getInitials());
@@ -113,9 +113,5 @@ public class AuthService {
       return customerRepository.findByEmail(user.getUsername());
     }
     return null;
-  }
-
-  private void setCustomerActiveOn(Customer customer) {
-    customer.setLastActiveOn(LocalDateTime.now());
   }
 }

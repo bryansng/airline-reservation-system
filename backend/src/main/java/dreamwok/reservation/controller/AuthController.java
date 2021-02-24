@@ -57,8 +57,8 @@ public class AuthController {
   public ResponseEntity<RegisterResponse> autoRegister(@RequestParam(defaultValue = "d d d d d d d") String fullName,
       @RequestParam(defaultValue = "d@d.d") String email, @RequestParam(defaultValue = "1234") String password,
       HttpServletRequest request) {
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(email, password, fullName, "", "", "",
-        "customer", "USER");
+    Customer newCustomer = new Customer(email, "Braddy", "Yeoh", "123 Road", "123", "member");
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(newCustomer);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(email);
