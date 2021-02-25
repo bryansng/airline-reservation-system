@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dreamwok.reservation.service.Common;
 
 import java.time.*;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,6 +34,12 @@ public class Customer {
   @OneToOne(cascade = CascadeType.ALL)
   // @JoinColumn(referencedColumnName = "email")
   private Auth auth;
+
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  private List<Reservation> reservations;
+
+  // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  // private List<Booking> bookings;
 
   public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type) {
     setAll(email, fullName, mobileNumber, address, bornOn, type, this.auth);
