@@ -5,6 +5,7 @@ import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.model.ActionConclusion;
 import dreamwok.reservation.model.Customer;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,15 @@ public class CustomerService {
     customer.setAuth(auth);
 
     customerRepository.save(customer);
+  }
+
+  public Customer getCustomerById(Long customerId) {
+    Optional<Customer> customer = customerRepository.findById(customerId);
+
+    if (!customer.isPresent()) {
+      return null;
+    }
+    return customer.get();
   }
 
   public Page<Customer> search(String stringToSearch, int pageNum) {

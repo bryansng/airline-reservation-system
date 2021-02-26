@@ -24,23 +24,19 @@ public class Reservation {
   @ManyToOne(fetch = FetchType.LAZY)
   private Flight flight;
 
-  // @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
-  // private List<Booking> bookings;
+  @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
+  private List<Booking> bookings;
 
-  // public Reservation(ReservationStatus reservationStatus, Double totalCost, Customer customer, Flight flight,
-  //     List<Booking> bookings) {
-  //   this.reservationStatus = reservationStatus;
-  //   this.totalCost = totalCost;
-  //   this.customer = customer;
-  //   this.flight = flight;
-  //   this.bookings = bookings;
-  // }
+  public Reservation() {
+  }
 
-  public Reservation(ReservationStatus reservationStatus, Double totalCost, Customer customer, Flight flight) {
+  public Reservation(ReservationStatus reservationStatus, Double totalCost, Customer customer, Flight flight,
+      List<Booking> bookings) {
     this.reservationStatus = reservationStatus;
     this.totalCost = totalCost;
     this.customer = customer;
     this.flight = flight;
+    this.bookings = bookings;
   }
 
   public Customer getCustomer() {
@@ -59,6 +55,14 @@ public class Reservation {
     this.flight = flight;
   }
 
+  public List<Booking> getBookings() {
+    return bookings;
+  }
+
+  public void setBookings(List<Booking> bookings) {
+    this.bookings = bookings;
+  }
+
   public Long getId() {
     return id;
   }
@@ -67,11 +71,11 @@ public class Reservation {
     this.id = id;
   }
 
-  public ReservationStatus getStatus() {
+  public ReservationStatus getReservationStatus() {
     return reservationStatus;
   }
 
-  public void setStatus(ReservationStatus reservationStatus) {
+  public void setReservationStatus(ReservationStatus reservationStatus) {
     this.reservationStatus = reservationStatus;
   }
 

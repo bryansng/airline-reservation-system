@@ -20,6 +20,8 @@ public class Customer {
   @NotEmpty
   // @Column(name = "email", insertable = false, updatable = false)
   private String email;
+  private String firstName;
+  private String lastName;
   private String fullName;
   private String mobileNumber = "";
   private String address = "";
@@ -28,7 +30,6 @@ public class Customer {
   @Column(nullable = true)
   private LocalDateTime bornOn;
   private LocalDateTime joinedOn = LocalDateTime.now();
-  private LocalDateTime lastActiveOn = LocalDateTime.now();
   private String type = "member";
 
   @OneToOne(cascade = CascadeType.ALL)
@@ -38,8 +39,8 @@ public class Customer {
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
 
-  // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-  // private List<Booking> bookings;
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  private List<Booking> bookings;
 
   public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type) {
     setAll(email, fullName, mobileNumber, address, bornOn, type, this.auth);
@@ -69,36 +70,6 @@ public class Customer {
         setRoles("ADMIN");
         break;
     }
-  }
-
-  public String getInitials() {
-    String[] words = fullName.split(" ");
-    String initials = "";
-    for (int i = 0; i < words.length && i != 5; i++) {
-      String word = words[i];
-      initials += String.valueOf(word.charAt(0)).toUpperCase();
-    }
-    return initials;
-  }
-
-  public String processLastActiveOn() {
-    LocalDateTime now = LocalDateTime.now();
-    Duration diff = Duration.between(lastActiveOn, now);
-    if (diff.getSeconds() == 0) {
-      return "Currently online";
-    }
-
-    if (diff.getSeconds() < 60) {
-      return diff.getSeconds() + " seconds ago";
-    } else {
-      long minutes = diff.toMinutes();
-      if (minutes < 60) {
-        return minutes + " minutes ago";
-      } else if (minutes >= 1440) {
-        return (minutes / 1440) + " days ago";
-      }
-    }
-    return "Currently online";
   }
 
   @JsonIgnore
@@ -132,6 +103,22 @@ public class Customer {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   public String getFullName() {
@@ -174,14 +161,6 @@ public class Customer {
     this.joinedOn = joinedOn;
   }
 
-  public LocalDateTime getLastActiveOn() {
-    return lastActiveOn;
-  }
-
-  public void setLastActiveOn(LocalDateTime lastActiveOn) {
-    this.lastActiveOn = lastActiveOn;
-  }
-
   public String getType() {
     return type;
   }
@@ -198,15 +177,19 @@ public class Customer {
     this.roles = roles;
   }
 
-  public String toString() {
-    String buf = " - ";
-    return id + buf + fullName + buf + getInitials() + buf + processLastActiveOn() + buf + email + buf + mobileNumber
-        + buf + address + buf + type;
+  public List<Reservation> getReservations() {
+    return reservations;
   }
 
-  public String toStringWithAuth() {
-    String buf = " - ";
-    return id + buf + fullName + buf + getInitials() + buf + email + buf + mobileNumber + buf + address + buf + type
-        + "\n" + auth.getEmail() + buf + auth.getHash();
+  public void setReservations(List<Reservation> reservations) {
+    this.reservations = reservations;
+  }
+
+  public List<Booking> getBookings() {
+    return bookings;
+  }
+
+  public void setBookings(List<Booking> bookings) {
+    this.bookings = bookings;
   }
 }

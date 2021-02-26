@@ -18,10 +18,14 @@ public class Booking {
   private Boolean isCheckedIn = false;
   private Boolean isCancelled = false;
 
-  public Booking(Boolean isCheckedIn, Boolean isCancelled, Reservation reservation) {
+  public Booking() {
+  }
+
+  public Booking(Boolean isCheckedIn, Boolean isCancelled, Reservation reservation, Customer customer) {
     this.isCheckedIn = isCheckedIn;
     this.isCancelled = isCancelled;
     this.reservation = reservation;
+    this.customer = customer;
   }
 
   public Reservation getReservation() {
@@ -30,6 +34,14 @@ public class Booking {
 
   public void setReservation(Reservation reservation) {
     this.reservation = reservation;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public void setCustomer(Customer customer) {
+    this.customer = customer;
   }
 
   public Long getId() {

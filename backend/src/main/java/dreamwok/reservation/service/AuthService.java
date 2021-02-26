@@ -9,8 +9,6 @@ import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
 
-import java.time.LocalDateTime;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,10 +88,8 @@ public class AuthService {
   public void addCustomerToModel(Model model, Authentication authentication) {
     if (isAuthenticated(authentication)) {
       Customer customer = getCustomerFromUserObject(authentication);
-      setCustomerActiveOn(customer);
       // System.out.println("is authenticated");
       model.addAttribute("customer", customer);
-      model.addAttribute("customerInitials", customer.getInitials());
     } else {
       // System.out.println("not authenticated");
     }
@@ -113,9 +109,5 @@ public class AuthService {
       return customerRepository.findByEmail(user.getUsername());
     }
     return null;
-  }
-
-  private void setCustomerActiveOn(Customer customer) {
-    customer.setLastActiveOn(LocalDateTime.now());
   }
 }
