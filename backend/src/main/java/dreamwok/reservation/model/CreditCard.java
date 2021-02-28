@@ -1,35 +1,55 @@
 package dreamwok.reservation.model;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 
+@Entity
+@Table(name = "card")
 public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @NotEmpty
-    private String customerId;
+    private Long customerId;
     private String nameOnCard;
     private String cardNumber;
     private String expiryDate;
     private String securityCode;
 
-    public CreditCard(@NotEmpty String customerId, String nameOnCard, String cardNumber, String expiryDate,
-            String securityCode) {
-        this.customerId = customerId;
+    public CreditCard() {
+
+    }
+
+    public CreditCard(Long customerId, String nameOnCard, String cardNumber, String expiryDate, String securityCode) {
+        this.setCustomerId(customerId);
         this.setNameOnCard(nameOnCard);
         this.setCardNumber(cardNumber);
         this.setExpiryDate(expiryDate);
         this.setSecurityCode(securityCode);
     }
 
-    public String getId() {
+    public CreditCard(Long customerId, CreditCardRequest creditCardRequest) {
+        this.setCustomerId(customerId);
+        this.updateCard(creditCardRequest);
+    }
+
+    public Long getId() {
         return id;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     public String getSecurityCode() {

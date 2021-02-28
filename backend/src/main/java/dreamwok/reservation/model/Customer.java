@@ -1,5 +1,7 @@
 package dreamwok.reservation.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +14,15 @@ import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
+import dreamwok.reservation.core.customer.request.CustomerRequest;
+
 @Entity
 @Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @NotEmpty
     private String email;
@@ -25,10 +30,11 @@ public class Customer {
     private String lastName;
     private String address;
     private String phoneNum;
-    // private Membership membershipType;
     private String roles = "USER";
 
     @Column(nullable = true)
+    private LocalDateTime bornOn;
+    private LocalDateTime joinedOn = LocalDateTime.now();
     private String type = "member";
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -38,6 +44,14 @@ public class Customer {
 
     }
 
+    public LocalDateTime getJoinedOn() {
+        return joinedOn;
+    }
+
+    public void setJoinedOn(LocalDateTime joinedOn) {
+        this.joinedOn = joinedOn;
+    }
+
     public Customer(String email, String firstName, String lastName, String address, String phoneNum, String type) {
         this.setEmail(email);
         this.setFirstName(firstName);
@@ -45,7 +59,15 @@ public class Customer {
         this.setAddress(address);
         this.setPhoneNum(phoneNum);
         this.setType(type);
-        // this.setMembershipType(membershipType);
+    }
+
+    public Customer(CustomerRequest customerRequest, String type) {
+        this.setEmail(customerRequest.getEmail());
+        this.setFirstName(customerRequest.getFirstName());
+        this.setLastName(customerRequest.getLastName());
+        this.setAddress(customerRequest.getAddress());
+        this.setPhoneNum(customerRequest.getPhoneNum());
+        this.setType(type);
     }
 
     public String getRoles() {
@@ -89,18 +111,6 @@ public class Customer {
         this.phoneNum = phoneNum;
     }
 
-    // public Membership getMembershipType() {
-    //     return membershipType;
-    // }
-
-    // public String getMembershipTypeToString() {
-    //     return membershipType.toString();
-    // }
-
-    // public void setMembershipType(Membership membershipType) {
-    //     this.membershipType = membershipType;
-    // }
-
     public String getAddress() {
         return address;
     }
@@ -125,12 +135,12 @@ public class Customer {
         this.firstName = firstName;
     }
 
-    public void setAll(Customer newCustomer) {
-        this.setEmail(newCustomer.getEmail());
-        this.setFirstName(newCustomer.getFirstName());
-        this.setLastName(newCustomer.getLastName());
-        this.setAddress(newCustomer.getAddress());
-        this.setPhoneNum(newCustomer.getPhoneNum());
+    public void update(CustomerRequest customerRequest) {
+        this.setEmail(customerRequest.getEmail());
+        this.setFirstName(customerRequest.getFirstName());
+        this.setLastName(customerRequest.getLastName());
+        this.setAddress(customerRequest.getAddress());
+        this.setPhoneNum(customerRequest.getPhoneNum());
         this.setType(type);
         this.setAuth(this.auth);
 
@@ -143,24 +153,5 @@ public class Customer {
                 break;
 
         }
-    }
-
-    // public Boolean isExecutive() {
-    //     return membershipType.equals(Membership.EXECUTIVE_CLUB);
-    // }
-
-    // public Boolean isGuest() {
-    //     return membershipType.equals(Membership.GUEST);
-    // }
-
-    public String getInitials() {
-        String fullName = this.firstName + " " + this.lastName;
-        String[] words = fullName.split(" ");
-        String initials = "";
-        for (int i = 0; i < words.length && i != 5; i++) {
-            String word = words[i];
-            initials += String.valueOf(word.charAt(0)).toUpperCase();
-        }
-        return initials;
     }
 }
