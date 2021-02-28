@@ -2,7 +2,6 @@ package dreamwok.reservation.core.creditcard.request;
 
 public class CreditCardRequest {
 
-    private String customerId;
     private String nameOnCard;
     private String cardNumber;
     private String expiryDate;

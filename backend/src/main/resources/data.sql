@@ -8,16 +8,21 @@ INSERT INTO auth(email, hash) VALUES
 	('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
 	('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
 
-INSERT INTO customers(full_name, email, mobile_number, address, type, born_on, joined_on, last_active_on, roles, auth_email) VALUES
-	('Bryan Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'librarian', '1998-01-01', NOW(), NOW(), 'ADMIN', 'hong.sng@ucdconnect.ie'),
-	('James Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), NOW(), 'USER', 'bond.james@ucdconnect.ie'),
-	('Obi Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
-	('Steve Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
-	('Emily Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
-	('Braddy Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
-	('A A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), NOW(), 'ADMIN', 'a@a.com'),
-	('U U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), NOW(), 'USER', 'u@u.com');
+INSERT INTO customers(first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email) VALUES
+	('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'hong.sng@ucdconnect.ie'),
+	('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie'),
+	('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
+	('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
+	('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
+	('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
+	('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'a@a.com'),
+	('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com');
 
+INSERT INTO card(customer_id, name_on_card, card_number, expiry_date, security_code) VALUES
+	(1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
+	(1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
+	(2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
+	(3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
 -- --
 -- INSERT INTO books(id, book_name, isbn)
 -- VALUES (1, "Thinking Fast", "1234");

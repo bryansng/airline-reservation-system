@@ -5,6 +5,7 @@ import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.request.SignInRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.auth.response.SignInResponse;
+import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.model.Auth;
@@ -12,6 +13,9 @@ import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.ActionConclusion;
 import dreamwok.reservation.service.AuthService;
 import dreamwok.reservation.service.CustomerService;
+
+import java.time.LocalDateTime;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,8 +61,9 @@ public class AuthController {
   public ResponseEntity<RegisterResponse> autoRegister(@RequestParam(defaultValue = "d d d d d d d") String fullName,
       @RequestParam(defaultValue = "d@d.d") String email, @RequestParam(defaultValue = "1234") String password,
       HttpServletRequest request) {
-    Customer newCustomer = new Customer(email, "Braddy", "Yeoh", "123 Road", "123", "member");
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(newCustomer);
+    CustomerRequest customerRequest = new CustomerRequest(email, "Braddy", "Yeoh", "123 Road", "123",
+        LocalDateTime.now(), "member");
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(customerRequest);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(email);

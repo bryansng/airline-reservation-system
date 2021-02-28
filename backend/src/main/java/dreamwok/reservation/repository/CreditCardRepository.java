@@ -1,5 +1,6 @@
 package dreamwok.reservation.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,14 +13,20 @@ import dreamwok.reservation.model.CreditCard;
 
 @Repository
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
-    Page<CreditCard> findByCustomerIdOrNameOnCardContainsIgnoreCase(Long customerid, String nameOnCard,
-            Pageable pageable);
+    // Page<CreditCard> findByCustomerIdOrNameOnCardContainsIgnoreCase(Long
+    // customerid, String nameOnCard,
+    // Pageable pageable);
 
-    boolean existsById(String id);
+    // boolean existsById(Long id);
 
-    CreditCard findById(String id);
+    // CreditCard findById(Long id);
 
-    @Query("SELECT m FROM CreditCard m WHERE m.id = ?1")
-    Optional<CreditCard> findByIdOptional(String id);
+    List<CreditCard> findAllById(Long id);
+
+    @Query("SELECT m from CreditCard m WHERE m.cardNumber = ?1")
+    boolean existsByCardNumber(String cardNumber);
+
+    // @Query("SELECT m FROM CreditCard m WHERE m.id = ?1")
+    // Optional<CreditCard> findByIdOptional(Long id);
 
 }

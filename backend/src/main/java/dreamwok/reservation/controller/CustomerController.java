@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
+import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
+import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
-import dreamwok.reservation.model.CreditCard;
-import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.service.AuthService;
 import dreamwok.reservation.service.CustomerService;
 
@@ -25,36 +25,63 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    @RequestMapping(value = "/creditcard{customerId}", method = RequestMethod.POST)
-    public ResponseEntity<String> insertCardDetails(@PathVariable("customerId") String customerId,
-            @RequestBody CreditCard creditCard) {
-        return customerService.insertCardDetails(customerId, creditCard);
+    /**
+     * Card
+     * 
+     * @param customerId
+     * @return
+     */
+    @RequestMapping(value = "/creditcard/all/{customerId}", method = RequestMethod.GET)
+    public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId) {
+        return customerService.getAllCardsByCustomerId(customerId);
     }
 
-    @RequestMapping(value = "/creditcard{cardId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") String cardId,
+    @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
+    public ResponseEntity<CreditCardResponse> getCardDetails(@PathVariable("customerId") Long cardId) {
+        return customerService.getCardDetails(cardId);
+    }
+
+    @RequestMapping(value = "/creditcard/{customerId}", method = RequestMethod.POST)
+    public ResponseEntity<String> insertCardDetails(@PathVariable("customerId") Long customerId,
+            @RequestBody CreditCardRequest creditCardRequest) {
+        return customerService.insertCardDetails(customerId, creditCardRequest);
+    }
+
+    @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.PUT)
+    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") Long cardId,
             @RequestBody CreditCardRequest creditCardRequest) {
         return customerService.updateCardDetails(cardId, creditCardRequest);
     }
 
-    @RequestMapping(value = "/creditcard{cardId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") String cardId) {
+    @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") Long cardId) {
         return customerService.deleteCardDetails(cardId);
     }
 
+    /**
+     * Customer
+     * 
+     * @param customerRequest
+     * @return
+     */
+    @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.GET)
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("customerId") Long customerId) {
+        return customerService.getCustomer(customerId);
+    }
+
     @RequestMapping(value = "/profile", method = RequestMethod.POST)
-    public ResponseEntity<RegisterResponse> createCustomer(@RequestBody Customer customer) {
-        return customerService.create(customer);
+    public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
+        return customerService.create(customerRequest);
     }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.PUT)
-    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable("customerId") String customerId,
-            @RequestBody Customer customer) {
-        return customerService.update(customerId, customer);
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable("customerId") Long customerId,
+            @RequestBody CustomerRequest customerRequest) {
+        return customerService.update(customerId, customerRequest);
     }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.DELETE)
-    public ResponseEntity<CustomerResponse> deleteCustomer(@PathVariable("customerId") String customerId) {
+    public ResponseEntity<CustomerResponse> deleteCustomer(@PathVariable("customerId") Long customerId) {
         return customerService.delete(customerId);
     }
 }
