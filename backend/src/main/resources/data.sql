@@ -1,22 +1,26 @@
-INSERT INTO auth(email, hash) VALUES
-	('hong.sng@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('bond.james@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('wan.obi@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('jobs.steve@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('xuan.liew@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('braddy.yeoh@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-	('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
-	('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
+INSERT INTO auth
+  (email, hash)
+VALUES
+  ('hong.sng@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('bond.james@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('wan.obi@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('jobs.steve@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('xuan.liew@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('braddy.yeoh@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  ('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
+  ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
 
-INSERT INTO customers(first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email) VALUES
-	('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'hong.sng@ucdconnect.ie'),
-	('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie'),
-	('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
-	('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
-	('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
-	('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
-	('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'a@a.com'),
-	('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com');
+INSERT INTO customers
+  (first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email)
+VALUES
+  ('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'hong.sng@ucdconnect.ie'),
+  ('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie'),
+  ('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
+  ('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
+  ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
+  ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
+  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'a@a.com'),
+  ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com');
 
 INSERT INTO flights
   (id, flight_name, departure_airport, arrival_airport, departure_date_time, arrival_date_time, flight_price, num_of_seats)
@@ -55,13 +59,15 @@ VALUES
   (30, 'SL 1173', 'PEN', 'SZB', '2021-03-15T20:40:00', '2021-03-15T21:40:00', 31, 3),
 
   (31, 'AA 1249', 'LGA', 'MIA', '2021-04-01T06:00:00', '2021-04-01T09:04:00', 58, 4),
-  (32, 'F9 2879', 'LGA', 'MIA', '2021-04-01T22:45:00', '2021-04-02T01:46:00', 40, 23)
+  (32, 'F9 2879', 'LGA', 'MIA', '2021-04-01T22:45:00', '2021-04-02T01:46:00', 40, 23);
 
-INSERT INTO card(customer_id, name_on_card, card_number, expiry_date, security_code) VALUES
-	(1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
-	(1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
-	(2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
-	(3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
+INSERT INTO card
+  (customer_id, name_on_card, card_number, expiry_date, security_code)
+VALUES
+  (1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
+  (1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
+  (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
+  (3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
 -- --
 -- INSERT INTO books(id, book_name, isbn)
 -- VALUES (1, "Thinking Fast", "1234");

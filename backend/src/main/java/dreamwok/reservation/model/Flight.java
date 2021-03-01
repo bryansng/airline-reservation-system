@@ -3,15 +3,19 @@ package dreamwok.reservation.model;
 import dreamwok.reservation.service.Common;
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity
 @Table(name = "flights")
+
 public class Flight {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +29,9 @@ public class Flight {
   private LocalDateTime arrivalDateTime;
   private Double flightPrice;
   private Integer numOfSeats;
+
+  @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+  private List<Reservation> reservations;
 
   public Flight() {
   }
@@ -67,8 +74,12 @@ public class Flight {
     this.arrivalDateTime = arrivalDateTime;
   }
 
-  public void setFlightPrice(Double flightPrice) {
-    this.flightPrice = flightPrice;
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public void setNumOfSeats(Integer numOfSeats) {
@@ -123,5 +134,9 @@ public class Flight {
 
   public Integer getNumOfSeats() {
     return this.numOfSeats;
+  }
+
+  public void setFlightPrice(Double flightPrice) {
+    this.flightPrice = flightPrice;
   }
 }

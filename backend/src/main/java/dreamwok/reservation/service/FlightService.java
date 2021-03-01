@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dreamwok.reservation.model.Flight;
@@ -44,5 +47,14 @@ public class FlightService {
     Page<Flight> flights = flightRepository.findByFlightName(flightName,
         PageRequest.of(pageNum, Common.PAGINATION_ROWS));
     return flights;
+  }
+
+  public Flight getFlightById(Long flightId) {
+    Optional<Flight> flight = flightRepository.findById(flightId);
+
+    if (!flight.isPresent()) {
+      return null;
+    }
+    return flight.get();
   }
 }

@@ -17,7 +17,6 @@ public class Auth {
 	@Size(min = 4)
 	private String hash;
 
-	// @OneToOne(mappedBy = "auth")
 	@OneToOne(mappedBy = "auth", fetch = FetchType.LAZY)
 	private Customer customer;
 

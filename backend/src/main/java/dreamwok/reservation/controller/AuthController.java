@@ -75,14 +75,56 @@ public class AuthController {
     return registerResponse;
   }
 
+  /* /login POST
+    {
+        email: String
+        password: String
+    }
+    returns
+    {
+        customer: Customer object
+    } */
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   public ResponseEntity<SignInResponse> loginCustomer(@RequestBody SignInRequest signInRequest,
       HttpServletRequest request) {
     return authService.login(signInRequest, request);
   }
 
+  /* /register POST
+    {
+        email: String
+        password: String
+    }
+    returns
+    {
+        customer: Customer object
+    } */
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
+      HttpServletRequest request) {
+    return authService.register(registerRequest, request);
+  }
+
+  /* When creating user, requests needs this customer object:
+        customer: {
+            email: String
+            firstName: String
+            lastName: String
+            address: String
+            phoneNumber: String
+        } */
+
+  /* /register DELETE
+    {
+        customerId: String
+    }
+    returns
+    {
+        status: ...
+        message: ...
+    } */
+  @RequestMapping(value = "/register", method = RequestMethod.DELETE)
+  public ResponseEntity<RegisterResponse> deleteCustomer(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
     return authService.register(registerRequest, request);
   }
