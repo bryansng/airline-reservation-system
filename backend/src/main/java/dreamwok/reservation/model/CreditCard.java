@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 
@@ -16,8 +17,10 @@ public class CreditCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotNull
     private Long customerId;
+
+    @NotEmpty
     private String nameOnCard;
     private String cardNumber;
     private String expiryDate;

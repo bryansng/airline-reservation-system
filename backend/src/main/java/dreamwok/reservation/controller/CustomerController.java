@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<CreditCardResponse> getCardDetails(@PathVariable("customerId") Long cardId) {
+    public ResponseEntity<CreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
         return customerService.getCardDetails(cardId);
     }
 
@@ -48,13 +48,13 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") Long cardId,
+    public ResponseEntity<String> updateCardDetails(@PathVariable("cardId") Long cardId,
             @RequestBody CreditCardRequest creditCardRequest) {
         return customerService.updateCardDetails(cardId, creditCardRequest);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("customerId") Long cardId) {
+    public ResponseEntity<String> updateCardDetails(@PathVariable("cardId") Long cardId) {
         return customerService.deleteCardDetails(cardId);
     }
 

@@ -85,7 +85,9 @@ public class CustomerService {
     public ResponseEntity<String> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
         String cardNumber = creditCardRequest.getCardNumber();
 
-        if (!creditCardReposistory.existsByCardNumber(cardNumber)) {
+        System.out.println(cardNumber);
+
+        if (creditCardReposistory.existsByCardNumber(cardNumber) == null) {
             CreditCard creditCard = new CreditCard(customerId, creditCardRequest);
             creditCardReposistory.save(creditCard);
 
@@ -101,10 +103,10 @@ public class CustomerService {
             currCreditCard.updateCard(creditCardRequest);
             creditCardReposistory.save(currCreditCard);
 
-            return new ResponseEntity<>("Card deleted", HttpStatus.OK);
+            return new ResponseEntity<>("Detail updated", HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("Detail updated", HttpStatus.CREATED);
+        return new ResponseEntity<>("Card does not exist", HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> deleteCardDetails(Long id) {
@@ -135,7 +137,7 @@ public class CustomerService {
 
     public ResponseEntity<CustomerResponse> update(Long id, CustomerRequest customerRequest) {
         if (customerRepository.existsById(id)) {
-            Customer currCustomer = customerRepository.getOne(id);
+            Customer currCustomer = customerRepository.findById(id).get();
             currCustomer.update(customerRequest);
             Customer newCustomer = customerRepository.save(currCustomer);
             return new ResponseEntity<>(new CustomerResponse("Customer updated", newCustomer), HttpStatus.OK);
