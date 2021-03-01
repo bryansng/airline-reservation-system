@@ -1,204 +1,157 @@
 package dreamwok.reservation.model;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import dreamwok.reservation.service.Common;
-
-import java.time.*;
-import javax.persistence.*;
+import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
+import dreamwok.reservation.core.customer.request.CustomerRequest;
 
 @Entity
 @Table(name = "customers")
 public class Customer {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @NotEmpty
-  // @Column(name = "email", insertable = false, updatable = false)
-  private String email;
-  private String fullName;
-  private String mobileNumber = "";
-  private String address = "";
-  private String roles = "USER";
+    @NotEmpty
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String phoneNum;
+    private String roles = "USER";
 
-  @Column(nullable = true)
-  private LocalDateTime bornOn;
-  private LocalDateTime joinedOn = LocalDateTime.now();
-  private LocalDateTime lastActiveOn = LocalDateTime.now();
-  private String type = "member";
+    @Column(nullable = true)
+    private LocalDateTime bornOn;
+    private LocalDateTime joinedOn = LocalDateTime.now();
+    private String type = "member";
 
-  @OneToOne(cascade = CascadeType.ALL)
-  // @JoinColumn(referencedColumnName = "email")
-  private Auth auth;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Auth auth;
 
-  public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type) {
-    setAll(email, fullName, mobileNumber, address, bornOn, type, this.auth);
-  }
+    public Customer() {
 
-  public void setAll(String email, String fullName, String mobileNumber, String address, String bornOn, String type,
-      Auth auth) {
-    setEmail(email.equals("") ? this.email : email);
-    setFullName(fullName.equals("") ? this.fullName : fullName);
-    setMobileNumber(mobileNumber.equals("") ? this.mobileNumber : mobileNumber);
-    setAddress(address.equals("") ? this.address : address);
-
-    if (bornOn.equals("")) {
-      setBornOn(null);
-    } else {
-      setBornOn(Common.convertStringDateToDateTime(bornOn));
     }
 
-    setType(type);
-    setAuth(auth);
-
-    switch (type.toLowerCase()) {
-      case "member":
-        setRoles("USER");
-        break;
-      case "librarian":
-        setRoles("ADMIN");
-        break;
-    }
-  }
-
-  public String getInitials() {
-    String[] words = fullName.split(" ");
-    String initials = "";
-    for (int i = 0; i < words.length && i != 5; i++) {
-      String word = words[i];
-      initials += String.valueOf(word.charAt(0)).toUpperCase();
-    }
-    return initials;
-  }
-
-  public String processLastActiveOn() {
-    LocalDateTime now = LocalDateTime.now();
-    Duration diff = Duration.between(lastActiveOn, now);
-    if (diff.getSeconds() == 0) {
-      return "Currently online";
+    public LocalDateTime getJoinedOn() {
+        return joinedOn;
     }
 
-    if (diff.getSeconds() < 60) {
-      return diff.getSeconds() + " seconds ago";
-    } else {
-      long minutes = diff.toMinutes();
-      if (minutes < 60) {
-        return minutes + " minutes ago";
-      } else if (minutes >= 1440) {
-        return (minutes / 1440) + " days ago";
-      }
+    public void setJoinedOn(LocalDateTime joinedOn) {
+        this.joinedOn = joinedOn;
     }
-    return "Currently online";
-  }
 
-  @JsonIgnore
-  public Auth getAuth() {
-    return auth;
-  }
+    public Customer(String email, String firstName, String lastName, String address, String phoneNum, String type) {
+        this.setEmail(email);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setAddress(address);
+        this.setPhoneNum(phoneNum);
+        this.setType(type);
+    }
 
-  public void setAuth(Auth auth) {
-    this.auth = auth;
-  }
+    public Customer(CustomerRequest customerRequest, String type) {
+        this.setEmail(customerRequest.getEmail());
+        this.setFirstName(customerRequest.getFirstName());
+        this.setLastName(customerRequest.getLastName());
+        this.setAddress(customerRequest.getAddress());
+        this.setPhoneNum(customerRequest.getPhoneNum());
+        this.setType(type);
+    }
 
-  public Boolean isAdmin() {
-    return type.equals("librarian");
-  }
+    public String getRoles() {
+        return roles;
+    }
 
-  public Boolean isMember() {
-    return type.equals("member");
-  }
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    public String getType() {
+        return type;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    @JsonIgnore
+    public Auth getAuth() {
+        return auth;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
 
-  public String getFullName() {
-    return fullName;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public void setFullName(String fullName) {
-    this.fullName = fullName;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public String getMobileNumber() {
-    return mobileNumber;
-  }
+    public String getPhoneNum() {
+        return phoneNum;
+    }
 
-  public void setMobileNumber(String mobileNumber) {
-    this.mobileNumber = mobileNumber;
-  }
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
 
-  public String getAddress() {
-    return address;
-  }
+    public String getAddress() {
+        return address;
+    }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-  public LocalDateTime getBornOn() {
-    return bornOn;
-  }
+    public String getLastName() {
+        return lastName;
+    }
 
-  public void setBornOn(LocalDateTime bornOn) {
-    this.bornOn = bornOn;
-  }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-  public LocalDateTime getJoinedOn() {
-    return joinedOn;
-  }
+    public String getFirstName() {
+        return firstName;
+    }
 
-  public void setJoinedOn(LocalDateTime joinedOn) {
-    this.joinedOn = joinedOn;
-  }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-  public LocalDateTime getLastActiveOn() {
-    return lastActiveOn;
-  }
+    public void update(CustomerRequest customerRequest) {
+        this.setEmail(customerRequest.getEmail());
+        this.setFirstName(customerRequest.getFirstName());
+        this.setLastName(customerRequest.getLastName());
+        this.setAddress(customerRequest.getAddress());
+        this.setPhoneNum(customerRequest.getPhoneNum());
+        this.setType(type);
+        this.setAuth(this.auth);
 
-  public void setLastActiveOn(LocalDateTime lastActiveOn) {
-    this.lastActiveOn = lastActiveOn;
-  }
+        switch (type.toLowerCase()) {
+            case "member":
+                this.setRoles("USER");
+                break;
+            case "librarian":
+                this.setRoles("ADMIN");
+                break;
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public String getRoles() {
-    return roles;
-  }
-
-  public void setRoles(String roles) {
-    this.roles = roles;
-  }
-
-  public String toString() {
-    String buf = " - ";
-    return id + buf + fullName + buf + getInitials() + buf + processLastActiveOn() + buf + email + buf + mobileNumber
-        + buf + address + buf + type;
-  }
-
-  public String toStringWithAuth() {
-    String buf = " - ";
-    return id + buf + fullName + buf + getInitials() + buf + email + buf + mobileNumber + buf + address + buf + type
-        + "\n" + auth.getEmail() + buf + auth.getHash();
-  }
+        }
+    }
 }

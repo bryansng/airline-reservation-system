@@ -12,8 +12,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-  Page<Customer> findByIdOrFullNameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrMobileNumberContainsOrAddressContainsIgnoreCaseOrTypeIgnoreCaseContains(
-      Long id, String fullName, String email, String mobileNumber, String address, String type, Pageable pageable);
+  Page<Customer> findByIdOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrPhoneNumContainsOrAddressContainsIgnoreCaseOrTypeIgnoreCaseContains(
+      Long id, String firstName, String lastName, String email, String phoneNum, String address, String type,
+      Pageable pageable);
 
   boolean existsByEmail(String email);
 

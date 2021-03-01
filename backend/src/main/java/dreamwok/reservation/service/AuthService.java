@@ -5,6 +5,7 @@ import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.request.SignInRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.auth.response.SignInResponse;
+import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
@@ -65,8 +66,10 @@ public class AuthService {
 
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest.getEmail(),
-        registerRequest.getPassword(), registerRequest.getUsername(), "", "", "", "customer", "USER");
+    CustomerRequest customerRequest = new CustomerRequest(registerRequest.getEmail(), "Braddy", "Yeoh", "123 Road",
+        "123", LocalDateTime.now(), "member");
+
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(customerRequest);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
@@ -90,10 +93,8 @@ public class AuthService {
   public void addCustomerToModel(Model model, Authentication authentication) {
     if (isAuthenticated(authentication)) {
       Customer customer = getCustomerFromUserObject(authentication);
-      setCustomerActiveOn(customer);
       // System.out.println("is authenticated");
       model.addAttribute("customer", customer);
-      model.addAttribute("customerInitials", customer.getInitials());
     } else {
       // System.out.println("not authenticated");
     }
@@ -113,9 +114,5 @@ public class AuthService {
       return customerRepository.findByEmail(user.getUsername());
     }
     return null;
-  }
-
-  private void setCustomerActiveOn(Customer customer) {
-    customer.setLastActiveOn(LocalDateTime.now());
   }
 }
