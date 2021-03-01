@@ -19,9 +19,9 @@ import dreamwok.reservation.service.FlightService;
 /**
  * Endpoints to search flights.
  * /search - default search returning all flights departing on the specified date
- * /search-from-date - search returns all flights departing on the specified date onwards
+ * having fromDepartureDate > 0 & /search-from-date - search returns all flights departing on the specified date onwards
  *
- *  for testing purposes: /search-by-airport, /search-by-flight-name
+ *  for testing purposes: /search-from-date, /search-by-airport, /search-by-flight-name
  */
 @RestController
 public class FlightController {
@@ -35,14 +35,17 @@ public class FlightController {
   public ResponseEntity<FlightsResponse> search(@RequestParam String departureAirport,
       @RequestParam String arrivalAirport,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
-      @RequestParam Integer numOfPassengers, @RequestParam int pageNum) {
-    Page<Flight> flights = flightService.search(departureAirport, arrivalAirport, departureDate.atStartOfDay(),
-        departureDate.plusDays(1).atStartOfDay(), numOfPassengers, pageNum);
+      @RequestParam Integer numOfPassengers, @RequestParam int pageNum, @RequestParam Integer fromDepartureDate) {
+    Page<Flight> flights = (fromDepartureDate > 0)
+        ? flightService.searchFromDate(departureAirport, arrivalAirport, departureDate.atStartOfDay(), numOfPassengers,
+            pageNum)
+        : flightService.search(departureAirport, arrivalAirport, departureDate.atStartOfDay(),
+            departureDate.plusDays(1).atStartOfDay(), numOfPassengers, pageNum);
     return new ResponseEntity<>(new FlightsResponse("Flights returned successfully.", flights.getContent()),
         HttpStatus.OK);
   }
 
-  @GetMapping("/search-from-date")
+  @GetMapping("/test/search-from-date")
   public ResponseEntity<FlightsResponse> searchFromDate(@RequestParam String departureAirport,
       @RequestParam String arrivalAirport,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
@@ -53,7 +56,7 @@ public class FlightController {
         HttpStatus.OK);
   }
 
-  @GetMapping("/search-by-airport")
+  @GetMapping("/test/search-by-airport")
   public ResponseEntity<FlightsResponse> searchByAirport(@RequestParam String departureAirport,
       @RequestParam String arrivalAirport, @RequestParam int pageNum) {
     Page<Flight> flights = flightService.findByAirports(departureAirport, arrivalAirport, pageNum);
@@ -61,7 +64,7 @@ public class FlightController {
         HttpStatus.OK);
   }
 
-  @GetMapping("/search-by-flight-name")
+  @GetMapping("/test/search-by-flight-name")
   public ResponseEntity<FlightsResponse> searchByFlighName(@RequestParam String flightName, @RequestParam int pageNum) {
     Page<Flight> flights = flightService.searchByFlightName(flightName, pageNum);
     return new ResponseEntity<>(new FlightsResponse("Flights returned successfully.", flights.getContent()),
