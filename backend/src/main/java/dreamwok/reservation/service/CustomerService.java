@@ -85,7 +85,7 @@ public class CustomerService {
       List<CreditCard> cards = new ArrayList<>();
       cards.add(card.get());
 
-      return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
+      return new ResponseEntity<>(new CreditCardResponse("Found card for customer", cards), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
