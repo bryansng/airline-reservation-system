@@ -115,9 +115,7 @@ public class CustomerService {
         if (!card.isPresent()) {
             Customer customer = customerRepository.getOne(customerId);
             CreditCardDetails creditCard = new CreditCardDetails(customer, creditCardRequest);
-            creditCard = creditCardDetailsRepository.save(creditCard);
-
-            System.out.println(creditCard.toString2());
+            creditCardDetailsRepository.save(creditCard);
 
             return new ResponseEntity<>("Card details inserted.", HttpStatus.CREATED);
         }
