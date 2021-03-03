@@ -12,8 +12,5 @@ import dreamwok.reservation.model.CreditCardDetails;
 public interface CreditCardDetailsRepository extends JpaRepository<CreditCardDetails, Long> {
 
     @Query("SELECT c from CreditCardDetails c WHERE c.cardNumber = ?1")
-    Boolean existsByCardNumber(String cardNumber);
-
-    @Query("SELECT c from CreditCardDetails c WHERE c.cardNumber = ?1")
     Optional<CreditCardDetails> findByCardNumber(String cardNumber);
 }
