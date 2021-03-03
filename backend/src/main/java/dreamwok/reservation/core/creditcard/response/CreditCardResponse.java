@@ -2,22 +2,22 @@ package dreamwok.reservation.core.creditcard.response;
 
 import java.util.List;
 
-import dreamwok.reservation.model.CreditCardDetails;
+import dreamwok.reservation.dto.CreditCardDetailsDTO;
 
 public class CreditCardResponse {
     private String message;
-    private List<CreditCardDetails> creditCards;
+    private List<CreditCardDetailsDTO> creditCards;
 
-    public CreditCardResponse(String message, List<CreditCardDetails> creditCards) {
+    public CreditCardResponse(String message, List<CreditCardDetailsDTO> creditCards) {
         this.setMessage(message);
         this.setCreditCards(creditCards);
     }
 
-    public List<CreditCardDetails> getCreditCards() {
+    public List<CreditCardDetailsDTO> getCreditCards() {
         return creditCards;
     }
 
-    public void setCreditCards(List<CreditCardDetails> creditCards) {
+    public void setCreditCards(List<CreditCardDetailsDTO> creditCards) {
         this.creditCards = creditCards;
     }
 

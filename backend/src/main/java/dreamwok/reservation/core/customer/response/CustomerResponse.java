@@ -1,14 +1,14 @@
 package dreamwok.reservation.core.customer.response;
 
-import dreamwok.reservation.model.Customer;
+import dreamwok.reservation.dto.CustomerDTO;
 
 public class CustomerResponse {
-    private Customer customer;
+    private CustomerDTO customerDTO;
     private String message;
 
-    public CustomerResponse(String message, Customer customer) {
+    public CustomerResponse(String message, CustomerDTO customerDTO) {
         this.message = message;
-        this.customer = customer;
+        this.customerDTO = customerDTO;
     }
 
     public String getMessage() {
@@ -19,11 +19,11 @@ public class CustomerResponse {
         this.message = message;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
+    public CustomerDTO getCustomer() {
+        return this.customerDTO;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(CustomerDTO customerDTO) {
+        this.customerDTO = customerDTO;
     }
 }
