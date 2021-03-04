@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import * as dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import Modal from "react-bootstrap/Modal";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
+dayjs.extend(isBetween);
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
@@ -63,10 +65,29 @@ const ShowReservation = ({ bookedReservation = null }) => {
       });
   };
 
+  const isReservationWithin24HoursFlightDate = (reservation) => {
+    return dayjs().isBetween(
+      dayjs(reservation.flight.departureDateTime).subtract(1, "day"),
+      dayjs(reservation.flight.departureDateTime)
+    );
+  };
+
   const isReservationCancelled = (reservation) => {
     return reservation.reservationStatus === "CANCELLED";
   };
 
+  const isReservationPast = (reservation) => {
+    return reservation.reservationStatus === "PAST";
+  };
+
+  console.log(dayjs());
+  console.log(dayjs(reservation.flight.departureDateTime));
+  console.log(
+    dayjs().isBetween(
+      dayjs(reservation.flight.departureDateTime).subtract(1, "day"),
+      dayjs(reservation.flight.departureDateTime)
+    )
+  );
   return (
     <>
       <h2>Show Booking</h2>
@@ -118,19 +139,21 @@ const ShowReservation = ({ bookedReservation = null }) => {
               ))}
             </div>
           </div>
-          {!isReservationCancelled(reservation) && (
-            <>
-              <h6>
-                You may cancel your flight 24 hours within the check-in date.
-              </h6>
-              <Button
-                type="button"
-                onClick={() => setIsShowCancelConfirmationModal(true)}
-              >
-                Cancel Reservation
-              </Button>
-            </>
-          )}
+          {!isReservationPast(reservation) &&
+            !isReservationCancelled(reservation) && (
+              <>
+                <h6>
+                  You may cancel your flight 24 hours within the check-in date.
+                </h6>
+                <Button
+                  type="button"
+                  onClick={() => setIsShowCancelConfirmationModal(true)}
+                  disabled={!isReservationWithin24HoursFlightDate(reservation)}
+                >
+                  Cancel Reservation
+                </Button>
+              </>
+            )}
           <Link to="/">
             <Button type="button">Back to home</Button>
           </Link>
