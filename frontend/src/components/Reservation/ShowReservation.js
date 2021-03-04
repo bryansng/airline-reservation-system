@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import * as dayjs from "dayjs";
+import Modal from "react-bootstrap/Modal";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis } = rest_endpoints;
 
@@ -21,6 +22,10 @@ const Button = styled.button.attrs({
 
 const ShowReservation = ({ bookedReservation = null }) => {
   const [reservation, setReservation] = useState(bookedReservation);
+  const [
+    isShowCancelConfirmationModal,
+    setIsShowCancelConfirmationModal,
+  ] = useState(false);
 
   // three situations using this.
   // 1. guest retrieving their reservations/booking.
@@ -118,7 +123,10 @@ const ShowReservation = ({ bookedReservation = null }) => {
               <h6>
                 You may cancel your flight 24 hours within the check-in date.
               </h6>
-              <Button type="button" onClick={(evt) => toggleCancelBooking(evt)}>
+              <Button
+                type="button"
+                onClick={() => setIsShowCancelConfirmationModal(true)}
+              >
                 Cancel Reservation
               </Button>
             </>
@@ -126,9 +134,35 @@ const ShowReservation = ({ bookedReservation = null }) => {
           <Link to="/">
             <Button type="button">Back to home</Button>
           </Link>
+          <CancelConfirmationModal
+            show={isShowCancelConfirmationModal}
+            onHide={() => setIsShowCancelConfirmationModal(false)}
+            toggleCancelBooking={toggleCancelBooking}
+          />
         </>
       )}
     </>
+  );
+};
+
+const CancelConfirmationModal = ({ show, onHide, toggleCancelBooking }) => {
+  return (
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <h2>Are you sure?</h2>
+      </Modal.Header>
+      <Modal.Footer>
+        <Button
+          onClick={(evt) => {
+            onHide();
+            toggleCancelBooking(evt);
+          }}
+        >
+          Yes
+        </Button>
+        <Button onClick={() => onHide()}>No</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
