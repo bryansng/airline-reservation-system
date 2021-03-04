@@ -16,10 +16,10 @@ import dreamwok.reservation.service.BookingService;
 
 @RestController
 public class BookingController {
-  @Autowired
-  BookingService bookingService;
+    @Autowired
+    BookingService bookingService;
 
-  /* /book POST
+    /* /book POST
     {
         flightId: String
         customers: List<Customer> [
@@ -43,19 +43,19 @@ public class BookingController {
     {
         reservation: Reservation object
     } */
-  @RequestMapping(value = "/book", method = RequestMethod.POST)
-  public ResponseEntity<BookReservationResponse> bookReservation(@RequestBody BookReservationRequest request) {
-    Reservation reservation = bookingService.bookReservation(request.getFlightId(), request.getCustomers(),
-        request.getCreditCardDetails());
+    @RequestMapping(value = "/book", method = RequestMethod.POST)
+    public ResponseEntity<BookReservationResponse> bookReservation(@RequestBody BookReservationRequest request) {
+        Reservation reservation = bookingService.bookReservation(request.getFlightId(), request.getCustomers(),
+                request.getCreditCardDetails());
 
-    if (reservation == null) {
-      return new ResponseEntity<>(
-          new BookReservationResponse("Invalid credit card credentials or Invalid flight id.", null),
-          HttpStatus.BAD_REQUEST);
+        if (reservation == null) {
+            return new ResponseEntity<>(
+                    new BookReservationResponse("Invalid credit card credentials or Invalid flight id.", null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        ReservationDTO reservationDTO = new ReservationDTO(reservation);
+        return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
+                HttpStatus.CREATED);
     }
-
-    ReservationDTO reservationDTO = new ReservationDTO(reservation);
-    return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
-        HttpStatus.CREATED);
-  }
 }
