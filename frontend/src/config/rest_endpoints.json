@@ -9,6 +9,7 @@
       "create": "http://localhost:8080/book",
       "get_by_id": "http://localhost:8080/reservation",
       "get_all_by_customer_id": "http://localhost:8080/reservations",
+      "get_reservation_by_id_and_customer_lastname": "http://localhost:8080/reservations",
       "cancel": "http://localhost:8080/reservation/cancel"
     },
     "flight": {

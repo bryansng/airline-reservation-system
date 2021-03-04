@@ -22,8 +22,9 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const ShowReservation = ({ bookedReservation = null }) => {
-  const [reservation, setReservation] = useState(bookedReservation);
+const ShowReservation = ({ location }) => {
+  console.log(location);
+  const [reservation, setReservation] = useState(location.state.reservation);
   const [
     isShowCancelConfirmationModal,
     setIsShowCancelConfirmationModal,
@@ -80,17 +81,9 @@ const ShowReservation = ({ bookedReservation = null }) => {
     return reservation.reservationStatus === "PAST";
   };
 
-  console.log(dayjs());
-  console.log(dayjs(reservation.flight.departureDateTime));
-  console.log(
-    dayjs().isBetween(
-      dayjs(reservation.flight.departureDateTime).subtract(1, "day"),
-      dayjs(reservation.flight.departureDateTime)
-    )
-  );
   return (
     <>
-      <h2>Show Booking</h2>
+      <h2>Show Reservation</h2>
       {reservation && reservation.bookings && (
         <>
           <div>

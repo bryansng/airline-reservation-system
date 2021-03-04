@@ -3,6 +3,7 @@ import HandlePassengersDetails from "./HandlePassengersDetails";
 import HandlePaymentDetails from "./HandlePaymentDetails";
 import ShowReservation from "./ShowReservation";
 import ConfirmItineraryDetails from "./ConfirmItineraryDetails";
+import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
@@ -71,8 +72,9 @@ const Reservation = ({ match, user, bookFlightDetails }) => {
           throw new Error(`${resp.status} Error booking a reservation.`);
         })
         .then((res) => {
+          const reservation = res.reservation;
           console.log(res);
-          setBookedReservation(res.reservation);
+          setBookedReservation(reservation);
         })
         .catch((error) => {
           console.error(error);
@@ -113,7 +115,13 @@ const Reservation = ({ match, user, bookFlightDetails }) => {
         <HandlePaymentDetails setPaymentDetails={setPaymentDetails} />
       )}
       {paymentDetails && bookedReservation && (
-        <ShowReservation bookedReservation={bookedReservation} />
+        <Redirect
+          push
+          to={{
+            pathname: `/show/reservation/${bookedReservation.id}`,
+            state: { reservation: bookedReservation },
+          }}
+        />
       )}
     </div>
   );

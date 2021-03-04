@@ -4,6 +4,7 @@ import Navigation from "./components/Navigation/Navigation";
 import Profile from "./components/User/Profile";
 import Reservation from "./components/Reservation/Reservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
+import ShowReservation from "./components/Reservation/ShowReservation";
 import Search from "./components/Flight/Search";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -49,7 +50,16 @@ function App() {
               />
             )}
           />
-          <Route path="/search/booking" exact component={RetrieveBooking} />
+          <Route
+            path="/retrieve/booking"
+            exact
+            render={(props) => <RetrieveBooking {...props} />}
+          />
+          <Route
+            path="/show/reservation/:reservationId"
+            exact
+            component={ShowReservation}
+          />
         </Switch>
       </div>
     </Router>

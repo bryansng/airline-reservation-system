@@ -13,6 +13,12 @@ const Navigation = () => {
       <Link to={`/book/5`}>
         <div>Book a Reservation</div>
       </Link>
+      <Link to={`/retrieve/booking`}>
+        <div>Retrieve Booking</div>
+      </Link>
+      {/* <Link to={`/show/reservation/1`}>
+        <div>Show Reservation</div>
+      </Link> */}
     </div>
   );
 };
