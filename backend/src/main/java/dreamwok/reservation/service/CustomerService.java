@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
@@ -24,6 +26,7 @@ import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
 
 @Service
+@CrossOrigin
 public class CustomerService {
   @Autowired
   CustomerRepository customerRepository;
