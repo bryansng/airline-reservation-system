@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,7 @@ import dreamwok.reservation.model.Reservation;
 import dreamwok.reservation.service.ReservationService;
 
 @RestController
+@CrossOrigin
 public class ReservationController {
   @Autowired
   private ReservationService reservationService;
@@ -49,7 +51,7 @@ public class ReservationController {
     }
     return new ResponseEntity<>(
         new GetCustomerReservationsResponse("Customer reservations retrieved successfully.", reservationsDTO),
-        HttpStatus.FOUND);
+        HttpStatus.OK);
   }
 
   /* /reservation GET
@@ -72,7 +74,7 @@ public class ReservationController {
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
     return new ResponseEntity<>(new GetReservationByIdResponse("Reservation retrieved successfully.", reservationDTO),
-        HttpStatus.FOUND);
+        HttpStatus.OK);
   }
 
   /* /reservation/cancel PUT
@@ -84,7 +86,7 @@ public class ReservationController {
         status: 200 if success, BAD_REQUEST if cannot due to not within 24 hours.
         message: ...
     } */
-  @RequestMapping(value = "/reservation/{reservationId}/cancel", method = RequestMethod.PUT)
+  @RequestMapping(value = "/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> cancelReservation(@PathVariable("reservationId") Long reservationId) {
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
@@ -94,6 +96,6 @@ public class ReservationController {
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
     return new ResponseEntity<>(new CancelResponse("Reservation cancelled successfully.", reservationDTO),
-        HttpStatus.ACCEPTED);
+        HttpStatus.OK);
   }
 }

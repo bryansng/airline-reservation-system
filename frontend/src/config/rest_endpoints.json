@@ -5,7 +5,15 @@
       "login": "http://localhost:8080/login"
     },
     "user": {},
-    "reservation": {},
-    "flight": {}
+    "reservation": {
+      "create": "http://localhost:8080/book",
+      "get_by_id": "http://localhost:8080/reservation",
+      "get_all_by_customer_id": "http://localhost:8080/reservations",
+      "cancel": "http://localhost:8080/reservation/cancel"
+    },
+    "flight": {
+      "get_by_id": "http://localhost:8080/flight",
+      "search": "http://localhost:8080/search"
+    }
   }
 }

@@ -2,6 +2,7 @@ package dreamwok.reservation.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import dreamwok.reservation.service.AuthService;
 import dreamwok.reservation.service.CustomerService;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "/customer")
 public class CustomerController {
     @Autowired
@@ -27,7 +29,7 @@ public class CustomerController {
 
     /**
      * Card
-     * 
+     *
      * @param customerId
      * @return
      */
@@ -60,7 +62,7 @@ public class CustomerController {
 
     /**
      * Customer
-     * 
+     *
      * @param customerRequest
      * @return
      */
