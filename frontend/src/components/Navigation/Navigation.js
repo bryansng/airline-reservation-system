@@ -10,7 +10,9 @@ const Navigation = () => {
       <Link to={`/user/profile`}>
         <div>Profile</div>
       </Link>
-      <Link to={`/book/5`}>
+      <Link
+        to={{ pathname: `/book/5`, state: { flightId: 5, numPassengers: 2 } }}
+      >
         <div>Book a Reservation</div>
       </Link>
       <Link to={`/retrieve/booking`}>

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import useAuthentication from "./components/Authentication/Authentication";
 import Navigation from "./components/Navigation/Navigation";
 import Profile from "./components/User/Profile";
-import Reservation from "./components/Reservation/Reservation";
+import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
-import Search from "./components/Flight/Search";
+import SearchFlight from "./components/Flight/SearchFlight";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -35,20 +35,14 @@ function App() {
             path="/"
             exact
             render={(props) => (
-              <Search setBookFlightDetails={setBookFlightDetails} />
+              <SearchFlight setBookFlightDetails={setBookFlightDetails} />
             )}
           />
           <Route path="/user/profile" component={Profile} />
           <Route
             path="/book/:flightId"
             exact
-            render={(props) => (
-              <Reservation
-                {...props}
-                user={testUserId}
-                bookFlightDetails={bookFlightDetails}
-              />
-            )}
+            render={(props) => <BookReservation {...props} user={testUserId} />}
           />
           <Route
             path="/retrieve/booking"

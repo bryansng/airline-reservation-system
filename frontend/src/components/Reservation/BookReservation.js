@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import HandlePassengersDetails from "./HandlePassengersDetails";
 import HandlePaymentDetails from "./HandlePaymentDetails";
-import ShowReservation from "./ShowReservation";
 import ConfirmItineraryDetails from "./ConfirmItineraryDetails";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
-const Reservation = ({ match, user, bookFlightDetails }) => {
-  const [flightId] = useState(bookFlightDetails.flightId);
-  const [numPassengers] = useState(bookFlightDetails.numPassengers);
+const BookReservation = ({ location, user }) => {
+  const [flightId] = useState(location.state.flightId);
+  const [numPassengers] = useState(location.state.numPassengers);
   const [userId] = useState(user == null ? null : user.id);
   const [passengersDetails, setPassengersDetails] = useState(null);
   const [confirmationBooking, setConfirmationBooking] = useState(null);
@@ -127,4 +126,4 @@ const Reservation = ({ match, user, bookFlightDetails }) => {
   );
 };
 
-export default Reservation;
+export default BookReservation;
