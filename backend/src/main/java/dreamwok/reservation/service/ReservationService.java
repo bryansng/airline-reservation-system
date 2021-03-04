@@ -88,6 +88,22 @@ public class ReservationService {
     return reservationOptional.get();
   }
 
+  public Reservation getReservationByIdAndCustomerLastName(String customerLastName, Long reservationId) {
+    Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+
+    if (!reservationOptional.isPresent()) {
+      return null;
+    }
+
+    // check if customerLastName matches paying customer's last name.
+    Reservation reservation = reservationOptional.get();
+    if (!reservation.getCustomer().getLastName().equals(customerLastName)) {
+      return null;
+    }
+
+    return reservation;
+  }
+
   public Reservation cancelReservation(Long reservationId) {
     Reservation reservation = getReservationById(reservationId);
 

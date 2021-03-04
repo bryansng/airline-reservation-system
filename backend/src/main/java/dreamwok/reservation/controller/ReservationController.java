@@ -77,6 +77,21 @@ public class ReservationController {
         HttpStatus.OK);
   }
 
+  @RequestMapping(value = "/reservation/{customerLastName}/{reservationId}", method = RequestMethod.GET)
+  public ResponseEntity<GetReservationByIdResponse> getReservationByIdAndCustomerLastName(
+      @PathVariable("customerLastName") String customerLastName, @PathVariable("reservationId") Long reservationId) {
+    Reservation reservation = reservationService.getReservationByIdAndCustomerLastName(customerLastName, reservationId);
+
+    if (reservation == null) {
+      return new ResponseEntity<>(new GetReservationByIdResponse(
+          "Invalid reservation id or incorrect reservation id with customer last name.", null), HttpStatus.NOT_FOUND);
+    }
+
+    ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    return new ResponseEntity<>(new GetReservationByIdResponse("Reservation retrieved successfully.", reservationDTO),
+        HttpStatus.OK);
+  }
+
   /* /reservation/cancel PUT
     {
         reservationId: String
