@@ -90,11 +90,6 @@ const CreditCardDetails = ({ match, location }) => {
         }
     }, [isDelete, card, url, history]);
 
-    function handleDelete() {
-        setIsDelete(true)
-    }
-  }, [isDelete, card, url, history]);
-
   function handleDelete() {
     setIsDelete(true);
   }
