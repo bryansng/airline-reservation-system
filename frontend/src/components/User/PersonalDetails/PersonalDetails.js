@@ -139,7 +139,7 @@ const PersonalDetails = ({ location }) => {
         <div className="flex justify-between flex-wrap">
           <h2>Personal Details</h2>
           <div className="flex justify-end">
-            <div className="mr1">
+            {/* <div className="mr1">
               <Link
                 to={{
                   pathname: "/user/profile/" + userId + "/personaldetails/edit",
@@ -150,7 +150,7 @@ const PersonalDetails = ({ location }) => {
               >
                 Update Account
               </Link>
-            </div>
+            </div> */}
             <div className="mr1">
               <Button onClick={handleDelete}>Delete Account</Button>
             </div>
