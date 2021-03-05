@@ -51,7 +51,6 @@ const View = styled.p.attrs({
 const ReservationDetails = ({ match }) => {
 
     const [reservations, setReservations] = useState([])
-    const [reservationDetails, setReservationDetails] = useState(null);
   
     const url = "http://localhost:8080/reservations/9"
 
