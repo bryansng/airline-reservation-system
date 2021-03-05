@@ -38,9 +38,9 @@ To run this project:
 
 #### Percentage of Contribution
 
-- Bryan -
-- Emily -
-- Braddy -
+- Bryan - 33.34
+- Emily - 33.33
+- Braddy - 33.33
 
 ---
 
@@ -57,9 +57,9 @@ To run this project:
 
 #### Percentage of Contribution
 
-- Bryan -
-- Emily -
-- Braddy -
+- Bryan - 33.34
+- Emily - 33.33
+- Braddy - 33.33
 
 ---
 
@@ -74,9 +74,9 @@ To run this project:
 
 #### Percentage of Contribution
 
-- Bryan -
-- Emily -
-- Braddy -
+- Bryan - 33.34
+- Emily - 33.33
+- Braddy - 33.33
 
 ---
 
