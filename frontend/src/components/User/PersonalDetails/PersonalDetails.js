@@ -60,13 +60,15 @@ const DataText = styled.p.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ match }) => {
+const PersonalDetails = ({ location }) => {
 
     let history = useHistory();
+
+    console.log(location)
     
     // get user id from match.params.id and GET user data.
-    const [userId] = useState(match.params.id);
-    const [customer, setCustomer] = useState(null);
+    const [userId] = useState(location.state.user.id);
+    const [customer, setCustomer] = useState(location.state.user);
     const [isDelete, setIsDelete] = useState(false);
   
     const url = customerEndpoint + "/" + userId;
@@ -75,28 +77,28 @@ const PersonalDetails = ({ match }) => {
         setIsDelete(true)
     }
 
-    useEffect(() => {
-        fetch(url)
-          .then((resp) => {
-            if (resp.ok) {
-              return resp.json();
-            }
-            throw new Error(`${resp.status} Error retrieving customer.`);
-          })
-          .then((res) => {
-            const cus = res.customer;
-            setCustomer({
-              email: cus.email,
-              address: cus.address,
-              firstName: cus.firstName,
-              lastName: cus.lastName,
-              phoneNum: cus.phoneNum,
-            });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }, [url]);
+    // useEffect(() => {
+    //     fetch(url)
+    //       .then((resp) => {
+    //         if (resp.ok) {
+    //           return resp.json();
+    //         }
+    //         throw new Error(`${resp.status} Error retrieving customer.`);
+    //       })
+    //       .then((res) => {
+    //         const cus = res.customer;
+    //         setCustomer({
+    //           email: cus.email,
+    //           address: cus.address,
+    //           firstName: cus.firstName,
+    //           lastName: cus.lastName,
+    //           phoneNum: cus.phoneNum,
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //       });
+    //   }, [url]);
     
       useEffect(() => {
         if (isDelete) {
@@ -173,7 +175,7 @@ const PersonalDetails = ({ match }) => {
                 <FieldText>Phone Number</FieldText>
               </FieldDiv>
               <DataDiv>
-                <DataText>{customer == null ? "" : customer.phoneNum}</DataText>
+                <DataText>{customer == null ? "" : customer.mobileNumber}</DataText>
               </DataDiv>
             </BodyDiv>
             <BodyDiv>

@@ -56,6 +56,7 @@ const Save = styled.a.attrs({
 
 // https://reactrouter.com/web/api/match
 const EditCreditCardDetails = ({ match, location }) => {
+    console.log(location)
     const [userId] = useState(match.params.id);
     const [isPost] = useState(location.state.isPost);
     const [isSave, setIsSave] = useState(false);

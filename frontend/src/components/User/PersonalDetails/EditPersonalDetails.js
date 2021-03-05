@@ -63,6 +63,7 @@ const Save = styled.a.attrs({
 const PersonalDetails = ({ location }) => {
   let history = useHistory();
 
+  console.log(location)
   const url = customerEndpoint + "/" + location.state.customer.id
   const [isSave, setIsSave] = useState(false);
 
