@@ -1,19 +1,19 @@
-# Project Title
+# Airline Reservation System
 
-Airline Reservation System - A COMP47660 - Secure Software Engineering Web App built with React and Spring-Boot
+A COMP47660 Secure Software Engineering web app project built using React, Spring-Boot, and MySQL by a team of three following the Scrum methodology.
 
 ## Getting Started
 
 To run this project:
 
-- Download or git clone this project
-- Go to the root of this project
-- `cd backend`
-- `mvn install`
-- `mvn spring-boot:run`
-- `cd frontend`
-- `npm install`
-- `npm start`
+1. Download or `git clone` this project
+2. Go to the root of this project
+3. `cd backend`
+4. `mvn install`
+5. `mvn spring-boot:run`
+6. `cd frontend`
+7. `npm install`
+8. `npm start` (opens browser automatically)
 
 ## Built With
 
@@ -25,14 +25,15 @@ To run this project:
 
 ## Diary
 
-### Braddy
+---
+
+### **Braddy**
 
 #### Tasks
 
-- Implemented customer profile related entities
-  - Credit card
-  - Customer
-- Implemented customer endpoints
+- Designed customer and credit card frontend wireframe
+- Implemented customer and credit card related entities
+- Implemented customer and credit card endpoints
 - Implemented frontend for customer profile
 
 #### Percentage of Contribution
@@ -41,9 +42,18 @@ To run this project:
 - Emily -
 - Braddy -
 
-### Bryan
+---
+
+### **Bryan**
 
 #### Tasks
+
+- Designed API and endpoints
+- Implemented booking and reservation related entities
+- Implemented booking and reservation endpoints
+- Implemented frontend for booking and reservation
+- Implemented authentication
+- Implemented login and register endpoints
 
 #### Percentage of Contribution
 
@@ -51,15 +61,24 @@ To run this project:
 - Emily -
 - Braddy -
 
-### Emily
+---
+
+### **Emily**
 
 #### Tasks
+
+- Designed flights, booking, and reservation frontend wireframe
+- Implemented flight and search related entities
+- Implemented search and flight endpoints
+- Implemented flight and search frontend
 
 #### Percentage of Contribution
 
 - Bryan -
 - Emily -
 - Braddy -
+
+---
 
 ## Acknowledgments
 
