@@ -6,10 +6,9 @@ import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
-const BookReservation = ({ location, user }) => {
+const BookReservation = ({ location, user, isAuthenticated }) => {
   const [flightId] = useState(location.state.flightId);
   const [numPassengers] = useState(location.state.numPassengers);
-  const [userId] = useState(user == null ? null : user.id);
   const [passengersDetails, setPassengersDetails] = useState(null);
   const [confirmationBooking, setConfirmationBooking] = useState(null);
   const [isConfirmedBooking, setIsConfirmedBooking] = useState(false);
@@ -94,13 +93,15 @@ const BookReservation = ({ location, user }) => {
   return (
     <div>
       <h1>Reservation</h1>
-      {<div>Reserving for user with id: {userId}</div>}
+      {<div>Reserving for user with id: {user && user.id}</div>}
       {<div>Reserving for flight with id: {flightId}</div>}
       {<div>Reserving for {numPassengers} passengers</div>}
       {!passengersDetails && (
         <HandlePassengersDetails
           setPassengersDetails={setPassengersDetails}
           numPassengers={numPassengers}
+          loggedInUser={user}
+          isAuthenticated={isAuthenticated}
         />
       )}
       {passengersDetails && !isConfirmedBooking && confirmationBooking && (

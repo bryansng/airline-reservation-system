@@ -17,18 +17,30 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
+const HandlePassengersDetails = ({
+  setPassengersDetails,
+  numPassengers,
+  loggedInUser,
+  isAuthenticated,
+}) => {
   const [passengerForms, setPassengerForms] = useState(null);
 
   useEffect(() => {
     const forms = [];
 
     for (var ind = 0; ind < numPassengers; ind++) {
-      forms.push(<APassengerDetailsForm key={ind} index={ind} />);
+      forms.push(
+        <APassengerDetailsForm
+          key={ind}
+          index={ind}
+          loggedInUser={loggedInUser}
+          isAuthenticated={isAuthenticated}
+        />
+      );
     }
 
     setPassengerForms(forms);
-  }, [numPassengers]);
+  }, [numPassengers, loggedInUser, isAuthenticated]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,7 +82,102 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
   );
 };
 
-const APassengerDetailsForm = ({ index }) => {
+const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
+  console.log(
+    "🚀 ~ file: HandlePassengersDetails.js ~ line 86 ~ APassengerDetailsForm ~ loggedInUser",
+    loggedInUser
+  );
+  const isFirstUserAndIsAuthenticatedAndIsLoggedInUser = () => {
+    const bool = !!(
+      index === 0 &&
+      isAuthenticated &&
+      loggedInUser &&
+      loggedInUser.id
+    );
+    console.log(
+      "🚀 ~ file: HandlePassengersDetails.js ~ line 92 ~ isFirstUserAndIsAuthenticatedAndIsLoggedInUser ~ bool",
+      bool
+    );
+    return !!(
+      index === 0 &&
+      isAuthenticated &&
+      loggedInUser &&
+      loggedInUser.id
+    );
+  };
+
+  const ActualFormComponent = () => {
+    return (
+      <>
+        <Form.Group controlId={`formFirstName${index}`}>
+          <Form.Label>First name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="John"
+            defaultValue={
+              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                ? loggedInUser.firstName
+                : "testFirstName"
+            }
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId={`formLastName${index}`}>
+          <Form.Label>Surname</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Doe"
+            defaultValue={
+              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                ? loggedInUser.lastName
+                : "testLastName"
+            }
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId={`formEmail${index}`}>
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="johndoe@gmail.com"
+            defaultValue={
+              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                ? loggedInUser.email
+                : "testEmail@test.com"
+            }
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId={`formMobileNumber${index}`}>
+          <Form.Label>Mobile number</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder=""
+            defaultValue={
+              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                ? loggedInUser.mobileNumber
+                : "testMobileNumber"
+            }
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId={`formAddress${index}`}>
+          <Form.Label>Address</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder=""
+            defaultValue={
+              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                ? loggedInUser.address
+                : "testAddress"
+            }
+            required
+          />
+        </Form.Group>
+      </>
+    );
+  };
+
   return (
     <>
       {index === 0 ? (
@@ -78,51 +185,7 @@ const APassengerDetailsForm = ({ index }) => {
       ) : (
         <div>Passenger {index + 1}'s' details:</div>
       )}
-      <Form.Group controlId={`formFirstName${index}`}>
-        <Form.Label>First name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="John"
-          defaultValue="testFirstName"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formLastName${index}`}>
-        <Form.Label>Surname</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Doe"
-          defaultValue="testLastName"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formEmail${index}`}>
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="johndoe@gmail.com"
-          defaultValue="testEmail@test.com"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formMobileNumber${index}`}>
-        <Form.Label>Mobile number</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder=""
-          defaultValue="testMobileNumber"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formAddress${index}`}>
-        <Form.Label>Address</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder=""
-          defaultValue="testAddress"
-          required
-        />
-      </Form.Group>
+      <ActualFormComponent />
     </>
   );
 };
