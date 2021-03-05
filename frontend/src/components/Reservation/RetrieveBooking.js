@@ -3,12 +3,13 @@ import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import * as dayjs from "dayjs";
 import ShowReservation from "./ShowReservation";
+import Card from "react-bootstrap/Card";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
-  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `mv1 relative w-100 b--gray mh0 br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -56,42 +57,49 @@ const RetrieveBooking = () => {
 
   return (
     <>
-      <h2>Retrieve Booking</h2>
-      <div>
-        {!reservation && (
-          <Form onSubmit={(e) => handleSubmit(e)}>
-            <Form.Group controlId="formCustomerLastName">
-              <Form.Label>Booking Customer surname</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Doe"
-                defaultValue="testLastName"
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formBookingNumber">
-              <Form.Label>Booking number</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="12345678"
-                defaultValue="12345678"
-                required
-              />
-            </Form.Group>
-            <Button type="submit">Retrieve</Button>
-          </Form>
-        )}
+      <h2 className="mb2">Retrieve Booking</h2>
+      <Card>
+        <Card.Body>
+          {!reservation && (
+            <Form onSubmit={(e) => handleSubmit(e)}>
+              <div className="flex">
+                <Form.Group
+                  controlId="formCustomerLastName"
+                  className="w-50 mr2"
+                >
+                  <Form.Label className="gray f6">Booking name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Doe"
+                    defaultValue="testLastName"
+                    required
+                  />
+                </Form.Group>
+                <Form.Group controlId="formBookingNumber" className="w-50 ml2">
+                  <Form.Label className="gray f6">Booking number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="12345678"
+                    defaultValue="12345678"
+                    required
+                  />
+                </Form.Group>
+              </div>
+              <Button type="submit">Retrieve</Button>
+            </Form>
+          )}
 
-        {reservation && (
-          <Redirect
-            push
-            to={{
-              pathname: `/show/reservation/${reservation.id}`,
-              state: { reservation: reservation },
-            }}
-          />
-        )}
-      </div>
+          {reservation && (
+            <Redirect
+              push
+              to={{
+                pathname: `/show/reservation/${reservation.id}`,
+                state: { reservation: reservation },
+              }}
+            />
+          )}
+        </Card.Body>
+      </Card>
     </>
   );
 };
