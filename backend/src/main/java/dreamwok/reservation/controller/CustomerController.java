@@ -71,10 +71,10 @@ public class CustomerController {
         return customerService.getCustomer(customerId);
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.POST)
-    public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
-        return customerService.create(customerRequest);
-    }
+    // @RequestMapping(value = "/profile", method = RequestMethod.POST)
+    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
+    //     return customerService.create(customerRequest);
+    // }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.PUT)
     public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable("customerId") Long customerId,

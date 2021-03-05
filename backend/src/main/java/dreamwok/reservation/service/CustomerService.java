@@ -17,11 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import dreamwok.reservation.configuration.SecurityConfig;
+import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
+import dreamwok.reservation.dto.CustomerDTO;
 
 @Service
 public class CustomerService {
@@ -138,7 +140,8 @@ public class CustomerService {
     if (customerRepository.existsById(id)) {
       Customer customer = customerRepository.findById(id).get();
 
-      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.FOUND);
+      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", new CustomerDTO(customer)),
+          HttpStatus.FOUND);
     }
 
     return new ResponseEntity<>(new CustomerResponse("Customer not found.", null), HttpStatus.NOT_FOUND);
@@ -149,22 +152,25 @@ public class CustomerService {
       Customer currCustomer = customerRepository.findById(id).get();
       currCustomer.update(customerRequest);
       Customer newCustomer = customerRepository.save(currCustomer);
-      return new ResponseEntity<>(new CustomerResponse("Customer updated", newCustomer), HttpStatus.OK);
+      return new ResponseEntity<>(new CustomerResponse("Customer updated", new CustomerDTO(newCustomer)),
+          HttpStatus.OK);
     }
     return new ResponseEntity<>(new CustomerResponse("Failed to update. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);
   }
 
-  public ResponseEntity<RegisterResponse> create(CustomerRequest customerRequest) {
-    String email = customerRequest.getEmail();
-    String password = "pass";
+  public ResponseEntity<RegisterResponse> create(RegisterRequest registerRequest) {
+    String email = registerRequest.getEmail();
+    String password = registerRequest.getPassword();
     if (!customerRepository.existsByEmail(email)) {
-      Customer customer = new Customer(customerRequest, "member");
+      Customer customer = new Customer(registerRequest.getEmail(), registerRequest.getFirstName(),
+          registerRequest.getLastName(), registerRequest.getAddress(), registerRequest.getPhoneNum());
       Auth auth = new Auth();
       auth.setAll(email, securityConfig.getPasswordEncoder().encode(password));
       customer.setAuth(auth);
       customerRepository.save(customer);
-      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", customer), HttpStatus.CREATED);
+      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", new CustomerDTO(customer)),
+          HttpStatus.CREATED);
     }
     return new ResponseEntity<>(new RegisterResponse("Failed to create. Customer email already exists.", null),
         HttpStatus.BAD_REQUEST);
@@ -177,7 +183,8 @@ public class CustomerService {
 
       Customer customer = optionalCustomer.isPresent() ? optionalCustomer.get() : null;
 
-      return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", customer), HttpStatus.OK);
+      return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", new CustomerDTO(customer)),
+          HttpStatus.OK);
     }
     return new ResponseEntity<>(new CustomerResponse("Failed to delete. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);
