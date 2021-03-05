@@ -140,7 +140,7 @@ const SearchFlight = () => {
           </div>
         </div>
       </Form>
-      {flights != null && flights.length !== 0 ? (
+      {flights != null && flights.length !== 0 && (
         <Card className="mv2">
           <Card.Header>Select a flight</Card.Header>
           <ListGroup variant="flush">
@@ -267,11 +267,13 @@ const SearchFlight = () => {
             })}
           </ListGroup>
         </Card>
-      ) : (
-        <Card>
-          <Card.Body>No flights available.</Card.Body>
-        </Card>
       )}
+      {flights == null ||
+        (flights.length === 0 && (
+          <Card>
+            <Card.Body>No flights available.</Card.Body>
+          </Card>
+        ))}
     </>
   );
 };
