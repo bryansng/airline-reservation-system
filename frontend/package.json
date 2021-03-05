@@ -11,6 +11,8 @@
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
+    "react-inputs-validation": "^4.6.3",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",

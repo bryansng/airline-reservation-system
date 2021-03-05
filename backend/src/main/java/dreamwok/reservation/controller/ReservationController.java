@@ -25,16 +25,10 @@ public class ReservationController {
   @Autowired
   private ReservationService reservationService;
 
-  /* /reservations GET
-    {
-        customerId: String
-    }
-    returns
-    {
-        reservations: List<Reservation> [{
-            reservation: Reservation object
-        }]
-    } */
+  /*
+   * /reservations GET { customerId: String } returns { reservations:
+   * List<Reservation> [{ reservation: Reservation object }] }
+   */
   @RequestMapping(value = "/reservations/{customerId}", method = RequestMethod.GET)
   public ResponseEntity<GetCustomerReservationsResponse> getCustomerReservations(
       @PathVariable("customerId") Long customerId) {
@@ -54,14 +48,10 @@ public class ReservationController {
         HttpStatus.OK);
   }
 
-  /* /reservation GET
-    {
-        reservationId: String
-    }
-    returns
-    {
-        reservation: Reservation object
-    } */
+  /*
+   * /reservation GET { reservationId: String } returns { reservation: Reservation
+   * object }
+   */
   @RequestMapping(value = "/reservation/{reservationId}", method = RequestMethod.GET)
   public ResponseEntity<GetReservationByIdResponse> getReservationById(
       @PathVariable("reservationId") Long reservationId) {

@@ -67,9 +67,9 @@ public class BookingService {
 
   public Boolean isValidCreditCardDetailsInDatabase(CreditCardDetails creditCardDetails,
       CreditCardDetails realCreditCardDetails) {
-    if (creditCardDetails.getCustomer() != null) {
-      Long customerId = creditCardDetails.getCustomer().getId();
-      Long realCustomerId = creditCardDetails.getCustomer().getId();
+    if (creditCardDetails.getCustomerId() != null) {
+      Long customerId = creditCardDetails.getCustomerId();
+      Long realCustomerId = creditCardDetails.getCustomerId();
 
       if (!(customerId.equals(realCustomerId))) {
         return false;

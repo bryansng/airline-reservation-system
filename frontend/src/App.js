@@ -7,6 +7,12 @@ import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
+import PersonalDetails from "./components/User/PersonalDetails/PersonalDetails";
+import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
+import CreditCards from "./components/User/CreditCard/CreditCards";
+import CreditCardDetails from "./components/User/CreditCard/CreditCardDetails";
+import EditCreditCardDetails from "./components/User/CreditCard/EditCreditCardDetails";
+import ReservationDetails from "./components/User/Reservations/ReservationDetails";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -34,6 +40,10 @@ function App() {
   const Container = styled.div.attrs({
     className: `center w-60-l w-70 mv3`,
   })``;
+
+  const testUserId = {
+    id: "1",
+  };
 
   return (
     <Router>
@@ -74,6 +84,42 @@ function App() {
             path="/show/reservation/:reservationId"
             exact
             component={ShowReservation}
+          />
+          <Route path="/user/profile/:id" exact component={Profile} />
+          <Route
+            path="/user/profile/:id/personaldetails"
+            exact
+            component={PersonalDetails}
+          />
+          <Route
+            path="/user/profile/:id/personaldetails/edit"
+            exact
+            component={EditPersonalDetails}
+          />
+          <Route
+            path="/user/profile/:id/creditcards"
+            exact
+            component={CreditCards}
+          />
+          <Route
+            path="/user/profile/:id/creditcards/add"
+            exact
+            component={EditCreditCardDetails}
+          />
+          <Route
+            path="/user/profile/:id/creditcards/:creditcardid"
+            exact
+            component={CreditCardDetails}
+          />
+          <Route
+            path="/user/profile/:id/creditcards/:creditcardid/creditcardsdetails/edit"
+            exact
+            component={EditCreditCardDetails}
+          />
+          <Route
+            path="/user/profile/:id/reservations"
+            exact
+            component={ReservationDetails}
           />
         </Switch>
       </Container>

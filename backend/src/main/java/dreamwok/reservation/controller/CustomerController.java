@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
@@ -18,8 +17,8 @@ import dreamwok.reservation.service.AuthService;
 import dreamwok.reservation.service.CustomerService;
 
 @RestController
-@CrossOrigin
 @RequestMapping(value = "/customer")
+@CrossOrigin
 public class CustomerController {
     @Autowired
     AuthService authService;

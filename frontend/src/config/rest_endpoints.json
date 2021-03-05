@@ -4,7 +4,9 @@
       "register": "http://localhost:8080/register",
       "login": "http://localhost:8080/login"
     },
-    "user": {},
+    "user": {
+      "customer": "http://localhost:8080/customer/"
+    },
     "reservation": {
       "create": "http://localhost:8080/book",
       "get_by_id": "http://localhost:8080/reservation",

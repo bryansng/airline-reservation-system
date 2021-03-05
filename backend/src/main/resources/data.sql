@@ -61,7 +61,7 @@ VALUES
   (31, 'AA 1249', 'LGA', 'MIA', '2021-04-01T06:00:00', '2021-04-01T09:04:00', 58, 4),
   (32, 'F9 2879', 'LGA', 'MIA', '2021-04-01T22:45:00', '2021-04-02T01:46:00', 40, 23);
 
-INSERT INTO card
+INSERT INTO credit_card_details
   (customer_id, name_on_card, card_number, expiry_date, security_code)
 VALUES
   (1, 'Braddy Yeoh', '4319123412341234', '04/20', '123'),

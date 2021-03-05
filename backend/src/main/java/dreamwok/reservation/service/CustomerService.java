@@ -1,9 +1,9 @@
 package dreamwok.reservation.service;
 
-import dreamwok.reservation.repository.CreditCardRepository;
+import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
-import dreamwok.reservation.model.CreditCard;
+import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 
 import java.util.ArrayList;
@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
@@ -26,12 +28,13 @@ import dreamwok.reservation.core.customer.response.CustomerResponse;
 import dreamwok.reservation.dto.CustomerDTO;
 
 @Service
+@CrossOrigin
 public class CustomerService {
   @Autowired
   CustomerRepository customerRepository;
 
   @Autowired
-  CreditCardRepository creditCardReposistory;
+  CreditCardDetailsRepository creditCardDetailsRepository;
 
   @Autowired
   SecurityConfig securityConfig;
@@ -75,19 +78,19 @@ public class CustomerService {
    */
 
   public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
-    List<CreditCard> cards = creditCardReposistory.findAllById(customerId);
+    List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
 
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
   }
 
   public ResponseEntity<CreditCardResponse> getCardDetails(Long cardId) {
-    Optional<CreditCard> card = creditCardReposistory.findById(cardId);
+    Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      List<CreditCard> cards = new ArrayList<>();
+      List<CreditCardDetails> cards = new ArrayList<>();
       cards.add(card.get());
 
-      return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
+      return new ResponseEntity<>(new CreditCardResponse("Found card for customer", cards), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
@@ -98,9 +101,9 @@ public class CustomerService {
 
     System.out.println(cardNumber);
 
-    if (creditCardReposistory.existsByCardNumber(cardNumber) == null) {
-      CreditCard creditCard = new CreditCard(customerId, creditCardRequest);
-      creditCardReposistory.save(creditCard);
+    if (creditCardDetailsRepository.existsByCardNumber(cardNumber) == null) {
+      CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
+      creditCardDetailsRepository.save(creditCard);
 
       return new ResponseEntity<>("Card details inserted.", HttpStatus.CREATED);
     }
@@ -109,10 +112,10 @@ public class CustomerService {
   }
 
   public ResponseEntity<String> updateCardDetails(Long id, CreditCardRequest creditCardRequest) {
-    if (creditCardReposistory.existsById(id)) {
-      CreditCard currCreditCard = creditCardReposistory.getOne(id);
+    if (creditCardDetailsRepository.existsById(id)) {
+      CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
       currCreditCard.updateCard(creditCardRequest);
-      creditCardReposistory.save(currCreditCard);
+      creditCardDetailsRepository.save(currCreditCard);
 
       return new ResponseEntity<>("Detail updated", HttpStatus.OK);
     }
@@ -121,8 +124,8 @@ public class CustomerService {
   }
 
   public ResponseEntity<String> deleteCardDetails(Long id) {
-    if (creditCardReposistory.existsById(id)) {
-      creditCardReposistory.deleteById(id);
+    if (creditCardDetailsRepository.existsById(id)) {
+      creditCardDetailsRepository.deleteById(id);
 
       return new ResponseEntity<>("Card deleted", HttpStatus.OK);
     }
@@ -141,7 +144,8 @@ public class CustomerService {
       Customer customer = customerRepository.findById(id).get();
 
       return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", new CustomerDTO(customer)),
-          HttpStatus.FOUND);
+          HttpStatus.OK);
+      // return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CustomerResponse("Customer not found.", null), HttpStatus.NOT_FOUND);

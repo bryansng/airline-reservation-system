@@ -14,9 +14,7 @@ import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
-import java.time.*;
 import java.util.List;
 
 import javax.persistence.*;
@@ -50,8 +48,8 @@ public class Customer {
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
   private List<Booking> bookings;
 
-  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-  private List<CreditCardDetails> creditCardDetails;
+  // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  // private List<CreditCardDetails> creditCardDetails;
 
   public Customer() {
 
@@ -182,11 +180,11 @@ public class Customer {
     this.bookings = bookings;
   }
 
-  public List<CreditCardDetails> getCreditCardDetails() {
-    return creditCardDetails;
-  }
+  // public List<CreditCardDetails> getCreditCardDetails() {
+  //   return creditCardDetails;
+  // }
 
-  public void setCreditCardDetails(List<CreditCardDetails> creditCardDetails) {
-    this.creditCardDetails = creditCardDetails;
-  }
+  // public void setCreditCardDetails(List<CreditCardDetails> creditCardDetails) {
+  //   this.creditCardDetails = creditCardDetails;
+  // }
 }
