@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer_profile;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -68,7 +68,7 @@ const PersonalDetails = ({ match }) => {
     const [customer, setCustomer] = useState(null);
     const [isDelete, setIsDelete] = useState(false);
   
-    const url = customerEndpoint + "profile/" + userId;
+    const url = customerEndpoint + "/" + userId;
 
     function handleDelete() {
         setIsDelete(true)
@@ -89,7 +89,7 @@ const PersonalDetails = ({ match }) => {
                 address: cus.address,
                 firstName: cus.firstName,
                 lastName: cus.lastName,
-                phoneNum: cus.phoneNum
+                phoneNum: cus.mobileNumber
             })
         })
         .catch((error) => {

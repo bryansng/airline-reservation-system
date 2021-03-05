@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { Textbox } from "react-inputs-validation";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -72,7 +72,8 @@ const EditCreditCardDetails = ({ match, location }) => {
 
     let history = useHistory();
 
-    const url = customerEndpoint + "creditcard/" + userId;
+    const url = creditCardEndpoint + "/" + userId;
+    console.log("url: " + url)
 
     function handleSave() {
         if (isValidCardNumber && isValidExpiryDate && isValidSecurityCode && isValidNameOnCard) {

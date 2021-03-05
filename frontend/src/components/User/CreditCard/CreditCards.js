@@ -6,7 +6,7 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
 
 
 const Container = styled.div.attrs({
@@ -58,7 +58,7 @@ const CreditCards = ({ match }) => {
     const [userId] = useState(match.params.id);
     const [creditCards, setCreditCards] = useState([]);
   
-    const url = customerEndpoint + "creditcard/all/" + userId;
+    const url = creditCardEndpoint + "/" + userId;
 
     function parseCardNumber(cardNum) {
         return "Ending with " + cardNum.substring(cardNum.length - 4, cardNum.length)

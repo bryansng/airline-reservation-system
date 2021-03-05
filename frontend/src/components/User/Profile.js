@@ -35,16 +35,6 @@ const IconTitle = styled.p.attrs({
 
 // https://reactrouter.com/web/api/match
 const Profile = ({ match }) => {
-  // get user id from match.params.id and GET user data.
-  const testUserId = { 
-    id: "1",
-    firstName: "Braddy",
-    lastName: "Yeoh",
-    phone: "123",
-    address: "123 road lane",
-    email: "braddy.yeoh@ucdconnect.ie"
-  };
-
   const icons = [
     {
       icon:  <FaUser/>,
@@ -66,7 +56,7 @@ const Profile = ({ match }) => {
   return (
     <Container>
       <TitleContainer>
-        <Title>Welcome, {testUserId.firstName}</Title>
+        <Title>Welcome</Title>
       </TitleContainer>
       <IconContainer>
         {

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -27,11 +27,11 @@ const Btn = styled.div.attrs({
 })``
 
 const Update = styled.p.attrs({
-    className: `f3 measure fw1 mt5 blue pointer dim tr`
+    className: `f4 measure fw1 mt5 blue pointer dim tr`
 })``
 
 const Delete = styled.p.attrs({
-    className: `f3 measure fw1 mt5 dark-red pointer dim tr mr7`
+    className: `f4 measure fw1 mt5 dark-red pointer dim tr mr5`
 })``
 
 const BodyRow = styled.div.attrs({
@@ -67,7 +67,7 @@ const CreditCardDetails = ({ match, location }) => {
 
     let history = useHistory();
 
-    const url = card != null ? customerEndpoint + "creditcard/" + card.id : "";
+    const url = card != null ? creditCardEndpoint + "/" + card.id : "";
 
     useEffect(() => {
         if (isDelete && card != null) {

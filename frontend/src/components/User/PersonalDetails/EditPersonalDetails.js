@@ -6,7 +6,7 @@ import { Textbox } from "react-inputs-validation";
 import { useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer_profile;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -64,7 +64,7 @@ const PersonalDetails = ({ match, location }) => {
 
     let history = useHistory();
 
-    const url = customerEndpoint + "profile/" + match.params.id
+    const url = customerEndpoint + "/" + match.params.id
     const [isSave, setIsSave] = useState(false);
 
     const [isValidFirstName, setIsValidFirstName] = useState(false);
