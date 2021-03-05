@@ -28,7 +28,7 @@ public class BookingService {
       return null;
     }
 
-    return reservationService.createReservation(flightId, customers);
+    return reservationService.createReservation(flightId, customers, creditCardDetails);
   }
 
   public Boolean isValidCreditCardDetails(CreditCardDetails creditCardDetails) {
@@ -67,6 +67,15 @@ public class BookingService {
 
   public Boolean isValidCreditCardDetailsInDatabase(CreditCardDetails creditCardDetails,
       CreditCardDetails realCreditCardDetails) {
+    if (creditCardDetails.getCustomerId() != null) {
+      Long customerId = creditCardDetails.getCustomerId();
+      Long realCustomerId = creditCardDetails.getCustomerId();
+
+      if (!(customerId.equals(realCustomerId))) {
+        return false;
+      }
+    }
+
     String cardNum = creditCardDetails.getCardNumber();
     String realCardNum = realCreditCardDetails.getCardNumber();
     if (!(cardNum.length() >= 13 && cardNum.length() <= 19

@@ -3,6 +3,7 @@ package dreamwok.reservation.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,11 +16,12 @@ import dreamwok.reservation.model.Reservation;
 import dreamwok.reservation.service.BookingService;
 
 @RestController
+@CrossOrigin
 public class BookingController {
-  @Autowired
-  BookingService bookingService;
+    @Autowired
+    BookingService bookingService;
 
-  /* /book POST
+    /* /book POST
     {
         flightId: String
         customers: List<Customer> [
@@ -43,19 +45,19 @@ public class BookingController {
     {
         reservation: Reservation object
     } */
-  @RequestMapping(value = "/book", method = RequestMethod.POST)
-  public ResponseEntity<BookReservationResponse> bookReservation(@RequestBody BookReservationRequest request) {
-    Reservation reservation = bookingService.bookReservation(request.getFlightId(), request.getCustomers(),
-        request.getCreditCardDetails());
+    @RequestMapping(value = "/book", method = RequestMethod.POST)
+    public ResponseEntity<BookReservationResponse> bookReservation(@RequestBody BookReservationRequest request) {
+        Reservation reservation = bookingService.bookReservation(request.getFlightId(), request.getCustomers(),
+                request.getCreditCardDetails());
 
-    if (reservation == null) {
-      return new ResponseEntity<>(
-          new BookReservationResponse("Invalid credit card credentials or Invalid flight id.", null),
-          HttpStatus.BAD_REQUEST);
+        if (reservation == null) {
+            return new ResponseEntity<>(
+                    new BookReservationResponse("Invalid credit card credentials or Invalid flight id.", null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        ReservationDTO reservationDTO = new ReservationDTO(reservation);
+        return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
+                HttpStatus.CREATED);
     }
-
-    ReservationDTO reservationDTO = new ReservationDTO(reservation);
-    return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
-        HttpStatus.CREATED);
-  }
 }

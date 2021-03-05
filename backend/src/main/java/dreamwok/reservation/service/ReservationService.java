@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import dreamwok.reservation.core.common.ReservationStatus;
 import dreamwok.reservation.model.Booking;
+import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Flight;
 import dreamwok.reservation.model.Reservation;
@@ -33,7 +34,7 @@ public class ReservationService {
   @Autowired
   BookingRepository bookingRepository;
 
-  public Reservation createReservation(Long flightId, List<Customer> customers) {
+  public Reservation createReservation(Long flightId, List<Customer> customers, CreditCardDetails creditCardDetails) {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
@@ -50,6 +51,10 @@ public class ReservationService {
         updatedCustomers.add(customerRepository.findByEmail(customer.getEmail()));
       }
     }
+
+    // if isSavePaymentDetails
+    // if customer.id in creditCardDetails matches paying customer by email.
+    // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
 
     // create reservation.
     Reservation reservation = new Reservation(ReservationStatus.SCHEDULED,
@@ -86,6 +91,22 @@ public class ReservationService {
     }
 
     return reservationOptional.get();
+  }
+
+  public Reservation getReservationByIdAndCustomerLastName(String customerLastName, Long reservationId) {
+    Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+
+    if (!reservationOptional.isPresent()) {
+      return null;
+    }
+
+    // check if customerLastName matches paying customer's last name.
+    Reservation reservation = reservationOptional.get();
+    if (!reservation.getCustomer().getLastName().equals(customerLastName)) {
+      return null;
+    }
+
+    return reservation;
   }
 
   public Reservation cancelReservation(Long reservationId) {

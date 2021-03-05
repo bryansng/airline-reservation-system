@@ -1,9 +1,9 @@
 package dreamwok.reservation.service;
 
-import dreamwok.reservation.repository.CreditCardRepository;
+import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
-import dreamwok.reservation.model.CreditCard;
+import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 
 import java.util.ArrayList;
@@ -16,20 +16,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import dreamwok.reservation.configuration.SecurityConfig;
+import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
+import dreamwok.reservation.dto.CustomerDTO;
 
 @Service
+@CrossOrigin
 public class CustomerService {
   @Autowired
   CustomerRepository customerRepository;
 
   @Autowired
-  CreditCardRepository creditCardReposistory;
+  CreditCardDetailsRepository creditCardDetailsRepository;
 
   @Autowired
   SecurityConfig securityConfig;
@@ -73,19 +78,19 @@ public class CustomerService {
    */
 
   public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
-    List<CreditCard> cards = creditCardReposistory.findAllById(customerId);
+    List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
 
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
   }
 
   public ResponseEntity<CreditCardResponse> getCardDetails(Long cardId) {
-    Optional<CreditCard> card = creditCardReposistory.findById(cardId);
+    Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      List<CreditCard> cards = new ArrayList<>();
+      List<CreditCardDetails> cards = new ArrayList<>();
       cards.add(card.get());
 
-      return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
+      return new ResponseEntity<>(new CreditCardResponse("Found card for customer", cards), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
@@ -96,9 +101,9 @@ public class CustomerService {
 
     System.out.println(cardNumber);
 
-    if (creditCardReposistory.existsByCardNumber(cardNumber) == null) {
-      CreditCard creditCard = new CreditCard(customerId, creditCardRequest);
-      creditCardReposistory.save(creditCard);
+    if (creditCardDetailsRepository.existsByCardNumber(cardNumber) == null) {
+      CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
+      creditCardDetailsRepository.save(creditCard);
 
       return new ResponseEntity<>("Card details inserted.", HttpStatus.CREATED);
     }
@@ -107,10 +112,10 @@ public class CustomerService {
   }
 
   public ResponseEntity<String> updateCardDetails(Long id, CreditCardRequest creditCardRequest) {
-    if (creditCardReposistory.existsById(id)) {
-      CreditCard currCreditCard = creditCardReposistory.getOne(id);
+    if (creditCardDetailsRepository.existsById(id)) {
+      CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
       currCreditCard.updateCard(creditCardRequest);
-      creditCardReposistory.save(currCreditCard);
+      creditCardDetailsRepository.save(currCreditCard);
 
       return new ResponseEntity<>("Detail updated", HttpStatus.OK);
     }
@@ -119,8 +124,8 @@ public class CustomerService {
   }
 
   public ResponseEntity<String> deleteCardDetails(Long id) {
-    if (creditCardReposistory.existsById(id)) {
-      creditCardReposistory.deleteById(id);
+    if (creditCardDetailsRepository.existsById(id)) {
+      creditCardDetailsRepository.deleteById(id);
 
       return new ResponseEntity<>("Card deleted", HttpStatus.OK);
     }
@@ -138,7 +143,9 @@ public class CustomerService {
     if (customerRepository.existsById(id)) {
       Customer customer = customerRepository.findById(id).get();
 
-      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.FOUND);
+      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", new CustomerDTO(customer)),
+          HttpStatus.OK);
+      // return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CustomerResponse("Customer not found.", null), HttpStatus.NOT_FOUND);
@@ -149,22 +156,25 @@ public class CustomerService {
       Customer currCustomer = customerRepository.findById(id).get();
       currCustomer.update(customerRequest);
       Customer newCustomer = customerRepository.save(currCustomer);
-      return new ResponseEntity<>(new CustomerResponse("Customer updated", newCustomer), HttpStatus.OK);
+      return new ResponseEntity<>(new CustomerResponse("Customer updated", new CustomerDTO(newCustomer)),
+          HttpStatus.OK);
     }
     return new ResponseEntity<>(new CustomerResponse("Failed to update. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);
   }
 
-  public ResponseEntity<RegisterResponse> create(CustomerRequest customerRequest) {
-    String email = customerRequest.getEmail();
-    String password = "pass";
+  public ResponseEntity<RegisterResponse> create(RegisterRequest registerRequest) {
+    String email = registerRequest.getEmail();
+    String password = registerRequest.getPassword();
     if (!customerRepository.existsByEmail(email)) {
-      Customer customer = new Customer(customerRequest, "member");
+      Customer customer = new Customer(registerRequest.getEmail(), registerRequest.getFirstName(),
+          registerRequest.getLastName(), registerRequest.getAddress(), registerRequest.getPhoneNum());
       Auth auth = new Auth();
       auth.setAll(email, securityConfig.getPasswordEncoder().encode(password));
       customer.setAuth(auth);
       customerRepository.save(customer);
-      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", customer), HttpStatus.CREATED);
+      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", new CustomerDTO(customer)),
+          HttpStatus.CREATED);
     }
     return new ResponseEntity<>(new RegisterResponse("Failed to create. Customer email already exists.", null),
         HttpStatus.BAD_REQUEST);
@@ -177,7 +187,8 @@ public class CustomerService {
 
       Customer customer = optionalCustomer.isPresent() ? optionalCustomer.get() : null;
 
-      return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", customer), HttpStatus.OK);
+      return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", new CustomerDTO(customer)),
+          HttpStatus.OK);
     }
     return new ResponseEntity<>(new CustomerResponse("Failed to delete. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);

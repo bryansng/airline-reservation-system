@@ -2,13 +2,13 @@ package dreamwok.reservation.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
@@ -18,6 +18,7 @@ import dreamwok.reservation.service.CustomerService;
 
 @RestController
 @RequestMapping(value = "/customer")
+@CrossOrigin
 public class CustomerController {
     @Autowired
     AuthService authService;
@@ -27,7 +28,7 @@ public class CustomerController {
 
     /**
      * Card
-     * 
+     *
      * @param customerId
      * @return
      */
@@ -60,7 +61,7 @@ public class CustomerController {
 
     /**
      * Customer
-     * 
+     *
      * @param customerRequest
      * @return
      */
@@ -69,10 +70,10 @@ public class CustomerController {
         return customerService.getCustomer(customerId);
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.POST)
-    public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
-        return customerService.create(customerRequest);
-    }
+    // @RequestMapping(value = "/profile", method = RequestMethod.POST)
+    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
+    //     return customerService.create(customerRequest);
+    // }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.PUT)
     public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable("customerId") Long customerId,
