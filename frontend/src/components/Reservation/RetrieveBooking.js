@@ -76,6 +76,7 @@ const RetrieveBooking = () => {
                     defaultValue="testLastName"
                     required
                   />
+                  <Form.Text className="text-muted">Case-sensitive</Form.Text>
                 </Form.Group>
                 <Form.Group controlId="formBookingNumber" className="w-50 ml2">
                   <Form.Label className="gray f6">Booking number</Form.Label>

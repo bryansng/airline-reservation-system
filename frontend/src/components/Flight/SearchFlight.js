@@ -140,11 +140,11 @@ const SearchFlight = () => {
           </div>
         </div>
       </Form>
-      <Card className="mv2">
-        <Card.Header>Select a flight</Card.Header>
-        <ListGroup variant="flush">
-          {flights &&
-            flights.map((currFlight, currIndex) => {
+      {flights.length !== 0 && (
+        <Card className="mv2">
+          <Card.Header>Select a flight</Card.Header>
+          <ListGroup variant="flush">
+            {flights.map((currFlight, currIndex) => {
               const flightDuration = dayjs(currFlight.arrivalDateTime).diff(
                 dayjs(currFlight.departureDateTime)
               );
@@ -264,8 +264,9 @@ const SearchFlight = () => {
                 </Link>
               );
             })}
-        </ListGroup>
-      </Card>
+          </ListGroup>
+        </Card>
+      )}
     </>
   );
 };
