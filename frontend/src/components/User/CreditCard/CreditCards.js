@@ -59,6 +59,10 @@ const CreditCards = ({ match }) => {
     const [creditCards, setCreditCards] = useState([]);
   
     const url = customerEndpoint + "creditcard/all/" + userId;
+
+    function parseCardNumber(cardNum) {
+        return "Ending with " + cardNum.substring(cardNum.length - 4, cardNum.length)
+    }
     
     useEffect(() => {
       fetch(url)
@@ -122,7 +126,7 @@ const CreditCards = ({ match }) => {
                                         </Icon>
                                         <IconTitleDiv>
                                         <IconTitle>
-                                            {card.cardNumber}
+                                            {parseCardNumber(card.cardNumber)}
                                         </IconTitle>
                                         </IconTitleDiv>
                                     </IconContext.Provider>

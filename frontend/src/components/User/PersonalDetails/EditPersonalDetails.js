@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
+import { Textbox } from "react-inputs-validation";
+
 import { useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
@@ -35,7 +37,7 @@ const Form = styled.form.attrs({
 })``
 
 const FieldDiv = styled.div.attrs({
-    className: ``
+    className: `mt4`
 })``
 
 const FieldText = styled.p.attrs({
@@ -64,6 +66,12 @@ const PersonalDetails = ({ match, location }) => {
 
     const url = customerEndpoint + "profile/" + match.params.id
     const [isSave, setIsSave] = useState(false);
+
+    const [isValidFirstName, setIsValidFirstName] = useState(false);
+    const [isValidLastName, setIsValidLastName] = useState(false);
+    const [isValidPhoneNum, setIsValidPhoneNum] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(false)
+
     const [email, setEmail] = useState(location.state.customer.email);
     const [lastName, setLastName] = useState(location.state.customer.lastName);
     const [firstName, setFirstName] = useState(location.state.customer.firstName);
@@ -71,7 +79,11 @@ const PersonalDetails = ({ match, location }) => {
     const [phoneNum, setPhoneNum] = useState(location.state.customer.phoneNum);
 
     function handleSave() {
-        setIsSave(true)
+        if (isValidFirstName && isValidLastName && isValidPhoneNum && isValidEmail) {
+            setIsSave(true)
+        } else {
+            alert("Cannot update personal details\n\nPlease fill in fields appropriately");
+        }
     }
 
     useEffect(() => {
@@ -126,7 +138,25 @@ const PersonalDetails = ({ match, location }) => {
                             First Name
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setFirstName(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "First Name",
+                            check: true,
+                            required: true,
+                            customFunc: name => {
+                                const reg = /^[a-zA-Z]+$/
+                                if (reg.test(name)) {
+                                    setIsValidFirstName(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid name"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setFirstName(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -134,7 +164,25 @@ const PersonalDetails = ({ match, location }) => {
                             Last Name
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setLastName(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Last Name",
+                            check: true,
+                            required: true,
+                            customFunc: name => {
+                                const reg = /^[a-zA-Z]+$/
+                                if (reg.test(name)) {
+                                    setIsValidLastName(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid name"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setLastName(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -150,7 +198,25 @@ const PersonalDetails = ({ match, location }) => {
                             Phone Number
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setPhoneNum(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Phone Number",
+                            check: true,
+                            required: true,
+                            customFunc: num => {
+                                const reg = /^\d+$/
+                                if (reg.test(num)) {
+                                    setIsValidPhoneNum(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid phone number"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setPhoneNum(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -158,7 +224,25 @@ const PersonalDetails = ({ match, location }) => {
                             Email Address
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setEmail(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Email",
+                            check: true,
+                            required: true,
+                            customFunc: email => {
+                                const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                if (reg.test(email)) {
+                                    setIsValidEmail(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid email"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setEmail(name)}
+                    />
                 </BodyDiv>
                 <SaveDiv>
                     <Save onClick={handleSave}>Save</Save>

@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import { useHistory } from "react-router-dom";
 
+import { Textbox } from "react-inputs-validation";
+
 import rest_endpoints from "../../../config/rest_endpoints.json";
 const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
 
@@ -35,18 +37,13 @@ const Form = styled.form.attrs({
 })``
 
 const FieldDiv = styled.div.attrs({
-    className: ``
+    className: `mt4`
 })``
 
 const FieldText = styled.p.attrs({
     className: `f3 gray`
 })``
 
-const Input = styled.input.attrs({
-    className: `input-reset ba b--black-20 pa2 mb4 db w-100`,
-    type: `text`,
-    ariaDescribedby: `name-desc`
-})``
 
 const SaveDiv = styled.div.attrs({
     className: `lh-copy mt3 tr`
@@ -62,17 +59,28 @@ const EditCreditCardDetails = ({ match, location }) => {
     const [userId] = useState(match.params.id);
     const [isPost] = useState(location.state.isPost);
     const [isSave, setIsSave] = useState(false);
-    const [cardNumber, setCardNumber] = useState(location.state.card.cardNumber);
-    const [expiryDate, setExpiryDate] = useState(location.state.card.expiryDate);
-    const [securityCode, setSecurityCode] = useState(location.state.card.securityCode);
-    const [nameOnCard, setNameOnCard] = useState(location.state.card.nameOnCard);
+
+    const [isValidCardNumber, setIsValidCardNumber] = useState(false);
+    const [isValidExpiryDate, setIsValidExpiryDate] = useState(false);
+    const [isValidSecurityCode, setIsValidSecurityCode] = useState(false);
+    const [isValidNameOnCard, setIsValidNameOnCard] = useState(false);
+
+    const [cardNumber, setCardNumber] = useState(location.state.card == null ? null : location.state.card.cardNumber);
+    const [expiryDate, setExpiryDate] = useState(location.state.card == null ? null : location.state.card.expiryDate);
+    const [securityCode, setSecurityCode] = useState(location.state.card == null ? null : location.state.card.securityCode);
+    const [nameOnCard, setNameOnCard] = useState(location.state.card == null ? null : location.state.card.nameOnCard);
 
     let history = useHistory();
 
     const url = customerEndpoint + "creditcard/" + userId;
 
     function handleSave() {
-        setIsSave(true)
+        if (isValidCardNumber && isValidExpiryDate && isValidSecurityCode && isValidNameOnCard) {
+            setIsSave(true)
+        } else {
+            let msg = isPost ? "Cannot add new card" : "Cannot update card" ;
+            alert(msg + "\n\nPlease fill in fields appropriately");
+        }
     }
 
     useEffect(() => {
@@ -123,7 +131,25 @@ const EditCreditCardDetails = ({ match, location }) => {
                             Card Number
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setCardNumber(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Card Number",
+                            check: true,
+                            required: true,
+                            customFunc: num => {
+                                const reg = /^\d+$/
+                                if (num.length === 16 && reg.test(num)) {
+                                    setIsValidCardNumber(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid card number"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setCardNumber(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -131,7 +157,25 @@ const EditCreditCardDetails = ({ match, location }) => {
                             Expiry Date
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setExpiryDate(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Expiry Date",
+                            check: true,
+                            required: true,
+                            customFunc: date => {
+                                const reg = /^(0[1-9]|1[0-2])\/([0-9]{2})$/
+                                if (reg.test(date)) {
+                                    setIsValidExpiryDate(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid expiry date"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setExpiryDate(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -139,7 +183,25 @@ const EditCreditCardDetails = ({ match, location }) => {
                             Security Code
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setSecurityCode(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Security Code",
+                            check: true,
+                            required: true,
+                            customFunc: num => {
+                                const reg = /^\d+$/
+                                if (num.length === 3 && reg.test(num)) {
+                                    setIsValidSecurityCode(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid security code"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setSecurityCode(name)}
+                    />
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -147,7 +209,25 @@ const EditCreditCardDetails = ({ match, location }) => {
                             Name On Card
                         </FieldText>
                     </FieldDiv>
-                    <Input onChange={e => setNameOnCard(e.target.value)}/>
+                    <Textbox 
+                        classNameInput="input-reset ba b--black-20 pa2 db w-100"
+                        onBlur={(e) => {console.log(e)}} 
+                        validationOption={{
+                            name: "Name On Card",
+                            check: true,
+                            required: true,
+                            customFunc: name => {
+                                const reg = /^[a-zA-Z]+$/
+                                if (reg.test(name)) {
+                                    setIsValidNameOnCard(true)
+                                    return true;
+                                } else {
+                                    return "is not a valid name"
+                                }
+                            }
+                        }}
+                        onChange={(name, e) => setNameOnCard(name)}
+                    />
                 </BodyDiv>
                 <SaveDiv>
                     <Save onClick={handleSave}>Save</Save>
