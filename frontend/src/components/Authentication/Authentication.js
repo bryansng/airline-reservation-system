@@ -24,7 +24,6 @@ function useAuthentication({
     // if (isAuthenticated) {
     //   logOut();
     // }
-    console.log(isAuthenticated);
     if (!isAuthenticated) {
       signIn("hong.sng@ucdconnect.ie", "root");
       // signIn("pog@pog.com", "test");

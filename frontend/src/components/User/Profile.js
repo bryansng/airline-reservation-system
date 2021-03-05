@@ -6,52 +6,52 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 const Container = styled.div.attrs({
-  className: `flex flex-column pr6 pl6`
-})``
+  className: `flex flex-column pr6 pl6`,
+})``;
 
 const TitleContainer = styled.div.attrs({
-  className: `pa3 mb5`
-})``
+  className: `pa3 mb5`,
+})``;
 
 const Title = styled.p.attrs({
-  className: `f1 measure lh-title fw1 mt3 ml6`
-})``
+  className: `f1 measure lh-title fw1 mt3 ml6`,
+})``;
 
 const IconContainer = styled.div.attrs({
-  className: `pa3 flex`
-})``
+  className: `pa3 flex`,
+})``;
 
 const Icon = styled.div.attrs({
-  className: `ma4`
-})``
+  className: `ma4`,
+})``;
 
 const IconTitleDiv = styled.div.attrs({
-  className: `mt3`
-})``
+  className: `mt3`,
+})``;
 
 const IconTitle = styled.p.attrs({
-  className: `f4`
-})``
+  className: `f4`,
+})``;
 
 // https://reactrouter.com/web/api/match
 const Profile = ({ match }) => {
   const icons = [
     {
-      icon:  <FaUser/>,
+      icon: <FaUser />,
       title: "Personal Details",
-      suburl: "personaldetails"
+      suburl: "personaldetails",
     },
     {
-      icon: <FaPlane/>,
+      icon: <FaPlane />,
       title: "Reservations",
-      suburl: "reservations"
+      suburl: "reservations",
     },
     {
-      icon: <FaCreditCard/>,
+      icon: <FaCreditCard />,
       title: "Card Details",
-      suburl: "creditcards"
-    }
-  ]
+      suburl: "creditcards",
+    },
+  ];
 
   return (
     <Container>
@@ -72,18 +72,21 @@ const Profile = ({ match }) => {
                       {icon.icon}
                     </Icon>
                     <IconTitleDiv>
-                      <IconTitle>
-                      {icon.title}
-                      </IconTitle>
+                      <IconTitle>{icon.title}</IconTitle>
                     </IconTitleDiv>
                   </IconContext.Provider>
-              </Link>
-            )
-          })
-        }
-      </IconContainer>
+                </Link>
+              );
+            })}
+          </IconContainer>
+        </>
+      ) : (
+        <div>
+          Error displaying user profile. Detected user is {JSON.stringify(user)}
+          .
+        </div>
+      )}
     </Container>
-    
   );
 };
 

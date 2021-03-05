@@ -93,7 +93,7 @@ const HandlePaymentDetails = ({
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
     );
-    const isSavePaymentDetails = e.target.formIsSavePaymentDetails.value;
+    const isSavePaymentDetails = e.target.formIsSavePaymentDetails.checked;
 
     const paymentDetails = {
       nameOnCard: nameOnCard,

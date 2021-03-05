@@ -41,10 +41,6 @@ function App() {
     className: `center w-60-l w-70 mv3`,
   })``;
 
-  const testUserId = {
-    id: "1",
-  };
-
   return (
     <Router>
       <Container>

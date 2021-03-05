@@ -26,7 +26,6 @@ const Button = styled.button.attrs({
 `;
 
 const ShowReservation = ({ location }) => {
-  console.log(location);
   const [reservation, setReservation] = useState(location.state.reservation);
   const [
     isShowCancelConfirmationModal,
