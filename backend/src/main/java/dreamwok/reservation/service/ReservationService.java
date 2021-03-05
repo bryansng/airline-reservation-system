@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dreamwok.reservation.core.common.ReservationStatus;
+import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.model.Booking;
 import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
@@ -53,8 +54,12 @@ public class ReservationService {
     }
 
     // if isSavePaymentDetails
-    // if customer.id in creditCardDetails matches paying customer by email.
+    // and customer.id in creditCardDetails matches paying customer by email.
     // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
+    if (creditCardDetails.getIsSavePaymentDetails()
+        && creditCardDetails.getCustomerId() == updatedCustomers.get(0).getId()) {
+      customerService.insertCardDetails(creditCardDetails.getCustomerId(), new CreditCardRequest(creditCardDetails));
+    }
 
     // create reservation.
     Reservation reservation = new Reservation(ReservationStatus.SCHEDULED,

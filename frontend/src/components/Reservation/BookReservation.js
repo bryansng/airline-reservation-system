@@ -28,7 +28,6 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           throw new Error(`${resp.status} Error retrieving flight.`);
         })
         .then((res) => {
-          console.log(res);
           const flight = res.flight;
           setFlight(flight);
         })

@@ -47,9 +47,6 @@ const HandlePaymentDetails = ({
   useEffect(() => {
     if (isAuthenticated && loggedInUser && loggedInUser.id) {
       // GET customer's credit card details.
-      console.log(
-        `${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`
-      );
       fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`)
         .then((resp) => {
           if (resp.ok) {
@@ -60,7 +57,6 @@ const HandlePaymentDetails = ({
           );
         })
         .then((res) => {
-          console.log(res);
           const creditCards = res.creditCards;
           setSavedCreditCards(creditCards);
         })
@@ -88,7 +84,7 @@ const HandlePaymentDetails = ({
     e.preventDefault();
 
     const nameOnCard = e.target.formNameOnCard.value;
-    const cardNumber = getSanitisedCardNumber(e.target.formCardNumber.value);
+    const cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
     const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
@@ -101,7 +97,7 @@ const HandlePaymentDetails = ({
       expiryDate: expiryDate,
       securityCode: securityCode,
       isSavePaymentDetails: isSavePaymentDetails,
-      customer: isAuthenticated ? loggedInUser : null,
+      customerId: isAuthenticated && loggedInUser ? loggedInUser.id : null,
     };
     console.log(paymentDetails);
     setPaymentDetails(paymentDetails);

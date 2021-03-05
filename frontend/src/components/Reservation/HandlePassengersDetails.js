@@ -68,7 +68,6 @@ const HandlePassengersDetails = ({
         address: address,
       });
     }
-    console.log(passengerDetails);
     setPassengersDetails(passengerDetails);
   };
 
