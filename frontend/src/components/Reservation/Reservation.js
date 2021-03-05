@@ -3,6 +3,7 @@ import HandlePassengersDetails from "./HandlePassengersDetails";
 import HandlePaymentDetails from "./HandlePaymentDetails";
 import ShowReservation from "./ShowReservation";
 import ConfirmItineraryDetails from "./ConfirmItineraryDetails";
+import Itinerary from "./Itinerary";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
@@ -95,6 +96,8 @@ const Reservation = ({ match, user, bookFlightDetails }) => {
   return (
     <div>
       <h2 className="mb2">Reservation</h2>
+
+      <Itinerary flight={flight} />
       {/* {<div>Reserving for user with id: {userId}</div>}
       {<div>Reserving for flight with id: {flightId}</div>}
       {<div>Reserving for {numPassengers} passengers</div>} */}
