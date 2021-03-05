@@ -6,7 +6,7 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 const Container = styled.div.attrs({
-  className: `flex flex-column pr6 pl6`,
+  className: `flex flex-column`,
 })``;
 
 const TitleContainer = styled.div.attrs({
@@ -14,15 +14,15 @@ const TitleContainer = styled.div.attrs({
 })``;
 
 const Title = styled.p.attrs({
-  className: `f1 measure lh-title fw1 mt3 ml6`,
+  className: `f1 measure lh-title fw1 mt3 mh0 tc w-100`,
 })``;
 
 const IconContainer = styled.div.attrs({
-  className: `pa3 flex`,
+  className: `flex justify-around`,
 })``;
 
 const Icon = styled.div.attrs({
-  className: `ma4`,
+  className: `mv4 mh0`,
 })``;
 
 const IconTitleDiv = styled.div.attrs({
@@ -66,14 +66,14 @@ const Profile = ({ user }) => {
                 <Link
                   key={key}
                   style={{ color: "dimgray" }}
-                  className="ba b--silver br4 w-33 tc ma4 grow pointer dim"
+                  className="ba b--silver br4 tc mh2 pa3 grow pointer dim"
                   // to={`/user/profile/` + user.id + "/" + icon.suburl}
                   to={{
                     pathname: `/user/profile/${user.id}/${icon.suburl}`,
                     state: { user: user },
                   }}
                 >
-                  <IconContext.Provider value={{ size: "15em" }}>
+                  <IconContext.Provider value={{ size: "90%" }}>
                     <Icon>{icon.icon}</Icon>
                     <IconTitleDiv>
                       <IconTitle>{icon.title}</IconTitle>
