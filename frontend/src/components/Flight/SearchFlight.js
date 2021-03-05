@@ -36,7 +36,7 @@ const SearchFlight = () => {
   /*
   1. search flights
   2. display flights */
-  const [flights, setFlights] = useState([]);
+  const [flights, setFlights] = useState(null);
   const [numberOfPassengers, setNumberOfPassengers] = useState(0);
 
   const handleSubmit = (e) => {
@@ -140,7 +140,7 @@ const SearchFlight = () => {
           </div>
         </div>
       </Form>
-      {flights.length !== 0 ? (
+      {flights != null && flights.length !== 0 ? (
         <Card className="mv2">
           <Card.Header>Select a flight</Card.Header>
           <ListGroup variant="flush">

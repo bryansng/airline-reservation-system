@@ -109,7 +109,7 @@ function useAuthentication({
         setToken(res.token);
         window.localStorage.setItem("token", res.token);
         setIsAuthenticated(true);
-        setUser({ ...user, ...res.user });
+        setUser({ ...user, ...res.customer });
         onSuccessCallback();
         console.log("User registered successfully.");
       })
