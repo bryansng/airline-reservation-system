@@ -166,9 +166,11 @@ public class CustomerService {
   public ResponseEntity<RegisterResponse> create(RegisterRequest registerRequest) {
     String email = registerRequest.getEmail();
     String password = registerRequest.getPassword();
+
     if (!customerRepository.existsByEmail(email)) {
       Customer customer = new Customer(registerRequest.getEmail(), registerRequest.getFirstName(),
           registerRequest.getLastName(), registerRequest.getAddress(), registerRequest.getPhoneNum());
+
       Auth auth = new Auth();
       auth.setAll(email, securityConfig.getPasswordEncoder().encode(password));
       customer.setAuth(auth);
@@ -176,6 +178,25 @@ public class CustomerService {
       return new ResponseEntity<>(new RegisterResponse("User registered successfully.", new CustomerDTO(customer)),
           HttpStatus.CREATED);
     }
+
+    // if exists by email, check if it has an auth object.
+    // if not, then this customer has never registered but has booked flights directly/indirectly.
+    Customer customer = customerRepository.findByEmail(email);
+    if (customer.getAuth() == null) {
+      customer.setFirstName(registerRequest.getFirstName());
+      customer.setLastName(registerRequest.getLastName());
+      customer.setAddress(registerRequest.getAddress());
+      customer.setPhoneNum(registerRequest.getPhoneNum());
+
+      Auth auth = new Auth();
+      auth.setAll(email, securityConfig.getPasswordEncoder().encode(password));
+      customer.setAuth(auth);
+      customerRepository.save(customer);
+      return new ResponseEntity<>(new RegisterResponse("User registered successfully.", new CustomerDTO(customer)),
+          HttpStatus.CREATED);
+    }
+
+    // runs if exists by email and auth object exists.
     return new ResponseEntity<>(new RegisterResponse("Failed to create. Customer email already exists.", null),
         HttpStatus.BAD_REQUEST);
   }

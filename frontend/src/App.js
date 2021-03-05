@@ -15,6 +15,10 @@ import EditCreditCardDetails from "./components/User/CreditCard/EditCreditCardDe
 import ReservationDetails from "./components/User/Reservations/ReservationDetails";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+const Container = styled.div.attrs({
+  className: `center w-60-l w-70 mv3`,
+})``;
+
 function App() {
   const [user, setAppUser] = useState(null);
   // const [user, setAppUser] = useState({
@@ -36,10 +40,6 @@ function App() {
     setAppToken,
     setAppUser,
   });
-
-  const Container = styled.div.attrs({
-    className: `center w-60-l w-70 mv3`,
-  })``;
 
   return (
     <Router>

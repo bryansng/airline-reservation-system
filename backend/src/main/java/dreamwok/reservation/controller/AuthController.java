@@ -45,34 +45,34 @@ public class AuthController {
   @Autowired
   SecurityConfig securityConfig;
 
-  @GetMapping("/cheat/login")
-  public ResponseEntity<SignInResponse> autoLogin(@RequestParam(defaultValue = "hong.sng@ucdconnect.ie") String email,
-      HttpServletRequest request) {
-    Customer customer = customerRepository.findByEmail(email);
-    Auth auth = authRepository.findByEmail(email);
-    securityConfig.configAuth(auth, securityConfig.getAuth(), "ADMIN");
-    authService.authenticateUserAndSetSession(customer, request);
-    return new ResponseEntity<>(new SignInResponse("Logged in successfully.", new CustomerDTO(customer)),
-        HttpStatus.OK);
-  }
+  // @GetMapping("/cheat/login")
+  // public ResponseEntity<SignInResponse> autoLogin(@RequestParam(defaultValue = "hong.sng@ucdconnect.ie") String email,
+  //     HttpServletRequest request) {
+  //   Customer customer = customerRepository.findByEmail(email);
+  //   Auth auth = authRepository.findByEmail(email);
+  //   securityConfig.configAuth(auth, securityConfig.getAuth(), "ADMIN");
+  //   authService.authenticateUserAndSetSession(customer, request);
+  //   return new ResponseEntity<>(new SignInResponse("Logged in successfully.", new CustomerDTO(customer)),
+  //       HttpStatus.OK);
+  // }
 
-  @GetMapping("/cheat/register")
-  public ResponseEntity<RegisterResponse> autoRegister(@RequestParam(defaultValue = "d d d d d d d") String fullName,
-      @RequestParam(defaultValue = "d@d.d") String email, @RequestParam(defaultValue = "1234") String password,
-      HttpServletRequest request) {
-    RegisterRequest registerRequest = new RegisterRequest(email, password, "d", "d", "123 Road", "123",
-        LocalDateTime.now());
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest);
+  // @GetMapping("/cheat/register")
+  // public ResponseEntity<RegisterResponse> autoRegister(@RequestParam(defaultValue = "d d d d d d d") String fullName,
+  //     @RequestParam(defaultValue = "d@d.d") String email, @RequestParam(defaultValue = "1234") String password,
+  //     HttpServletRequest request) {
+  //   RegisterRequest registerRequest = new RegisterRequest(email, password, "d", "d", "123 Road", "123",
+  //       LocalDateTime.now());
+  //   ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest);
 
-    if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
-      Customer customer = customerRepository.findByEmail(email);
-      Auth auth = authRepository.findByEmail(email);
-      securityConfig.configAuth(auth, securityConfig.getAuth(), "USER");
-      authService.authenticateUserAndSetSession(customer, request);
-    }
+  //   if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
+  //     Customer customer = customerRepository.findByEmail(email);
+  //     Auth auth = authRepository.findByEmail(email);
+  //     securityConfig.configAuth(auth, securityConfig.getAuth(), "USER");
+  //     authService.authenticateUserAndSetSession(customer, request);
+  //   }
 
-    return registerResponse;
-  }
+  //   return registerResponse;
+  // }
 
   /* /login POST
     {

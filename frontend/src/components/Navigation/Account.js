@@ -53,7 +53,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="email"
               placeholder="johndoe@gmail.com"
-              // defaultValue="test1@h1h111111o1.com"
+              defaultValue="hong.sng@ucdconnect.ie"
               required
             />
           </Form.Group>
@@ -62,7 +62,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="password"
               placeholder=""
-              // defaultValue="test"
+              defaultValue="root"
               required
             />
           </Form.Group>
@@ -101,15 +101,27 @@ function RegisterModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const username = e.target.formRegisterUsername.value;
+    const firstName = e.target.formRegisterFirstName.value;
+    const lastName = e.target.formRegisterLastName.value;
     const email = e.target.formRegisterEmail.value;
     const password = e.target.formRegisterPassword.value;
     const confirmPassword = e.target.formRegisterConfirmPassword.value;
+    const address = e.target.formRegisterAddress.value;
+    const phoneNum = e.target.formRegisterPhoneNum.value;
 
     if (password !== confirmPassword) {
       setIsPasswordsValid(false);
     } else {
-      register(username, email, password, onSubmitError, onSubmitSuccess);
+      register(
+        email,
+        password,
+        firstName,
+        lastName,
+        address,
+        phoneNum,
+        onSubmitError,
+        onSubmitSuccess
+      );
       setIsPasswordsValid(true);
     }
   };
@@ -121,16 +133,50 @@ function RegisterModal({
       </Modal.Header>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <Modal.Body>
-          <Form.Group controlId="formRegisterUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control type="username" placeholder="johndoe360" required />
+          <Form.Group controlId="formRegisterFirstName">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="John"
+              required
+              defaultValue="pog"
+            />
           </Form.Group>
+          <Form.Group controlId="formRegisterLastName">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Doe"
+              required
+              defaultValue="pog"
+            />
+          </Form.Group>
+          <Form.Group controlId="formRegisterAddress">
+            <Form.Label>Address</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="University College Dublin"
+              required
+              defaultValue="pog address"
+            />
+          </Form.Group>
+          <Form.Group controlId="formRegisterPhoneNum">
+            <Form.Label>Phone number</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="12341234"
+              required
+              defaultValue="42069"
+            />
+          </Form.Group>
+
           <Form.Group controlId="formRegisterEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
               placeholder="johndoe@gmail.com"
               required
+              defaultValue="pog@pog.com"
               // defaultValue="test1@h1h111111o1.com"
             />
           </Form.Group>
@@ -140,6 +186,7 @@ function RegisterModal({
               type="password"
               placeholder=""
               required
+              defaultValue="test"
               // isInvalid={!isPasswordsValid}
             />
             {/* <Form.Control.Feedback type="invalid">
@@ -152,6 +199,7 @@ function RegisterModal({
               type="password"
               placeholder=""
               required
+              defaultValue="test"
               // isInvalid={!isPasswordsValid}
             />
             {/* <Form.Control.Feedback type="invalid">
@@ -164,7 +212,7 @@ function RegisterModal({
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={toggleBetweenSignInRegister}>
+          <Button type="button" onClick={toggleBetweenSignInRegister}>
             Existing user? Sign in
           </Button>
           <Button type="submit">Register</Button>

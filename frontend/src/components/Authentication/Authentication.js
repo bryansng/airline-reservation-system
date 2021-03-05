@@ -25,7 +25,7 @@ function useAuthentication({
     //   logOut();
     // }
     if (!isAuthenticated) {
-      signIn("hong.sng@ucdconnect.ie", "root");
+      // signIn("hong.sng@ucdconnect.ie", "root");
       // signIn("pog@pog.com", "test");
       // register("pog@pog.com", "test", "pog", "pog", "pog address", "42069");
     }
