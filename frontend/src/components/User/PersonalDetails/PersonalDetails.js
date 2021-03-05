@@ -77,97 +77,116 @@ const PersonalDetails = ({ match }) => {
 
     useEffect(() => {
         fetch(url)
-        .then((resp) => {
+          .then((resp) => {
             if (resp.ok) {
-            return resp.json();
+              return resp.json();
             }
             throw new Error(`${resp.status} Error retrieving customer.`);
-        })
-        .then((res) => {
-            const cus = res.customer
+          })
+          .then((res) => {
+            const cus = res.customer;
             setCustomer({
-                email: cus.email,
-                address: cus.address,
-                firstName: cus.firstName,
-                lastName: cus.lastName,
-                phoneNum: cus.mobileNumber
+              email: cus.email,
+              address: cus.address,
+              firstName: cus.firstName,
+              lastName: cus.lastName,
+              phoneNum: cus.phoneNum,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }, [url]);
+    
+      useEffect(() => {
+        if (isDelete) {
+          // DELETE request using fetch with error handling
+          fetch(url, { method: "DELETE" })
+            .then(async (response) => {
+              const data = await response.json();
+    
+              // check for error response
+              if (!response.ok) {
+                // get error message from body or default to response status
+                const error = (data && data.message) || response.status;
+                return Promise.reject(error);
+              }
             })
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      history.push("/");
-    }
-  }, [history, isDelete, url]);
-
-  return (
-    <Container>
-      <HeaderRow>
-        <TitleContainer>
-          <Title>Personal Details</Title>
-        </TitleContainer>
-        <Btn>
-          <Update>
-            <Link
-              to={{
-                pathname: "/user/profile/" + userId + "/personaldetails/edit",
-                state: {
-                  customer: customer,
-                },
-              }}
-            >
-              Update Account
-            </Link>
-          </Update>
-        </Btn>
-        <Btn>
-          <Delete onClick={handleDelete}>Delete Account</Delete>
-        </Btn>
-      </HeaderRow>
-      <BodyRow>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>First Name</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{customer == null ? "" : customer.firstName}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Last Name</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{customer == null ? "" : customer.lastName}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Address</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{customer == null ? "" : customer.address}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Phone Number</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{customer == null ? "" : customer.phoneNum}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Email Address</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{customer == null ? "" : customer.email}</DataText>
-          </DataDiv>
-        </BodyDiv>
-      </BodyRow>
-    </Container>
-  );
-};
-
-export default PersonalDetails;
+            .catch((error) => {
+              console.error(error);
+            });
+          history.push("/");
+        }
+      }, [history, isDelete, url]);
+    
+      return (
+        <Container>
+          <HeaderRow>
+            <TitleContainer>
+              <Title>Personal Details</Title>
+            </TitleContainer>
+            <Btn>
+              <Update>
+                <Link
+                  to={{
+                    pathname: "/user/profile/" + userId + "/personaldetails/edit",
+                    state: {
+                      customer: customer,
+                    },
+                  }}
+                >
+                  Update Account
+                </Link>
+              </Update>
+            </Btn>
+            <Btn>
+              <Delete onClick={handleDelete}>Delete Account</Delete>
+            </Btn>
+          </HeaderRow>
+          <BodyRow>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>First Name</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{customer == null ? "" : customer.firstName}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Last Name</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{customer == null ? "" : customer.lastName}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Address</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{customer == null ? "" : customer.address}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Phone Number</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{customer == null ? "" : customer.phoneNum}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Email Address</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{customer == null ? "" : customer.email}</DataText>
+              </DataDiv>
+            </BodyDiv>
+          </BodyRow>
+        </Container>
+      );
+    };
+    
+    export default PersonalDetails;

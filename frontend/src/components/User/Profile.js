@@ -34,7 +34,7 @@ const IconTitle = styled.p.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const Profile = ({ match }) => {
+const Profile = ({ user }) => {
   const icons = [
     {
       icon: <FaUser />,
@@ -55,22 +55,26 @@ const Profile = ({ match }) => {
 
   return (
     <Container>
-      <TitleContainer>
-        <Title>Welcome</Title>
-      </TitleContainer>
-      <IconContainer>
-        {
-          icons.map((icon, key) => {
-            return (
-              <Link
-                key={key}
-                style={{ color: 'dimgray' }} 
-                className="ba b--silver br4 w-33 tc ma4 grow pointer dim" 
-                to={`/user/profile/` + match.params.id + "/" + icon.suburl}>
-                  <IconContext.Provider value={{size: "15em"}}>
-                    <Icon>
-                      {icon.icon}
-                    </Icon>
+      {user ? (
+        <>
+          <TitleContainer>
+            <Title>Welcome, {user.firstName}</Title>
+          </TitleContainer>
+          <IconContainer>
+            {icons.map((icon, key) => {
+              return (
+                <Link
+                  key={key}
+                  style={{ color: "dimgray" }}
+                  className="ba b--silver br4 w-33 tc ma4 grow pointer dim"
+                  // to={`/user/profile/` + user.id + "/" + icon.suburl}
+                  to={{
+                    pathname: `/user/profile/${user.id}/${icon.suburl}`,
+                    state: { user: user },
+                  }}
+                >
+                  <IconContext.Provider value={{ size: "15em" }}>
+                    <Icon>{icon.icon}</Icon>
                     <IconTitleDiv>
                       <IconTitle>{icon.title}</IconTitle>
                     </IconTitleDiv>

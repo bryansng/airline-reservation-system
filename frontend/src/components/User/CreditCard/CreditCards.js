@@ -52,40 +52,12 @@ const IconTitle = styled.p.attrs({
     className: `f4`
 })``
 
-const CreditCards = ({ match }) => {
-    const [userId] = useState(match.params.id);
-    const [creditCards, setCreditCards] = useState([]);
-  
-    const url = creditCardEndpoint + "/" + userId;
-
-    function parseCardNumber(cardNum) {
-        return "Ending with " + cardNum.substring(cardNum.length - 4, cardNum.length)
-    }
-    
-    useEffect(() => {
-      fetch(url)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-          throw new Error(`${resp.status} Error retrieving customer.`);
-        })
-        .then((res) => {
-            const cardList = res.creditCards
-            setCreditCards({
-              cards: cardList
-            })
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }, [url]);
 
 const CreditCards = ({ location }) => {
   const [userId] = useState(location.state.user.id);
   const [creditCards, setCreditCards] = useState([]);
 
-  const url = customerEndpoint + "creditcard/all/" + userId;
+  const url = creditCardEndpoint + "/" + userId;
 
   function parseCardNumber(cardNum) {
     return (
