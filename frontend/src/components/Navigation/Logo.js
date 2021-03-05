@@ -17,7 +17,7 @@ const LinkBody = styled.div.attrs({
 `;
 function Logo() {
   return (
-    <Link to="/">
+    <Link to="/" style={{ color: "#212529", textDecoration: "none" }}>
       <LinkBody>
         <AppLogo>ARS</AppLogo>
       </LinkBody>

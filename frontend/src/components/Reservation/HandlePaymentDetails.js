@@ -20,6 +20,15 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
+const CreditCardButton = styled.button.attrs({
+  className: `w-100 b--transparent mb2 br2 bg-light-gray hover-bg-light-silver tl pv2 ph3`,
+})`
+  transition: 0.15s ease-out;
+  &:hover {
+    transition: 0.15s ease-in;
+  }
+`;
+
 const Grid = styled.div.attrs({})`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -188,8 +197,25 @@ const HandlePaymentDetails = ({
         {/* <h3 className="mb2">Please input</h3> */}
         <Form onSubmit={(e) => handleSubmit(e)}>
           <Card className="mv">
-            <Card.Header>Please enter your credit card details</Card.Header>
+            <Card.Header>
+              {isAuthenticated
+                ? "Please choose and enter your credit card details"
+                : "Please enter your credit card details"}
+            </Card.Header>
             <Card.Body>
+              {isAuthenticated && (
+                <div className="mb2">
+                  {savedCreditCards.map((currCreditCard, currIndex) => (
+                    <SavedCreditCard
+                      key={currIndex}
+                      creditCard={currCreditCard}
+                      onClickPaymentMethod={onClickPaymentMethod}
+                      index={currIndex}
+                      maskCreditCardNumber={maskCreditCardNumber}
+                    />
+                  ))}
+                </div>
+              )}
               <Grid>
                 <Form.Group className="mh1" controlId="formNameOnCard">
                   <Form.Label className="dark-gray f5">Name on Card</Form.Label>
@@ -232,14 +258,17 @@ const HandlePaymentDetails = ({
                     required
                   />
                 </Form.Group>
+                {isAuthenticated && (
+                  <Form.Group
+                    className="mh1"
+                    controlId="formIsSavePaymentDetails"
+                  >
+                    <Form.Check type="checkbox" label="Save payment details" />
+                  </Form.Group>
+                )}
               </Grid>
             </Card.Body>
           </Card>
-          {isAuthenticated && (
-            <Form.Group controlId="formIsSavePaymentDetails">
-              <Form.Check type="checkbox" label="Save payment details" />
-            </Form.Group>
-          )}
           <div className="flex justify-end">
             <div className="mr1">
               <Link to="/">
@@ -255,34 +284,7 @@ const HandlePaymentDetails = ({
     );
   };
 
-  return (
-    <>
-      {isAuthenticated ? (
-        <h2>Payment details</h2>
-      ) : (
-        <h2>Enter payment details</h2>
-      )}
-      {isAuthenticated && (
-        <>
-          <h3>Choose your payment method</h3>
-          <div>
-            {savedCreditCards.map((currCreditCard, currIndex) => (
-              <SavedCreditCard
-                key={currIndex}
-                creditCard={currCreditCard}
-                onClickPaymentMethod={onClickPaymentMethod}
-                index={currIndex}
-                maskCreditCardNumber={maskCreditCardNumber}
-              />
-            ))}
-          </div>
-        </>
-      )}
-
-      {isAuthenticated && <h3>Enter payment details</h3>}
-      <ActualFormComponent />
-    </>
-  );
+  return <ActualFormComponent />;
 };
 
 const SavedCreditCard = ({
@@ -292,10 +294,12 @@ const SavedCreditCard = ({
   maskCreditCardNumber,
 }) => {
   return (
-    <div className="ba" onClick={(evt) => onClickPaymentMethod(evt, index)}>
-      <div>{`${maskCreditCardNumber(creditCard.cardNumber)}`}</div>
+    <CreditCardButton onClick={(evt) => onClickPaymentMethod(evt, index)}>
+      <div className="dark-gray">
+        {`${maskCreditCardNumber(creditCard.cardNumber)}`}
+      </div>
       <div>Exp: {creditCard.expiryDate}</div>
-    </div>
+    </CreditCardButton>
   );
 };
 
