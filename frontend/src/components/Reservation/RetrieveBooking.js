@@ -9,7 +9,7 @@ import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
-  className: `mv1 relative w-100 b--gray mh0 br2 ba hover-bg-light-gray tc`,
+  className: `ma0 relative w-100 b--gray mh0 br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -58,10 +58,12 @@ const RetrieveBooking = () => {
   return (
     <>
       <h2 className="mb2">Retrieve Booking</h2>
-      <Card>
-        <Card.Body>
-          {!reservation && (
-            <Form onSubmit={(e) => handleSubmit(e)}>
+
+      {!reservation && (
+        <Form onSubmit={(e) => handleSubmit(e)}>
+          <Card className="mv3">
+            <Card.Header>Booking details</Card.Header>
+            <Card.Body>
               <div className="flex">
                 <Form.Group
                   controlId="formCustomerLastName"
@@ -85,21 +87,25 @@ const RetrieveBooking = () => {
                   />
                 </Form.Group>
               </div>
+            </Card.Body>
+          </Card>
+          <div className="flex justify-end">
+            <div className="mt3">
               <Button type="submit">Retrieve</Button>
-            </Form>
-          )}
+            </div>
+          </div>
+        </Form>
+      )}
 
-          {reservation && (
-            <Redirect
-              push
-              to={{
-                pathname: `/show/reservation/${reservation.id}`,
-                state: { reservation: reservation },
-              }}
-            />
-          )}
-        </Card.Body>
-      </Card>
+      {reservation && (
+        <Redirect
+          push
+          to={{
+            pathname: `/show/reservation/${reservation.id}`,
+            state: { reservation: reservation },
+          }}
+        />
+      )}
     </>
   );
 };

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Card from "react-bootstrap/esm/Card";
 
 const Button = styled.button.attrs({
-  className: `mv1 mh0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -61,10 +61,16 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
       <div>
         <Form onSubmit={(e) => handleSubmit(e)}>
           {passengerForms}
-          <Link to="/">
-            <Button type="button">Cancel</Button>
-          </Link>
-          <Button type="submit">Next</Button>
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link to="/">
+                <Button type="button">Cancel</Button>
+              </Link>
+            </div>
+            <div className="ml1">
+              <Button type="submit">Go to payment</Button>
+            </div>
+          </div>
         </Form>
       </div>
     </>

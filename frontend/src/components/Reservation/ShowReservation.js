@@ -12,7 +12,7 @@ dayjs.extend(isBetween);
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
-  className: `mv1 mh0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -92,73 +92,77 @@ const ShowReservation = ({ location }) => {
         's booking
       </h3>
       {reservation && reservation.bookings && (
-        <Card>
-          <Card.Header
-            style={
-              isReservationCancelled(reservation)
-                ? { color: "red" }
-                : { color: "green" }
-            }
-          >
-            Status: {reservation.reservationStatus}
-          </Card.Header>
-          <Card.Body>
-            <h5 className="mb-3">
-              {`${reservation.flight.departureAirport} to ${reservation.flight.arrivalAirport}`}{" "}
-              &#8212; {reservation.flight.flightName}
-            </h5>
-            <Card.Subtitle className="mb-4 text-muted">
-              {`${dayjs(reservation.flight.departureDateTime).format(
-                "DD/MM/YYYY"
-              )}`}
-              {", "}
-              {`${dayjs(reservation.flight.departureDateTime).format(
-                "HH:mm"
-              )}`}{" "}
-              &#8212;{" "}
-              {`${dayjs(reservation.flight.arrivalDateTime).format(
-                "DD/MM/YYYY"
-              )}`}
-              {", "}
-              {`${dayjs(reservation.flight.arrivalDateTime).format("HH:mm")}`}
-            </Card.Subtitle>
+        <>
+          <Card className="mv3">
+            <Card.Header
+              style={
+                isReservationCancelled(reservation)
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              Status: {reservation.reservationStatus}
+            </Card.Header>
+            <Card.Body>
+              <h5 className="mb-3">
+                {`${reservation.flight.departureAirport} to ${reservation.flight.arrivalAirport}`}{" "}
+                &#8212; {reservation.flight.flightName}
+              </h5>
+              <Card.Subtitle className="mb-4 text-muted">
+                {`${dayjs(reservation.flight.departureDateTime).format(
+                  "DD/MM/YYYY"
+                )}`}
+                {", "}
+                {`${dayjs(reservation.flight.departureDateTime).format(
+                  "HH:mm"
+                )}`}{" "}
+                &#8212;{" "}
+                {`${dayjs(reservation.flight.arrivalDateTime).format(
+                  "DD/MM/YYYY"
+                )}`}
+                {", "}
+                {`${dayjs(reservation.flight.arrivalDateTime).format("HH:mm")}`}
+              </Card.Subtitle>
 
-            <div className="mv2">
-              <div className="gray f6">Booking number</div>
-              <div className="lh-copy">{reservation.id}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f6">Booking name</div>
-              <div className="lh-copy">{`${reservation.customer.lastName}`}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f6">Number of tickets</div>
-              <div className="lh-copy">{reservation.bookings.length}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f6">Flight number</div>
-              <div className="lh-copy">{reservation.flight.flightName}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f6">Check in before</div>
-              <div className="lh-copy">
-                {dayjs(reservation.flight.departureDateTime)
-                  .subtract(1, "hour")
-                  .format("HH:mm")}
+              <div className="mv2">
+                <div className="gray f6">Booking number</div>
+                <div className="lh-copy">{reservation.id}</div>
               </div>
-            </div>
+              <div className="mv2">
+                <div className="gray f6">Booking name</div>
+                <div className="lh-copy">{`${reservation.customer.lastName}`}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f6">Number of tickets</div>
+                <div className="lh-copy">{reservation.bookings.length}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f6">Flight number</div>
+                <div className="lh-copy">{reservation.flight.flightName}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f6">Check in before</div>
+                <div className="lh-copy">
+                  {dayjs(reservation.flight.departureDateTime)
+                    .subtract(1, "hour")
+                    .format("HH:mm")}
+                </div>
+              </div>
 
-            <div className="mv2">
-              {reservation.bookings.map((currPassengerBooking, currIndex) => (
-                <PassengerDetails
-                  key={currIndex}
-                  index={currIndex}
-                  passenger={currPassengerBooking.customer}
-                />
-              ))}
-            </div>
+              <div className="mv2">
+                {reservation.bookings.map((currPassengerBooking, currIndex) => (
+                  <PassengerDetails
+                    key={currIndex}
+                    index={currIndex}
+                    passenger={currPassengerBooking.customer}
+                  />
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
 
-            <div className="mt3">
+          <div className="flex justify-end mt3">
+            <div className="mr1">
               {!isReservationPast(reservation) &&
                 !isReservationCancelled(reservation) && (
                   <>
@@ -184,17 +188,19 @@ const ShowReservation = ({ location }) => {
                     </OverlayTrigger>
                   </>
                 )}
+            </div>
+            <div className="ml1">
               <Link to="/">
                 <Button type="button">Back to home</Button>
               </Link>
             </div>
-            <CancelConfirmationModal
-              show={isShowCancelConfirmationModal}
-              onHide={() => setIsShowCancelConfirmationModal(false)}
-              toggleCancelBooking={toggleCancelBooking}
-            />
-          </Card.Body>
-        </Card>
+          </div>
+          <CancelConfirmationModal
+            show={isShowCancelConfirmationModal}
+            onHide={() => setIsShowCancelConfirmationModal(false)}
+            toggleCancelBooking={toggleCancelBooking}
+          />
+        </>
       )}
     </>
   );
