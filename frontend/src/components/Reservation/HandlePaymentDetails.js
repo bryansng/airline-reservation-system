@@ -98,7 +98,9 @@ const HandlePaymentDetails = ({
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
     );
-    const isSavePaymentDetails = e.target.formIsSavePaymentDetails.checked;
+    const isSavePaymentDetails = isAuthenticated
+      ? e.target.formIsSavePaymentDetails.checked
+      : false;
 
     const paymentDetails = {
       nameOnCard: nameOnCard,
