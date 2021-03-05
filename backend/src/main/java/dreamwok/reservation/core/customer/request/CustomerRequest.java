@@ -10,29 +10,19 @@ public class CustomerRequest {
     private String address;
     private String phoneNum;
     private LocalDateTime bornOn;
-    private String auth;
 
     public CustomerRequest() {
 
     }
 
     public CustomerRequest(String email, String firstName, String lastName, String address, String phoneNum,
-            LocalDateTime bornOn, String auth) {
+            LocalDateTime bornOn) {
         this.setEmail(email);
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setAddress(address);
         this.setPhoneNum(phoneNum);
         this.setBornOn(bornOn);
-        this.setAuth(auth);
-    }
-
-    public String getAuth() {
-        return auth;
-    }
-
-    public void setAuth(String auth) {
-        this.auth = auth;
     }
 
     public LocalDateTime getBornOn() {

@@ -3,29 +3,33 @@ import styled from "styled-components";
 import useAuthentication from "./components/Authentication/Authentication";
 import Navigation from "./components/Navigation/Navigation";
 import Profile from "./components/User/Profile";
-import Reservation from "./components/Reservation/Reservation";
+import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
-import Search from "./components/Flight/Search";
+import SearchFlight from "./components/Flight/SearchFlight";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
-  const {
+  const [user, setAppUser] = useState(null);
+  // const [user, setAppUser] = useState({
+  //   id: 9,
+  //   email: "pog@pog.com",
+  //   firstName: "pog",
+  //   lastName: "pog",
+  //   mobileNumber: "42069",
+  //   address: "pog address",
+  // });
+  const [token, setAppToken] = useState(null);
+  const [isAuthenticated, setAppIsAuthenticated] = useState(null);
+
+  const { signIn, logOut, register, authComponent } = useAuthentication({
     isAuthenticated,
     token,
     user,
-    signIn,
-    logOut,
-    register,
-    // authComponent,
-  } = useAuthentication();
-
-  const [bookFlightDetails, setBookFlightDetails] = useState({
-    flightId: 5,
-    numPassengers: 2,
+    setAppIsAuthenticated,
+    setAppToken,
+    setAppUser,
   });
-
-  const testUserId = { id: "1" };
 
   const Container = styled.div.attrs({
     className: `center w-60-l w-70 mv3`,
@@ -34,24 +38,30 @@ function App() {
   return (
     <Router>
       <Container>
-        <Navigation />
+        <Navigation
+          token={token}
+          user={user}
+          signIn={signIn}
+          register={register}
+          logOut={logOut}
+          isAuthenticated={isAuthenticated}
+        />
+        {authComponent}
         <Switch>
+          <Route path="/" exact render={(props) => <SearchFlight />} />
           <Route
-            path="/"
+            path="/user/profile"
             exact
-            render={(props) => (
-              <Search setBookFlightDetails={setBookFlightDetails} />
-            )}
+            render={(props) => <Profile {...props} user={user} />}
           />
-          <Route path="/user/profile" component={Profile} />
           <Route
             path="/book/:flightId"
             exact
             render={(props) => (
-              <Reservation
+              <BookReservation
                 {...props}
-                user={testUserId}
-                bookFlightDetails={bookFlightDetails}
+                user={user}
+                isAuthenticated={isAuthenticated}
               />
             )}
           />

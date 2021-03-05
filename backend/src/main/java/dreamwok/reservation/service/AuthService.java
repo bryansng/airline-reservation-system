@@ -5,12 +5,10 @@ import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.request.SignInRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.auth.response.SignInResponse;
-import dreamwok.reservation.core.customer.request.CustomerRequest;
+import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
-
-import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,7 +53,8 @@ public class AuthService {
       if (auth.getEmail().equals(email) && securityConfig.getPasswordEncoder().matches(password, auth.getHash())) {
         securityConfig.configAuth(auth, securityConfig.getAuth(), customer.getRoles());
         authenticateUserAndSetSession(customer, request);
-        return new ResponseEntity<>(new SignInResponse("Logged in successfully.", customer), HttpStatus.OK);
+        return new ResponseEntity<>(new SignInResponse("Logged in successfully.", new CustomerDTO(customer)),
+            HttpStatus.OK);
       }
       return new ResponseEntity<>(new SignInResponse("Failed to login. Email or password incorrect.", null),
           HttpStatus.BAD_REQUEST);
@@ -66,10 +65,7 @@ public class AuthService {
 
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
-    CustomerRequest customerRequest = new CustomerRequest(registerRequest.getEmail(), "Braddy", "Yeoh", "123 Road",
-        "123", LocalDateTime.now(), "member");
-
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(customerRequest);
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(registerRequest.getEmail());

@@ -50,26 +50,19 @@ public class Customer {
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
   private List<Booking> bookings;
 
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  private List<CreditCardDetails> creditCardDetails;
+
   public Customer() {
 
   }
 
-  public Customer(String email, String firstName, String lastName, String address, String phoneNum, String type) {
+  public Customer(String email, String firstName, String lastName, String address, String phoneNum) {
     this.setEmail(email);
     this.setFirstName(firstName);
     this.setLastName(lastName);
     this.setAddress(address);
     this.setPhoneNum(phoneNum);
-    this.setType(type);
-  }
-
-  public Customer(CustomerRequest customerRequest, String type) {
-    this.setEmail(customerRequest.getEmail());
-    this.setFirstName(customerRequest.getFirstName());
-    this.setLastName(customerRequest.getLastName());
-    this.setAddress(customerRequest.getAddress());
-    this.setPhoneNum(customerRequest.getPhoneNum());
-    this.setType(type);
   }
 
   public String getRoles() {
@@ -187,5 +180,13 @@ public class Customer {
 
   public void setBookings(List<Booking> bookings) {
     this.bookings = bookings;
+  }
+
+  public List<CreditCardDetails> getCreditCardDetails() {
+    return creditCardDetails;
+  }
+
+  public void setCreditCardDetails(List<CreditCardDetails> creditCardDetails) {
+    this.creditCardDetails = creditCardDetails;
   }
 }

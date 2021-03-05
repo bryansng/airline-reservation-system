@@ -15,6 +15,9 @@
     "flight": {
       "get_by_id": "http://localhost:8080/flight",
       "search": "http://localhost:8080/search"
+    },
+    "credit_card": {
+      "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all"
     }
   }
 }
