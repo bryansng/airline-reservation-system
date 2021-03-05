@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import useAuthentication from "./components/Authentication/Authentication";
 import Navigation from "./components/Navigation/Navigation";
 import Profile from "./components/User/Profile";
@@ -30,9 +31,13 @@ function App() {
     setAppUser,
   });
 
+  const Container = styled.div.attrs({
+    className: `center w-60-l w-70 mv3`,
+  })``;
+
   return (
     <Router>
-      <div>
+      <Container>
         <Navigation
           token={token}
           user={user}
@@ -71,7 +76,7 @@ function App() {
             component={ShowReservation}
           />
         </Switch>
-      </div>
+      </Container>
     </Router>
   );
 }

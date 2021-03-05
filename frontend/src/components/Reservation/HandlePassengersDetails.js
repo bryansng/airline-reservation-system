@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import Card from "react-bootstrap/esm/Card";
 
 const Button = styled.button.attrs({
-  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -15,6 +16,11 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
   ${(props) => props.disabled && `pointer-events: none;`}
+`;
+
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 `;
 
 const HandlePassengersDetails = ({
@@ -68,14 +74,20 @@ const HandlePassengersDetails = ({
 
   return (
     <>
-      <h2>Handle Passengers Details</h2>
+      {/* <h3 className="mb2">Please input passenger details</h3> */}
       <div>
         <Form onSubmit={(e) => handleSubmit(e)}>
           {passengerForms}
-          <Link to="/">
-            <Button type="button">Cancel</Button>
-          </Link>
-          <Button type="submit">Next</Button>
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link to="/">
+                <Button type="button">Cancel</Button>
+              </Link>
+            </div>
+            <div className="ml1">
+              <Button type="submit">Confirm</Button>
+            </div>
+          </div>
         </Form>
       </div>
     </>
@@ -83,21 +95,7 @@ const HandlePassengersDetails = ({
 };
 
 const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
-  console.log(
-    "🚀 ~ file: HandlePassengersDetails.js ~ line 86 ~ APassengerDetailsForm ~ loggedInUser",
-    loggedInUser
-  );
   const isFirstUserAndIsAuthenticatedAndIsLoggedInUser = () => {
-    const bool = !!(
-      index === 0 &&
-      isAuthenticated &&
-      loggedInUser &&
-      loggedInUser.id
-    );
-    console.log(
-      "🚀 ~ file: HandlePassengersDetails.js ~ line 92 ~ isFirstUserAndIsAuthenticatedAndIsLoggedInUser ~ bool",
-      bool
-    );
     return !!(
       index === 0 &&
       isAuthenticated &&
@@ -108,86 +106,88 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
 
   const ActualFormComponent = () => {
     return (
-      <>
-        <Form.Group controlId={`formFirstName${index}`}>
-          <Form.Label>First name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="John"
-            defaultValue={
-              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
-                ? loggedInUser.firstName
-                : "testFirstName"
-            }
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId={`formLastName${index}`}>
-          <Form.Label>Surname</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Doe"
-            defaultValue={
-              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
-                ? loggedInUser.lastName
-                : "testLastName"
-            }
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId={`formEmail${index}`}>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="johndoe@gmail.com"
-            defaultValue={
-              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
-                ? loggedInUser.email
-                : "testEmail@test.com"
-            }
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId={`formMobileNumber${index}`}>
-          <Form.Label>Mobile number</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder=""
-            defaultValue={
-              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
-                ? loggedInUser.mobileNumber
-                : "testMobileNumber"
-            }
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId={`formAddress${index}`}>
-          <Form.Label>Address</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder=""
-            defaultValue={
-              isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
-                ? loggedInUser.address
-                : "testAddress"
-            }
-            required
-          />
-        </Form.Group>
-      </>
+      <Card className="mv3">
+        <Card.Header>
+          {index === 0 ? (
+            <div>Please input your details</div>
+          ) : (
+            <div>Please input passenger {index + 1}'s details</div>
+          )}
+        </Card.Header>
+        <Card.Body>
+          <Grid>
+            <Form.Group className="mh1" controlId={`formFirstName${index}`}>
+              <Form.Label className="dark-gray f5">First name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="John"
+                defaultValue={
+                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                    ? loggedInUser.firstName
+                    : "testFirstName"
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mh1" controlId={`formLastName${index}`}>
+              <Form.Label className="dark-gray f5">Surname</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Doe"
+                defaultValue={
+                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                    ? loggedInUser.lastName
+                    : "testLastName"
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mh1" controlId={`formEmail${index}`}>
+              <Form.Label className="dark-gray f5">Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="johndoe@gmail.com"
+                defaultValue={
+                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                    ? loggedInUser.email
+                    : "testEmail@test.com"
+                }
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mh1" controlId={`formMobileNumber${index}`}>
+              <Form.Label className="dark-gray f5">Mobile number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder=""
+                defaultValue={
+                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                    ? loggedInUser.mobileNumber
+                    : "testMobileNumber"
+                }
+                required
+              />
+            </Form.Group>
+          </Grid>
+          <Form.Group className="mh1" controlId={`formAddress${index}`}>
+            <Form.Label className="dark-gray f5">Address</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder=""
+              defaultValue={
+                isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                  ? loggedInUser.address
+                  : "testAddress"
+              }
+              required
+            />
+          </Form.Group>
+        </Card.Body>
+      </Card>
     );
   };
 
-  return (
-    <>
-      {index === 0 ? (
-        <div>Your details:</div>
-      ) : (
-        <div>Passenger {index + 1}'s' details:</div>
-      )}
-      <ActualFormComponent />
-    </>
-  );
+  return <ActualFormComponent />;
 };
 
 export default HandlePassengersDetails;

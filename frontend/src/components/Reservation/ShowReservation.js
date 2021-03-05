@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import * as dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import Modal from "react-bootstrap/Modal";
+import Card from "react-bootstrap/Card";
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 dayjs.extend(isBetween);
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
-  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -84,14 +87,14 @@ const ShowReservation = ({ location }) => {
   return (
     <>
       <h2>Show Reservation</h2>
+      <h3 className="lh-copy mb2">
+        {`${reservation.customer.firstName} ${reservation.customer.lastName}`}
+        's booking
+      </h3>
       {reservation && reservation.bookings && (
         <>
-          <div>
-            <h3>
-              {`${reservation.customer.firstName} ${reservation.customer.lastName}`}
-              's booking
-            </h3>
-            <h4
+          <Card className="mv3">
+            <Card.Header
               style={
                 isReservationCancelled(reservation)
                   ? { color: "red" }
@@ -99,57 +102,99 @@ const ShowReservation = ({ location }) => {
               }
             >
               Status: {reservation.reservationStatus}
-            </h4>
-            <div>
-              Booking name:{" "}
-              {`${reservation.customer.firstName} ${reservation.customer.lastName}`}
+            </Card.Header>
+            <Card.Body>
+              <h5 className="mb-3">
+                {`${reservation.flight.departureAirport} to ${reservation.flight.arrivalAirport}`}{" "}
+                &#8212; {reservation.flight.flightName}
+              </h5>
+              <Card.Subtitle className="mb-4 text-muted">
+                {`${dayjs(reservation.flight.departureDateTime).format(
+                  "DD/MM/YYYY"
+                )}`}
+                {", "}
+                {`${dayjs(reservation.flight.departureDateTime).format(
+                  "HH:mm"
+                )}`}{" "}
+                &#8212;{" "}
+                {`${dayjs(reservation.flight.arrivalDateTime).format(
+                  "DD/MM/YYYY"
+                )}`}
+                {", "}
+                {`${dayjs(reservation.flight.arrivalDateTime).format("HH:mm")}`}
+              </Card.Subtitle>
+
+              <div className="mv2">
+                <div className="gray f5">Booking number</div>
+                <div className="lh-copy">{reservation.id}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Booking name</div>
+                <div className="lh-copy">{`${reservation.customer.lastName}`}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Number of tickets</div>
+                <div className="lh-copy">{reservation.bookings.length}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Flight number</div>
+                <div className="lh-copy">{reservation.flight.flightName}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Check in before</div>
+                <div className="lh-copy">
+                  {dayjs(reservation.flight.departureDateTime)
+                    .subtract(1, "hour")
+                    .format("HH:mm")}
+                </div>
+              </div>
+
+              <div className="mv2">
+                {reservation.bookings.map((currPassengerBooking, currIndex) => (
+                  <PassengerDetails
+                    key={currIndex}
+                    index={currIndex}
+                    passenger={currPassengerBooking.customer}
+                  />
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+
+          <div className="flex justify-end mt3">
+            <div className="mr1">
+              {!isReservationPast(reservation) &&
+                !isReservationCancelled(reservation) && (
+                  <>
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip>
+                          You may cancel your flight 24 hours within the
+                          check-in date.
+                        </Tooltip>
+                      }
+                    >
+                      <div>
+                        <Button
+                          type="button"
+                          onClick={() => setIsShowCancelConfirmationModal(true)}
+                          disabled={
+                            !isReservationWithin24HoursFlightDate(reservation)
+                          }
+                        >
+                          Cancel Reservation
+                        </Button>
+                      </div>
+                    </OverlayTrigger>
+                  </>
+                )}
             </div>
-            <div>Booking number: {reservation.id}</div>
-            <div>{reservation.bookings.length} tickets on</div>
-            <div>Flight number: {reservation.flight.flightName}</div>
-            <div>{`${reservation.flight.departureAirport} - ${reservation.flight.arrivalAirport}`}</div>
-            <div>{`${dayjs(reservation.flight.departureDateTime).format(
-              "DD/MM/YYYY"
-            )}`}</div>
-            <div>{`${dayjs(reservation.flight.departureDateTime).format(
-              "HH:mm"
-            )} - ${dayjs(reservation.flight.arrivalDateTime).format(
-              "HH:mm"
-            )}`}</div>
-            <h6>
-              Check in before{" "}
-              {dayjs(reservation.flight.departureDateTime)
-                .subtract(1, "hour")
-                .format("HH:mm")}
-            </h6>
-            <div>
-              {reservation.bookings.map((currPassengerBooking, currIndex) => (
-                <PassengerDetails
-                  key={currIndex}
-                  index={currIndex}
-                  passenger={currPassengerBooking.customer}
-                />
-              ))}
+            <div className="ml1">
+              <Link to="/">
+                <Button type="button">Back to home</Button>
+              </Link>
             </div>
           </div>
-          {!isReservationPast(reservation) &&
-            !isReservationCancelled(reservation) && (
-              <>
-                <h6>
-                  You may cancel your flight 24 hours within the check-in date.
-                </h6>
-                <Button
-                  type="button"
-                  onClick={() => setIsShowCancelConfirmationModal(true)}
-                  disabled={!isReservationWithin24HoursFlightDate(reservation)}
-                >
-                  Cancel Reservation
-                </Button>
-              </>
-            )}
-          <Link to="/">
-            <Button type="button">Back to home</Button>
-          </Link>
           <CancelConfirmationModal
             show={isShowCancelConfirmationModal}
             onHide={() => setIsShowCancelConfirmationModal(false)}
@@ -184,10 +229,10 @@ const CancelConfirmationModal = ({ show, onHide, toggleCancelBooking }) => {
 
 const PassengerDetails = ({ index, passenger }) => {
   return (
-    <>
-      <div>Passenger {index + 1}</div>
-      <div>{`${passenger.firstName} ${passenger.lastName}`}</div>
-    </>
+    <div className="mv2">
+      <div className="gray f5">Passenger {index + 1}</div>
+      <div className="lh-copy">{`${passenger.firstName} ${passenger.lastName}`}</div>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import Card from "react-bootstrap/Card";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { credit_card: credit_card_apis } = rest_endpoints;
 
@@ -17,6 +18,11 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
   ${(props) => props.disabled && `pointer-events: none;`}
+`;
+
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 `;
 
 const HandlePaymentDetails = ({
@@ -72,7 +78,7 @@ const HandlePaymentDetails = ({
     const selectedCard = savedCreditCards[savedCreditCardIndex];
     setCreditCardFormDefaultInput({
       nameOnCard: selectedCard.nameOnCard,
-      cardNumber: getSanitisedCardNumber(selectedCard.cardNumber),
+      cardNumber: maskCreditCardNumber(selectedCard.cardNumber),
       expiryDate: getSanitisedExpiryDate(selectedCard.expiryDate),
       securityCode: "",
     });
@@ -164,58 +170,90 @@ const HandlePaymentDetails = ({
     e.target.value = getSanitisedSecurityCode(e.target.value);
   };
 
+  const maskCreditCardNumber = (creditCardNunmber) => {
+    const getSanitisedCardNumber = (creditCardNunmber) => {
+      // format card number to add space after every 4 digits.
+      return creditCardNunmber
+        .replace(/([/*|\d]{4})/g, "$1 ")
+        .replace(/^\s+|\s+$/, "");
+    };
+
+    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
+
+    return getSanitisedCardNumber(
+      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+    );
+  };
+
   const ActualFormComponent = () => {
     return (
       <>
+        {/* <h3 className="mb2">Please input</h3> */}
         <Form onSubmit={(e) => handleSubmit(e)}>
-          <Form.Group controlId="formNameOnCard">
-            <Form.Label>Name on Card</Form.Label>
-            <Form.Control
-              type="text"
-              // placeholder="John Doe"
-              defaultValue={creditCardFormDefaultInput.nameOnCard}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formCardNumber">
-            <Form.Label>Card Number</Form.Label>
-            <Form.Control
-              type="text"
-              // placeholder="1234 5678 8765 4321"
-              defaultValue={creditCardFormDefaultInput.cardNumber}
-              onChange={(evt) => onChangeCardNumber(evt)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formExpiryDate">
-            <Form.Label>Expiry Date</Form.Label>
-            <Form.Control
-              type="text"
-              // placeholder="04/25"
-              defaultValue={creditCardFormDefaultInput.expiryDate}
-              onChange={(evt) => onChangeExpiryDate(evt)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formSecurityCode">
-            <Form.Label>CVV or Security Code</Form.Label>
-            <Form.Control
-              type="text"
-              // placeholder="412"
-              defaultValue={creditCardFormDefaultInput.securityCode}
-              onChange={(evt) => onChangeSecurityCode(evt)}
-              required
-            />
-          </Form.Group>
+          <Card className="mv">
+            <Card.Header>Please enter your credit card details</Card.Header>
+            <Card.Body>
+              <Grid>
+                <Form.Group className="mh1" controlId="formNameOnCard">
+                  <Form.Label className="dark-gray f5">Name on Card</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="John Doe"
+                    defaultValue={creditCardFormDefaultInput.nameOnCard}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formCardNumber">
+                  <Form.Label className="dark-gray f5">Card Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="1234 5678 8765 4321"
+                    defaultValue={creditCardFormDefaultInput.cardNumber}
+                    onChange={(evt) => onChangeCardNumber(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formExpiryDate">
+                  <Form.Label className="dark-gray f5">Expiry Date</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="04/25"
+                    defaultValue={creditCardFormDefaultInput.expiryDate}
+                    onChange={(evt) => onChangeExpiryDate(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formSecurityCode">
+                  <Form.Label className="dark-gray f5">
+                    CVV or Security Code
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="412"
+                    defaultValue={creditCardFormDefaultInput.securityCode}
+                    onChange={(evt) => onChangeSecurityCode(evt)}
+                    required
+                  />
+                </Form.Group>
+              </Grid>
+            </Card.Body>
+          </Card>
           {isAuthenticated && (
             <Form.Group controlId="formIsSavePaymentDetails">
               <Form.Check type="checkbox" label="Save payment details" />
             </Form.Group>
           )}
-          <Link to="/">
-            <Button type="button">Cancel</Button>
-          </Link>
-          <Button type="submit">Pay</Button>
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link to="/">
+                <Button type="button">Cancel</Button>
+              </Link>{" "}
+            </div>
+            <div className="ml1">
+              <Button type="submit">Pay</Button>
+            </div>
+          </div>
         </Form>
       </>
     );
@@ -238,6 +276,7 @@ const HandlePaymentDetails = ({
                 creditCard={currCreditCard}
                 onClickPaymentMethod={onClickPaymentMethod}
                 index={currIndex}
+                maskCreditCardNumber={maskCreditCardNumber}
               />
             ))}
           </div>
@@ -250,20 +289,15 @@ const HandlePaymentDetails = ({
   );
 };
 
-const SavedCreditCard = ({ creditCard, index, onClickPaymentMethod }) => {
-  const redactedPrefixCardNumberLength = creditCard.cardNumber.length - 4;
-  const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
-
-  const getSanitisedCardNumber = (cardNumber) => {
-    // format card number to add space after every 4 digits.
-    return cardNumber.replace(/([/*|\d]{4})/g, "$1 ").replace(/^\s+|\s+$/, "");
-  };
-
+const SavedCreditCard = ({
+  creditCard,
+  index,
+  onClickPaymentMethod,
+  maskCreditCardNumber,
+}) => {
   return (
     <div className="ba" onClick={(evt) => onClickPaymentMethod(evt, index)}>
-      <div>{`${getSanitisedCardNumber(
-        redactedPrefixCardNumber + creditCard.cardNumber.slice(-4)
-      )}`}</div>
+      <div>{`${maskCreditCardNumber(creditCard.cardNumber)}`}</div>
       <div>Exp: {creditCard.expiryDate}</div>
     </div>
   );

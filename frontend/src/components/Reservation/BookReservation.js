@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import HandlePassengersDetails from "./HandlePassengersDetails";
 import HandlePaymentDetails from "./HandlePaymentDetails";
 import ConfirmItineraryDetails from "./ConfirmItineraryDetails";
+import Itinerary from "./Itinerary";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
 const BookReservation = ({ location, user, isAuthenticated }) => {
   const [flightId] = useState(location.state.flightId);
+  const [flight, setFlight] = useState(null);
   const [numPassengers] = useState(location.state.numPassengers);
   const [passengersDetails, setPassengersDetails] = useState(null);
   const [confirmationBooking, setConfirmationBooking] = useState(null);
@@ -16,34 +18,37 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   const [bookedReservation, setBookedReservation] = useState(null);
 
   useEffect(() => {
-    if (flightId && numPassengers && passengersDetails) {
-      // GET flight details.
-      fetch(`${flight_apis.get_by_id}/${flightId}`)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-          throw new Error(`${resp.status} Error retrieving flight.`);
-        })
-        .then((res) => {
-          const flight = res.flight;
-          console.log(flight);
+    // GET flight details.
+    fetch(`${flight_apis.get_by_id}/${flightId}`)
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
+        }
+        throw new Error(`${resp.status} Error retrieving flight.`);
+      })
+      .then((res) => {
+        console.log(res);
+        const flight = res.flight;
+        setFlight(flight);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [flightId]);
 
-          // create confirmation booking.
-          setConfirmationBooking({
-            reservation: {
-              totalCost: flight.flightPrice * numPassengers,
-              bookings: passengersDetails,
-              customer: passengersDetails[0],
-              flight: flight,
-            },
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+  useEffect(() => {
+    if (flight && numPassengers && passengersDetails) {
+      // create confirmation booking.
+      setConfirmationBooking({
+        reservation: {
+          totalCost: flight.flightPrice * numPassengers,
+          bookings: passengersDetails,
+          customer: passengersDetails[0],
+          flight: flight,
+        },
+      });
     }
-  }, [flightId, numPassengers, passengersDetails]);
+  }, [flight, numPassengers, passengersDetails]);
 
   useEffect(() => {
     if (flightId && passengersDetails && paymentDetails) {
@@ -92,11 +97,12 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   */
   return (
     <div>
-      <h1>Reservation</h1>
-      {<div>Reserving for user with id: {user && user.id}</div>}
+      <h2 className="mb2">Reservation</h2>
+      <Itinerary flight={flight} numPassengers={numPassengers} />
+      {/* {<div>Reserving for user with id: {userId}</div>}
       {<div>Reserving for flight with id: {flightId}</div>}
-      {<div>Reserving for {numPassengers} passengers</div>}
-      {/* {!passengersDetails && (
+      {<div>Reserving for {numPassengers} passengers</div>} */}
+      {!passengersDetails && (
         <HandlePassengersDetails
           setPassengersDetails={setPassengersDetails}
           numPassengers={numPassengers}
@@ -126,13 +132,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
             state: { reservation: bookedReservation },
           }}
         />
-      )} */}
-
-      <HandlePaymentDetails
-        setPaymentDetails={setPaymentDetails}
-        loggedInUser={user}
-        isAuthenticated={isAuthenticated}
-      />
+      )}
     </div>
   );
 };
