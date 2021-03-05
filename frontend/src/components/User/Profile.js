@@ -1,14 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Navigation from "../Navigation/Navigation";
 import { FaUser, FaPlane, FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
 
-import PersonalDetails from "./PersonalDetails/PersonalDetails";
-import ReservationDetails from "./Reservations/ReservationDetails";
-import CreditCards from "./CreditCard/CreditCards";
-
-import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`
@@ -38,7 +33,6 @@ const IconTitle = styled.p.attrs({
   className: `f4`
 })``
 
-
 // https://reactrouter.com/web/api/match
 const Profile = ({ match }) => {
   // get user id from match.params.id and GET user data.
@@ -46,6 +40,8 @@ const Profile = ({ match }) => {
     id: "1",
     firstName: "Braddy",
     lastName: "Yeoh",
+    phone: "123",
+    address: "123 road lane",
     email: "braddy.yeoh@ucdconnect.ie"
   };
 
@@ -63,11 +59,9 @@ const Profile = ({ match }) => {
     {
       icon: <FaCreditCard/>,
       title: "Card Details",
-      suburl: "carddetails"
+      suburl: "creditcards"
     }
   ]
-
-  let { path, url } = useRouteMatch();
 
   return (
     <Container>
@@ -76,9 +70,13 @@ const Profile = ({ match }) => {
       </TitleContainer>
       <IconContainer>
         {
-          icons.map(icon => {
+          icons.map((icon, key) => {
             return (
-              <Link style={{ color: 'dimgray' }} class="ba b--silver br4 w-33 tc ma4 grow pointer dim" to={`${url}/${icon.suburl}`}>
+              <Link
+                key={key}
+                style={{ color: 'dimgray' }} 
+                className="ba b--silver br4 w-33 tc ma4 grow pointer dim" 
+                to={`/user/profile/` + match.params.id + "/" + icon.suburl}>
                   <IconContext.Provider value={{size: "15em"}}>
                     <Icon>
                       {icon.icon}
@@ -88,23 +86,12 @@ const Profile = ({ match }) => {
                       {icon.title}
                       </IconTitle>
                     </IconTitleDiv>
-                </IconContext.Provider>
-            </Link>
+                  </IconContext.Provider>
+              </Link>
             )
           })
         }
       </IconContainer>
-      <Switch>
-        <Route path={`${path}/personaldetails`}>
-          <PersonalDetails />
-        </Route>
-        <Route path={`${path}/reservations`}>
-          <ReservationDetails />
-        </Route>
-        <Route path={`${path}/carddetails`}>
-          <CreditCards />
-        </Route>
-      </Switch>
     </Container>
     
   );

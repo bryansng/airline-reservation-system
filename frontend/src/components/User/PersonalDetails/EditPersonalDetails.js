@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
+import { useHistory } from "react-router-dom";
+
+import rest_endpoints from "../../../config/rest_endpoints.json";
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -53,9 +58,59 @@ const Save = styled.a.attrs({
 })``
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ match }) => {
-  // get user id from match.params.id and GET user data.
+const PersonalDetails = ({ match, location }) => {
 
+    let history = useHistory();
+
+    const url = customerEndpoint + "profile/" + match.params.id
+    const [isSave, setIsSave] = useState(false);
+    const [email, setEmail] = useState(location.state.customer.email);
+    const [lastName, setLastName] = useState(location.state.customer.lastName);
+    const [firstName, setFirstName] = useState(location.state.customer.firstName);
+    const [address, setAddress] = useState(location.state.customer.address);
+    const [phoneNum, setPhoneNum] = useState(location.state.customer.phoneNum);
+
+    function handleSave() {
+        setIsSave(true)
+    }
+
+    useEffect(() => {
+        if (isSave) {
+            const requestOptions = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Authorization: `bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    address: address,
+                    phoneNum: phoneNum,
+                    bornOn: "2018-03-29T13:34:00.000",
+                    auth: "member"
+                }),
+            };
+
+            fetch(url, requestOptions)
+            .then((resp) => {
+                if (resp.ok) {
+                return resp.json();
+                }
+                throw new Error(`${resp.status} Error updating customer.`);
+            })
+            .then((res) => {
+                
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+            history.go(-2);
+
+        }
+  }, [address, email, firstName, history, isSave, lastName, phoneNum, url]);
   return (
     <Container>
         <HeaderRow>
@@ -71,7 +126,7 @@ const PersonalDetails = ({ match }) => {
                             First Name
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setFirstName(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -79,7 +134,7 @@ const PersonalDetails = ({ match }) => {
                             Last Name
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setLastName(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -87,7 +142,7 @@ const PersonalDetails = ({ match }) => {
                             Address
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setAddress(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -95,7 +150,7 @@ const PersonalDetails = ({ match }) => {
                             Phone Number
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setPhoneNum(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -103,10 +158,10 @@ const PersonalDetails = ({ match }) => {
                             Email Address
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setEmail(e.target.value)}/>
                 </BodyDiv>
                 <SaveDiv>
-                    <Save>Save</Save>
+                    <Save onClick={handleSave}>Save</Save>
                 </SaveDiv>
             </Form>
         </BodyRow>

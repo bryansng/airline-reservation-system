@@ -141,7 +141,7 @@ public class CustomerService {
     if (customerRepository.existsById(id)) {
       Customer customer = customerRepository.findById(id).get();
 
-      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.FOUND);
+      return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CustomerResponse("Customer not found.", null), HttpStatus.NOT_FOUND);

@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
 
+import { Link } from "react-router-dom";
+
+import rest_endpoints from "../../../config/rest_endpoints.json";
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
+
+
 const Container = styled.div.attrs({
-    className: `flex flex-column`
+    className: `flex flex-column pr6 pl6`
 })``
 
 const HeaderRow = styled.div.attrs({
@@ -19,16 +25,21 @@ const Title = styled.p.attrs({
     className: `f2 measure fw1 mt3 ml-5`
 })``
 
+const Btn = styled.div.attrs({
+    className: `w-50`
+})``
+
+const Add = styled.p.attrs({
+    className: `f3 measure fw1 mt5 green pointer dim tr`
+})``
+
+
 const CardsContainer = styled.div.attrs({
     className: `flex flex-wrap pr6 pl6 justify-content-center`
 })``
 
 const IconContainer = styled.div.attrs({
     className: `pa3 flex`
-})``
-
-const IconDiv = styled.div.attrs({
-    className: `ba b--silver br4 tc ma4 grow pointer dim`
 })``
 
 const Icon = styled.div.attrs({
@@ -44,40 +55,67 @@ const IconTitle = styled.p.attrs({
 })``
 
 const CreditCards = ({ match }) => {
-    // get user id from match.params.id and GET user data.
-    const testUserId = { 
-      id: "1",
-      cardNumber: "1231435667657567",
-      expiryDate: "12/23",
-      cvc: "123",
-      name: "Valentina Pan",
-      billingAddress: "33 Calle de "
-    };
+    const [userId] = useState(match.params.id);
+    const [creditCards, setCreditCards] = useState([]);
   
-    const testUserId2 = { 
-        id: "2",
-        cardNumber: "238756239569",
-        expiryDate: "11/25",
-        cvc: "945",
-        name: "Braddy Yeoh",
-        billingAddress: "123 Boobies"
-    };
-  
-    const cards = [testUserId, testUserId2]
-  
+    const url = customerEndpoint + "creditcard/all/" + userId;
+    
+    useEffect(() => {
+      fetch(url)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`${resp.status} Error retrieving customer.`);
+        })
+        .then((res) => {
+            const cardList = res.creditCards
+            setCreditCards({
+              cards: cardList
+            })
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [url]);
+
     return (
       <Container>
             <HeaderRow>
                 <TitleContainer>
                     <Title>Credit Cards</Title>
                 </TitleContainer>
+                <Btn>
+                    <Link 
+                        style={{ color: 'green' }} 
+                        to={{
+                            pathname: "/user/profile/" + userId + "/creditcards/add",
+                            state: {
+                                isPost: true
+                            }
+                        }}>
+                            <Add>
+                                Add Card
+                            </Add>
+                    </Link>
+                </Btn>
             </HeaderRow>
             <CardsContainer>
                 <IconContainer>
                     {
-                        cards.map(card => {
+                        creditCards.length === 0 ? <div>No Cards</div> : creditCards.cards.map((card, key) => {
                             return (
-                                <IconDiv>
+                                <Link 
+                                    key={key} 
+                                    style={{ color: 'dimgray' }} 
+                                    className="ba b--silver br4 tc ma4 grow pointer dim" 
+                                    to={{ 
+                                        pathname: `/user/profile/` + userId + "/creditcards/" + card.id,
+                                        state: {
+                                            card: card
+                                        }
+                                    }}
+                                >
                                     <IconContext.Provider value={{size: "15em"}}>
                                         <Icon>
                                         <FaCreditCard/>
@@ -88,7 +126,7 @@ const CreditCards = ({ match }) => {
                                         </IconTitle>
                                         </IconTitleDiv>
                                     </IconContext.Provider>
-                                </IconDiv>
+                                </Link>
                             )
                         })
                     }

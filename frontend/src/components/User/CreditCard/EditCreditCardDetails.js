@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
+import { useHistory } from "react-router-dom";
+
+import rest_endpoints from "../../../config/rest_endpoints.json";
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer;
 
 const Container = styled.div.attrs({
     className: `flex flex-column pr6 pl6`
@@ -53,24 +58,55 @@ const Save = styled.a.attrs({
 })``
 
 // https://reactrouter.com/web/api/match
-const EditCreditCardDetails = ({ match }) => {
-  // get user id from match.params.id and GET user data.
-  const testUserId = { 
-    id: "1",
-    firstName: "Braddy",
-    lastName: "Yeoh",
-    phone: "123",
-    address: "123 road lane",
-    email: "braddy.yeoh@ucdconnect.ie"
-  };
+const EditCreditCardDetails = ({ match, location }) => {
+    const [userId] = useState(match.params.id);
+    const [isPost] = useState(location.state.isPost);
+    const [isSave, setIsSave] = useState(false);
+    const [cardNumber, setCardNumber] = useState(location.state.card.cardNumber);
+    const [expiryDate, setExpiryDate] = useState(location.state.card.expiryDate);
+    const [securityCode, setSecurityCode] = useState(location.state.card.securityCode);
+    const [nameOnCard, setNameOnCard] = useState(location.state.card.nameOnCard);
 
-  const testUserId2 = { 
-    id: "1",
-    firstName: "Braddy",
-    lastName: "Yeoh",
-    email: "braddy.yeoh@ucdconnect.ie"
-  };
+    let history = useHistory();
 
+    const url = customerEndpoint + "creditcard/" + userId;
+
+    function handleSave() {
+        setIsSave(true)
+    }
+
+    useEffect(() => {
+        if (isSave) {
+            const requestOptions = {
+                method: isPost ? "POST" : "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Authorization: `bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    cardNumber: cardNumber,
+                    expiryDate: expiryDate,
+                    securityCode: securityCode,
+                    nameOnCard: nameOnCard
+                }),
+            };
+            fetch(url, requestOptions)
+            .then((resp) => {
+                if (resp.ok) {
+                    return resp.json();
+                } 
+
+                throw new Error(`${resp.status} ${isPost ? "Error posting customer." : "Error updating customer."}`);
+            })
+            .then((res) => {
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+            history.go(-2);
+        }
+    }, [cardNumber, expiryDate, history, isPost, isSave, nameOnCard, securityCode, url]);
 
   return (
     <Container>
@@ -87,7 +123,7 @@ const EditCreditCardDetails = ({ match }) => {
                             Card Number
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setCardNumber(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
@@ -95,34 +131,26 @@ const EditCreditCardDetails = ({ match }) => {
                             Expiry Date
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setExpiryDate(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
                         <FieldText>
-                            CVC
+                            Security Code
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setSecurityCode(e.target.value)}/>
                 </BodyDiv>
                 <BodyDiv>
                     <FieldDiv>
                         <FieldText>
-                            Name
+                            Name On Card
                         </FieldText>
                     </FieldDiv>
-                    <Input/>
-                </BodyDiv>
-                <BodyDiv>
-                    <FieldDiv>
-                        <FieldText>
-                            Billing Address
-                        </FieldText>
-                    </FieldDiv>
-                    <Input/>
+                    <Input onChange={e => setNameOnCard(e.target.value)}/>
                 </BodyDiv>
                 <SaveDiv>
-                    <Save>Save</Save>
+                    <Save onClick={handleSave}>Save</Save>
                 </SaveDiv>
             </Form>
         </BodyRow>
