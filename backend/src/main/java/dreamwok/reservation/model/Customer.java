@@ -50,6 +50,9 @@ public class Customer {
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
   private List<Booking> bookings;
 
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+  private List<CreditCardDetails> creditCardDetails;
+
   public Customer() {
 
   }
@@ -177,5 +180,13 @@ public class Customer {
 
   public void setBookings(List<Booking> bookings) {
     this.bookings = bookings;
+  }
+
+  public List<CreditCardDetails> getCreditCardDetails() {
+    return creditCardDetails;
+  }
+
+  public void setCreditCardDetails(List<CreditCardDetails> creditCardDetails) {
+    this.creditCardDetails = creditCardDetails;
   }
 }
