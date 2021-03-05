@@ -94,10 +94,10 @@ const Reservation = ({ match, user, bookFlightDetails }) => {
   */
   return (
     <div>
-      <h1>Reservation</h1>
-      {<div>Reserving for user with id: {userId}</div>}
+      <h2 className="mb2">Reservation</h2>
+      {/* {<div>Reserving for user with id: {userId}</div>}
       {<div>Reserving for flight with id: {flightId}</div>}
-      {<div>Reserving for {numPassengers} passengers</div>}
+      {<div>Reserving for {numPassengers} passengers</div>} */}
       {!passengersDetails && (
         <HandlePassengersDetails
           setPassengersDetails={setPassengersDetails}

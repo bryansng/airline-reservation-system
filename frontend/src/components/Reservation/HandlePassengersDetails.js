@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import Card from "react-bootstrap/esm/Card";
 
 const Button = styled.button.attrs({
-  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `mv1 mh0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -56,7 +57,7 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
 
   return (
     <>
-      <h2>Handle Passengers Details</h2>
+      <h3 className="mb2">Please input passenger details</h3>
       <div>
         <Form onSubmit={(e) => handleSubmit(e)}>
           {passengerForms}
@@ -72,58 +73,61 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
 
 const APassengerDetailsForm = ({ index }) => {
   return (
-    <>
-      {index === 0 ? (
+    <Card className="mv3">
+      {/* {index === 0 ? (
         <div>Your details:</div>
       ) : (
         <div>Passenger {index + 1}'s' details:</div>
-      )}
-      <Form.Group controlId={`formFirstName${index}`}>
-        <Form.Label>First name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="John"
-          defaultValue="testFirstName"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formLastName${index}`}>
-        <Form.Label>Surname</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Doe"
-          defaultValue="testLastName"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formEmail${index}`}>
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="johndoe@gmail.com"
-          defaultValue="testEmail@test.com"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formMobileNumber${index}`}>
-        <Form.Label>Mobile number</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder=""
-          defaultValue="testMobileNumber"
-          required
-        />
-      </Form.Group>
-      <Form.Group controlId={`formAddress${index}`}>
-        <Form.Label>Address</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder=""
-          defaultValue="testAddress"
-          required
-        />
-      </Form.Group>
-    </>
+      )} */}
+      <Card.Header>Passenger {index + 1}</Card.Header>
+      <Card.Body>
+        <Form.Group className="mb1" controlId={`formFirstName${index}`}>
+          <Form.Label className="gray f6">First name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="John"
+            defaultValue="testFirstName"
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb1" controlId={`formLastName${index}`}>
+          <Form.Label className="gray f6">Surname</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Doe"
+            defaultValue="testLastName"
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb1" controlId={`formEmail${index}`}>
+          <Form.Label className="gray f6">Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="johndoe@gmail.com"
+            defaultValue="testEmail@test.com"
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb1" controlId={`formMobileNumber${index}`}>
+          <Form.Label className="gray f6">Mobile number</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder=""
+            defaultValue="testMobileNumber"
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb1" controlId={`formAddress${index}`}>
+          <Form.Label className="gray f6">Address</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder=""
+            defaultValue="testAddress"
+            required
+          />
+        </Form.Group>
+      </Card.Body>
+    </Card>
   );
 };
 
