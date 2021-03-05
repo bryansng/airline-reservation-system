@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
 import * as dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
@@ -18,6 +19,11 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
   ${(props) => props.disabled && `pointer-events: none;`}
+`;
+
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 `;
 
 const SearchFlight = () => {
@@ -75,50 +81,60 @@ const SearchFlight = () => {
 
   return (
     <>
-      <div>Search Flights</div>
-      <div className="mb4">
-        <Form onSubmit={(e) => handleSubmit(e)}>
-          <Form.Group controlId="formOrigin">
-            <Form.Label>Origin</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Type a city or airport"
-              defaultValue="KUL"
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formDestination">
-            <Form.Label>Destination</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Type a city or airport"
-              defaultValue="KCH"
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formDepartDate">
-            <Form.Label>Departure Date</Form.Label>
-            <Form.Control
-              type="date"
-              placeholder="Date"
-              defaultValue="2021-04-16"
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formNumberOfPassengers">
-            <Form.Label>Number of passengers</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="1"
-              defaultValue="1"
-              onChange={(evt) => onChangeNumPassengers(evt)}
-              required
-            />
-          </Form.Group>
-          <Button type="submit">Search flights</Button>
-        </Form>
-      </div>
-      <div>
+      <Form onSubmit={(e) => handleSubmit(e)}>
+        <Card className="mv3">
+          <Card.Header>Search Flights</Card.Header>
+          <Card.Body>
+            <Grid>
+              <Form.Group className="mh1" controlId="formOrigin">
+                <Form.Label className="dark-gray f5">Origin</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Type a city or airport"
+                  defaultValue="KUL"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formDestination">
+                <Form.Label className="dark-gray f5">Destination</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Type a city or airport"
+                  defaultValue="KCH"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formDepartDate">
+                <Form.Label className="dark-gray f5">Departure Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  placeholder="Date"
+                  defaultValue="2021-04-16"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formNumberOfPassengers">
+                <Form.Label className="dark-gray f5">
+                  Number of passengers
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="1"
+                  defaultValue="1"
+                  onChange={(evt) => onChangeNumPassengers(evt)}
+                  required
+                />
+              </Form.Group>
+            </Grid>
+          </Card.Body>
+        </Card>
+        <div className="flex justify-end">
+          <div>
+            <Button type="submit">Search flights</Button>
+          </div>
+        </div>
+      </Form>
+      <div className="mv2">
         {flights &&
           flights.map((currFlight, currIndex) => {
             const flightDuration = dayjs(currFlight.arrivalDateTime).diff(
