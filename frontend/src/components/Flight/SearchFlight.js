@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import * as dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import Card from "react-bootstrap/esm/Card";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { flight: flight_apis } = rest_endpoints;
 
@@ -161,6 +162,11 @@ const SearchFlight = () => {
               </div>
             );
           })}
+        {flights != null && flights.length === 0 && (
+          <Card>
+            <Card.Body>No flights available.</Card.Body>
+          </Card>
+        )}
       </div>
     </>
   );
