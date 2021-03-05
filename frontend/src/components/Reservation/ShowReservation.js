@@ -125,23 +125,23 @@ const ShowReservation = ({ location }) => {
               </Card.Subtitle>
 
               <div className="mv2">
-                <div className="gray f6">Booking number</div>
+                <div className="gray f5">Booking number</div>
                 <div className="lh-copy">{reservation.id}</div>
               </div>
               <div className="mv2">
-                <div className="gray f6">Booking name</div>
+                <div className="gray f5">Booking name</div>
                 <div className="lh-copy">{`${reservation.customer.lastName}`}</div>
               </div>
               <div className="mv2">
-                <div className="gray f6">Number of tickets</div>
+                <div className="gray f5">Number of tickets</div>
                 <div className="lh-copy">{reservation.bookings.length}</div>
               </div>
               <div className="mv2">
-                <div className="gray f6">Flight number</div>
+                <div className="gray f5">Flight number</div>
                 <div className="lh-copy">{reservation.flight.flightName}</div>
               </div>
               <div className="mv2">
-                <div className="gray f6">Check in before</div>
+                <div className="gray f5">Check in before</div>
                 <div className="lh-copy">
                   {dayjs(reservation.flight.departureDateTime)
                     .subtract(1, "hour")
@@ -230,7 +230,7 @@ const CancelConfirmationModal = ({ show, onHide, toggleCancelBooking }) => {
 const PassengerDetails = ({ index, passenger }) => {
   return (
     <div className="mv2">
-      <div className="gray f6">Passenger {index + 1}</div>
+      <div className="gray f5">Passenger {index + 1}</div>
       <div className="lh-copy">{`${passenger.firstName} ${passenger.lastName}`}</div>
     </div>
   );

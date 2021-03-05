@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
+import Card from "react-bootstrap/Card";
 
 const Button = styled.button.attrs({
   className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
@@ -15,6 +16,11 @@ const Button = styled.button.attrs({
     transition: 0.15s ease-in;
   }
   ${(props) => props.disabled && `pointer-events: none;`}
+`;
+
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 `;
 
 const HandlePaymentDetails = ({ setPaymentDetails }) => {
@@ -92,52 +98,67 @@ const HandlePaymentDetails = ({ setPaymentDetails }) => {
 
   return (
     <>
-      <h2>Handle Payment Details</h2>
+      {/* <h3 className="mb2">Please input</h3> */}
       <div>
         <Form onSubmit={(e) => handleSubmit(e)}>
-          <Form.Group controlId="formNameOnCard">
-            <Form.Label>Name on Card</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="John Doe"
-              defaultValue="testNameOnCard"
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formCardNumber">
-            <Form.Label>Card Number</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="1234 5678 8765 4321"
-              defaultValue="1234 5678 8765 4321"
-              onChange={(evt) => onChangeCardNumber(evt)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formExpiryDate">
-            <Form.Label>Expiry Date</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="04/25"
-              defaultValue="04/25"
-              onChange={(evt) => onChangeExpiryDate(evt)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formSecurityCode">
-            <Form.Label>CVV or Security Code</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="412"
-              defaultValue="412"
-              onChange={(evt) => onChangeSecurityCode(evt)}
-              required
-            />
-          </Form.Group>
-          <Link to="/">
-            <Button type="button">Cancel</Button>
-          </Link>
-          <Button type="submit">Pay</Button>
+          <Card className="mv">
+            <Card.Header>Please enter your credit card details</Card.Header>
+            <Card.Body>
+              <Grid>
+                <Form.Group className="mh1" controlId="formNameOnCard">
+                  <Form.Label className="dark-gray f5">Name on Card</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="John Doe"
+                    defaultValue="testNameOnCard"
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formCardNumber">
+                  <Form.Label className="dark-gray f5">Card Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="1234 5678 8765 4321"
+                    defaultValue="1234 5678 8765 4321"
+                    onChange={(evt) => onChangeCardNumber(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formExpiryDate">
+                  <Form.Label className="dark-gray f5">Expiry Date</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="04/25"
+                    defaultValue="04/25"
+                    onChange={(evt) => onChangeExpiryDate(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formSecurityCode">
+                  <Form.Label className="dark-gray f5">
+                    CVV or Security Code
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="412"
+                    defaultValue="412"
+                    onChange={(evt) => onChangeSecurityCode(evt)}
+                    required
+                  />
+                </Form.Group>
+              </Grid>
+            </Card.Body>
+          </Card>
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link to="/">
+                <Button type="button">Cancel</Button>
+              </Link>{" "}
+            </div>
+            <div className="ml1">
+              <Button type="submit">Pay</Button>
+            </div>
+          </div>
         </Form>
       </div>
     </>

@@ -18,6 +18,11 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`;
+
 const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
   const [passengerForms, setPassengerForms] = useState(null);
 
@@ -57,7 +62,7 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
 
   return (
     <>
-      <h3 className="mb2">Please input passenger details</h3>
+      {/* <h3 className="mb2">Please input passenger details</h3> */}
       <div>
         <Form onSubmit={(e) => handleSubmit(e)}>
           {passengerForms}
@@ -68,7 +73,7 @@ const HandlePassengersDetails = ({ setPassengersDetails, numPassengers }) => {
               </Link>
             </div>
             <div className="ml1">
-              <Button type="submit">Go to payment</Button>
+              <Button type="submit">Confirm</Button>
             </div>
           </div>
         </Form>
@@ -85,46 +90,48 @@ const APassengerDetailsForm = ({ index }) => {
       ) : (
         <div>Passenger {index + 1}'s' details:</div>
       )} */}
-      <Card.Header>Passenger {index + 1}</Card.Header>
+      <Card.Header>Please input details for passenger {index + 1}</Card.Header>
       <Card.Body>
-        <Form.Group className="mb1" controlId={`formFirstName${index}`}>
-          <Form.Label className="gray f6">First name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="John"
-            defaultValue="testFirstName"
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb1" controlId={`formLastName${index}`}>
-          <Form.Label className="gray f6">Surname</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Doe"
-            defaultValue="testLastName"
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb1" controlId={`formEmail${index}`}>
-          <Form.Label className="gray f6">Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="johndoe@gmail.com"
-            defaultValue="testEmail@test.com"
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb1" controlId={`formMobileNumber${index}`}>
-          <Form.Label className="gray f6">Mobile number</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder=""
-            defaultValue="testMobileNumber"
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb1" controlId={`formAddress${index}`}>
-          <Form.Label className="gray f6">Address</Form.Label>
+        <Grid>
+          <Form.Group className="mh1" controlId={`formFirstName${index}`}>
+            <Form.Label className="dark-gray f5">First name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="John"
+              defaultValue="testFirstName"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mh1" controlId={`formLastName${index}`}>
+            <Form.Label className="dark-gray f5">Surname</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Doe"
+              defaultValue="testLastName"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mh1" controlId={`formEmail${index}`}>
+            <Form.Label className="dark-gray f5">Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="johndoe@gmail.com"
+              defaultValue="testEmail@test.com"
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mh1" controlId={`formMobileNumber${index}`}>
+            <Form.Label className="dark-gray f5">Mobile number</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder=""
+              defaultValue="testMobileNumber"
+              required
+            />
+          </Form.Group>
+        </Grid>
+        <Form.Group className="mh1" controlId={`formAddress${index}`}>
+          <Form.Label className="dark-gray f5">Address</Form.Label>
           <Form.Control
             type="text"
             placeholder=""
