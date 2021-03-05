@@ -33,7 +33,7 @@ const ConfirmItineraryDetails = ({
     <>
       {/* <h3 className="lh-copy mb2">Confirm Itinerary Details</h3> */}
       <Card className="mv2">
-        <Card.Header>Confirm itinerary details</Card.Header>
+        <Card.Header>Please confirm passenger details</Card.Header>
 
         <Card.Body>
           {/* <h5 className="mb-3">

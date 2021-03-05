@@ -33,14 +33,15 @@ const Itinerary = ({ flight, numPassengers }) => {
               {", "}
               {`${dayjs(flight.arrivalDateTime).format("HH:mm")}`}
             </Card.Subtitle>
+
             <Grid>
               <div className="mv2">
-                <div className="dark-gray b">Number of tickets</div>
+                <div className="dark-gray">Number of tickets</div>
                 <div className="lh-copy">{numPassengers}</div>
               </div>
 
               <div className="mv2">
-                <div className="dark-gray b">Total Price</div>
+                <div className="dark-gray">Total Price</div>
                 <div className="lh-copy">
                   &#8364; {flight.flightPrice * numPassengers}
                 </div>

@@ -109,9 +109,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
       <Card className="mv3">
         <Card.Header>
           {index === 0 ? (
-            <div>Your details:</div>
+            <div>Please input your details</div>
           ) : (
-            <div>Passenger {index + 1}'s' details:</div>
+            <div>Please input passenger {index + 1}'s details</div>
           )}
         </Card.Header>
         <Card.Body>
