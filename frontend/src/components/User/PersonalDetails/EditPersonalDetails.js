@@ -6,7 +6,7 @@ import { Textbox } from "react-inputs-validation";
 import { useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer_profile;
+const customerEndpoint = rest_endpoints.rest_endpoints.user.customer_profile;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -63,8 +63,8 @@ const Save = styled.a.attrs({
 const PersonalDetails = ({ location }) => {
   let history = useHistory();
 
-  console.log(location)
-  const url = customerEndpoint + "/" + location.state.customer.id
+  console.log(location);
+  const url = customerEndpoint + "/" + location.state.user.id;
   const [isSave, setIsSave] = useState(false);
 
   const [isValidFirstName, setIsValidFirstName] = useState(false);
@@ -72,11 +72,11 @@ const PersonalDetails = ({ location }) => {
   const [isValidPhoneNum, setIsValidPhoneNum] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
 
-  const [email, setEmail] = useState(location.state.customer.email);
-  const [lastName, setLastName] = useState(location.state.customer.lastName);
-  const [firstName, setFirstName] = useState(location.state.customer.firstName);
-  const [address, setAddress] = useState(location.state.customer.address);
-  const [phoneNum, setPhoneNum] = useState(location.state.customer.phoneNum);
+  const [email, setEmail] = useState(location.state.user.email);
+  const [lastName, setLastName] = useState(location.state.user.lastName);
+  const [firstName, setFirstName] = useState(location.state.user.firstName);
+  const [address, setAddress] = useState(location.state.user.address);
+  const [phoneNum, setPhoneNum] = useState(location.state.user.phoneNum);
 
   function handleSave() {
     if (

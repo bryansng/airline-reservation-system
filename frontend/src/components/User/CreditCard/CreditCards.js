@@ -6,7 +6,8 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
+const creditCardEndpoint =
+  rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -49,9 +50,8 @@ const IconTitleDiv = styled.div.attrs({
 })``;
 
 const IconTitle = styled.p.attrs({
-    className: `f4`
-})``
-
+  className: `f4`,
+})``;
 
 const CreditCards = ({ location }) => {
   const [userId] = useState(location.state.user.id);
@@ -90,7 +90,7 @@ const CreditCards = ({ location }) => {
         <TitleContainer>
           <Title>Credit Cards</Title>
         </TitleContainer>
-        <Btn>
+        {/* <Btn>
           <Link
             style={{ color: "green" }}
             to={{
@@ -103,7 +103,7 @@ const CreditCards = ({ location }) => {
           >
             <Add>Add Card</Add>
           </Link>
-        </Btn>
+        </Btn> */}
       </HeaderRow>
       <CardsContainer>
         <IconContainer>
