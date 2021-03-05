@@ -96,7 +96,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
       {<div>Reserving for user with id: {user && user.id}</div>}
       {<div>Reserving for flight with id: {flightId}</div>}
       {<div>Reserving for {numPassengers} passengers</div>}
-      {!passengersDetails && (
+      {/* {!passengersDetails && (
         <HandlePassengersDetails
           setPassengersDetails={setPassengersDetails}
           numPassengers={numPassengers}
@@ -112,7 +112,11 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         />
       )}
       {isConfirmedBooking && !paymentDetails && (
-        <HandlePaymentDetails setPaymentDetails={setPaymentDetails} />
+        <HandlePaymentDetails
+          setPaymentDetails={setPaymentDetails}
+          loggedInUser={user}
+          isAuthenticated={isAuthenticated}
+        />
       )}
       {paymentDetails && bookedReservation && (
         <Redirect
@@ -122,7 +126,13 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
             state: { reservation: bookedReservation },
           }}
         />
-      )}
+      )} */}
+
+      <HandlePaymentDetails
+        setPaymentDetails={setPaymentDetails}
+        loggedInUser={user}
+        isAuthenticated={isAuthenticated}
+      />
     </div>
   );
 };

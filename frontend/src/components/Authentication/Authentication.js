@@ -26,7 +26,8 @@ function useAuthentication({
     // }
     console.log(isAuthenticated);
     if (!isAuthenticated) {
-      signIn("pog@pog.com", "test");
+      signIn("hong.sng@ucdconnect.ie", "root");
+      // signIn("pog@pog.com", "test");
       // register("pog@pog.com", "test", "pog", "pog", "pog address", "42069");
     }
 
