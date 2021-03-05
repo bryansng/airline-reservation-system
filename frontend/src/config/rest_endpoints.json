@@ -5,7 +5,8 @@
       "login": "http://localhost:8080/login"
     },
     "user": {
-      "customer": "http://localhost:8080/customer/"
+      "customer": "http://localhost:8080/customer/",
+      "customer_profile": "http://localhost:8080/customer/profile"
     },
     "reservation": {
       "create": "http://localhost:8080/book",
@@ -19,7 +20,8 @@
       "search": "http://localhost:8080/search"
     },
     "credit_card": {
-      "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all"
+      "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all",
+      "get_card_by_card_id": "http://localhost:8080/customer/creditcard"
     }
   }
 }

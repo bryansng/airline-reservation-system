@@ -28,6 +28,9 @@ function Navigation({
         >
           <div>Book a Reservation</div>
         </Link>
+        <Link to={`/user/profile/1`}>
+          <div>Profile</div>
+        </Link>
         <Link to={`/retrieve/booking`}>
           <div>Retrieve Booking</div>
         </Link>

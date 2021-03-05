@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer;
+
+const customerEndpoint =  rest_endpoints.rest_endpoints.user.customer_profile;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -59,56 +60,38 @@ const DataText = styled.p.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ location }) => {
-  let history = useHistory();
+const PersonalDetails = ({ match }) => {
 
-  // get user id from match.params.id and GET user data.
-  const [userId] = useState(location.state.user.id);
-  const [customer, setCustomer] = useState(null);
-  const [isDelete, setIsDelete] = useState(false);
+    let history = useHistory();
+    
+    // get user id from match.params.id and GET user data.
+    const [userId] = useState(match.params.id);
+    const [customer, setCustomer] = useState(null);
+    const [isDelete, setIsDelete] = useState(false);
+  
+    const url = customerEndpoint + "/" + userId;
 
-  const url = customerEndpoint + "profile/" + userId;
+    function handleDelete() {
+        setIsDelete(true)
+    }
 
-  function handleDelete() {
-    setIsDelete(true);
-  }
-
-  useEffect(() => {
-    fetch(url)
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        throw new Error(`${resp.status} Error retrieving customer.`);
-      })
-      .then((res) => {
-        const cus = res.customer;
-        setCustomer({
-          email: cus.email,
-          address: cus.address,
-          firstName: cus.firstName,
-          lastName: cus.lastName,
-          phoneNum: cus.phoneNum,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [url]);
-
-  useEffect(() => {
-    if (isDelete) {
-      // DELETE request using fetch with error handling
-      fetch(url, { method: "DELETE" })
-        .then(async (response) => {
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to response status
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
+    useEffect(() => {
+        fetch(url)
+        .then((resp) => {
+            if (resp.ok) {
+            return resp.json();
+            }
+            throw new Error(`${resp.status} Error retrieving customer.`);
+        })
+        .then((res) => {
+            const cus = res.customer
+            setCustomer({
+                email: cus.email,
+                address: cus.address,
+                firstName: cus.firstName,
+                lastName: cus.lastName,
+                phoneNum: cus.mobileNumber
+            })
         })
         .catch((error) => {
           console.error(error);

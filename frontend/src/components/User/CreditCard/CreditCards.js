@@ -6,7 +6,7 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -49,8 +49,37 @@ const IconTitleDiv = styled.div.attrs({
 })``;
 
 const IconTitle = styled.p.attrs({
-  className: `f4`,
-})``;
+    className: `f4`
+})``
+
+const CreditCards = ({ match }) => {
+    const [userId] = useState(match.params.id);
+    const [creditCards, setCreditCards] = useState([]);
+  
+    const url = creditCardEndpoint + "/" + userId;
+
+    function parseCardNumber(cardNum) {
+        return "Ending with " + cardNum.substring(cardNum.length - 4, cardNum.length)
+    }
+    
+    useEffect(() => {
+      fetch(url)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`${resp.status} Error retrieving customer.`);
+        })
+        .then((res) => {
+            const cardList = res.creditCards
+            setCreditCards({
+              cards: cardList
+            })
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }, [url]);
 
 const CreditCards = ({ location }) => {
   const [userId] = useState(location.state.user.id);

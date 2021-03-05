@@ -6,7 +6,8 @@ import { useHistory } from "react-router-dom";
 import { Textbox } from "react-inputs-validation";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer;
+
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -54,49 +55,33 @@ const Save = styled.a.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const EditCreditCardDetails = ({ location }) => {
-  console.log(location.state.user.id);
-  console.log(
-    "🚀 ~ file: CreditCards.js ~ line 64 ~ CreditCards ~ location",
-    location
-  );
-  const [userId] = useState(location.state.user.id);
-  const [isPost] = useState(location.state.isPost);
-  const [isSave, setIsSave] = useState(false);
+const EditCreditCardDetails = ({ match, location }) => {
+    const [userId] = useState(match.params.id);
+    const [isPost] = useState(location.state.isPost);
+    const [isSave, setIsSave] = useState(false);
 
-  const [isValidCardNumber, setIsValidCardNumber] = useState(false);
-  const [isValidExpiryDate, setIsValidExpiryDate] = useState(false);
-  const [isValidSecurityCode, setIsValidSecurityCode] = useState(false);
-  const [isValidNameOnCard, setIsValidNameOnCard] = useState(false);
+    const [isValidCardNumber, setIsValidCardNumber] = useState(false);
+    const [isValidExpiryDate, setIsValidExpiryDate] = useState(false);
+    const [isValidSecurityCode, setIsValidSecurityCode] = useState(false);
+    const [isValidNameOnCard, setIsValidNameOnCard] = useState(false);
 
-  const [cardNumber, setCardNumber] = useState(
-    location.state.card == null ? null : location.state.card.cardNumber
-  );
-  const [expiryDate, setExpiryDate] = useState(
-    location.state.card == null ? null : location.state.card.expiryDate
-  );
-  const [securityCode, setSecurityCode] = useState(
-    location.state.card == null ? null : location.state.card.securityCode
-  );
-  const [nameOnCard, setNameOnCard] = useState(
-    location.state.card == null ? null : location.state.card.nameOnCard
-  );
+    const [cardNumber, setCardNumber] = useState(location.state.card == null ? null : location.state.card.cardNumber);
+    const [expiryDate, setExpiryDate] = useState(location.state.card == null ? null : location.state.card.expiryDate);
+    const [securityCode, setSecurityCode] = useState(location.state.card == null ? null : location.state.card.securityCode);
+    const [nameOnCard, setNameOnCard] = useState(location.state.card == null ? null : location.state.card.nameOnCard);
 
-  let history = useHistory();
+    let history = useHistory();
 
-  const url = customerEndpoint + "creditcard/" + userId;
+    const url = creditCardEndpoint + "/" + userId;
+    console.log("url: " + url)
 
-  function handleSave() {
-    if (
-      isValidCardNumber &&
-      isValidExpiryDate &&
-      isValidSecurityCode &&
-      isValidNameOnCard
-    ) {
-      setIsSave(true);
-    } else {
-      let msg = isPost ? "Cannot add new card" : "Cannot update card";
-      alert(msg + "\n\nPlease fill in fields appropriately");
+    function handleSave() {
+        if (isValidCardNumber && isValidExpiryDate && isValidSecurityCode && isValidNameOnCard) {
+            setIsSave(true)
+        } else {
+            let msg = isPost ? "Cannot add new card" : "Cannot update card" ;
+            alert(msg + "\n\nPlease fill in fields appropriately");
+        }
     }
   }
 
