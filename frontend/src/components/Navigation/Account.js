@@ -215,9 +215,11 @@ function Account({ user, signIn, register, logOut, isAuthenticated }) {
           >
             <Button type="button">Profile</Button>
           </Link>
-          <Button type="button" onClick={() => logOut()}>
-            Logout
-          </Button>
+          <Link to="/">
+            <Button type="button" onClick={() => logOut()}>
+              Logout
+            </Button>
+          </Link>
         </>
       )}
     </Container>
