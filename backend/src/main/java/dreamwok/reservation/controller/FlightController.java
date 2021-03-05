@@ -1,6 +1,8 @@
 package dreamwok.reservation.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,13 +45,22 @@ public class FlightController {
 			@RequestParam String arrivalAirport,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
 			@RequestParam Integer numOfPassengers, @RequestParam int pageNum, @RequestParam Integer fromDepartureDate) {
-		Page<Flight> flights = (fromDepartureDate > 0)
+		Page<Flight> flightsPage = (fromDepartureDate > 0)
 				? flightService.searchFromDate(departureAirport, arrivalAirport, departureDate.atStartOfDay(), numOfPassengers,
 						pageNum)
 				: flightService.search(departureAirport, arrivalAirport, departureDate.atStartOfDay(),
 						departureDate.plusDays(1).atStartOfDay(), numOfPassengers, pageNum);
-		return new ResponseEntity<>(new FlightsResponse("Flights returned successfully.", flights.getContent()),
-				HttpStatus.OK);
+
+		List<Flight> flights = flightsPage.getContent();
+		List<Flight> futureFlights = new ArrayList<>();
+
+		for (Flight flight : flights) {
+			if (!flightService.isFlightPast(flight)) {
+				futureFlights.add(flight);
+			}
+		}
+
+		return new ResponseEntity<>(new FlightsResponse("Flights returned successfully.", futureFlights), HttpStatus.OK);
 	}
 
 	@GetMapping("/test/search-from-date")

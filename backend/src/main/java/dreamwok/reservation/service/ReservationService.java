@@ -85,7 +85,13 @@ public class ReservationService {
       return null;
     }
 
-    return customer.getReservations();
+    List<Reservation> reversations = customer.getReservations();
+    List<Reservation> updatedReservations = new ArrayList<>();
+    for (Reservation reservation : reversations) {
+      updatedReservations.add(checkAndSetIfReservationFlightPast(reservation));
+    }
+
+    return updatedReservations;
   }
 
   public Reservation getReservationById(Long reservationId) {
@@ -95,7 +101,7 @@ public class ReservationService {
       return null;
     }
 
-    return reservationOptional.get();
+    return checkAndSetIfReservationFlightPast(reservationOptional.get());
   }
 
   public Reservation getReservationByIdAndCustomerLastName(String customerLastName, Long reservationId) {
@@ -111,7 +117,7 @@ public class ReservationService {
       return null;
     }
 
-    return reservation;
+    return checkAndSetIfReservationFlightPast(reservation);
   }
 
   public Reservation cancelReservation(Long reservationId) {
@@ -123,6 +129,15 @@ public class ReservationService {
 
     reservation.setReservationStatus(ReservationStatus.CANCELLED);
     reservationRepository.save(reservation);
+    return reservation;
+  }
+
+  public Reservation checkAndSetIfReservationFlightPast(Reservation reservation) {
+    if (reservation.getReservationStatus() == ReservationStatus.SCHEDULED
+        && flightService.isFlightPast(reservation.getFlight())) {
+      reservation.setReservationStatus(ReservationStatus.PAST);
+      return reservationRepository.save(reservation);
+    }
     return reservation;
   }
 }

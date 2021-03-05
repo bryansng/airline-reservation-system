@@ -49,11 +49,22 @@ public class FlightService {
   }
 
   public Flight getFlightById(Long flightId) {
-    Optional<Flight> flight = flightRepository.findById(flightId);
+    Optional<Flight> flightOptional = flightRepository.findById(flightId);
 
-    if (!flight.isPresent()) {
+    if (!flightOptional.isPresent()) {
       return null;
     }
-    return flight.get();
+
+    return flightOptional.get();
+  }
+
+  public Boolean isFlightPast(Flight flight) {
+    LocalDateTime departureDateTime = flight.getDepartureDateTime();
+    LocalDateTime now = LocalDateTime.now();
+
+    if (departureDateTime.isBefore(now)) {
+      return true;
+    }
+    return false;
   }
 }
