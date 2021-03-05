@@ -52,7 +52,7 @@ function App() {
           logOut={logOut}
           isAuthenticated={isAuthenticated}
         />
-        {authComponent}
+        {/* {authComponent} */}
         <Switch>
           <Route path="/" exact render={(props) => <SearchFlight />} />
           <Route

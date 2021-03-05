@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
+const reservationEndpoint =
+  rest_endpoints.rest_endpoints.reservation.get_all_by_customer_id;
 
 const Container = styled.div.attrs({
-  className: `flex flex-column pr6 pl6 justify-content-center`,
+  className: `flex flex-column justify-content-center`,
 })``;
 
 const HeaderRow = styled.div.attrs({
@@ -24,11 +27,11 @@ const ReservationContainer = styled.div.attrs({
 })``;
 
 const ReservationDiv = styled.div.attrs({
-  className: `outline flex pa3 ma3`,
+  className: `w-100 outline flex pa3 ma3`,
 })``;
 
 const ReservationText = styled.p.attrs({
-  className: `f3 fw3`,
+  className: `f4 fw3`,
 })``;
 
 const NoReservationContainer = styled.div.attrs({
@@ -44,13 +47,13 @@ const ReservationDetailDiv = styled.div.attrs({
 })``;
 
 const View = styled.p.attrs({
-  className: `f3 dim pointer fw3`,
+  className: `f4 dim pointer fw3`,
 })``;
 
-const ReservationDetails = ({ match }) => {
+const ReservationDetails = ({ location }) => {
   const [reservations, setReservations] = useState([]);
 
-  const url = "http://localhost:8080/reservations/9";
+  const url = reservationEndpoint + "/" + location.state.user.id;
 
   useEffect(() => {
     fetch(url)
@@ -62,13 +65,12 @@ const ReservationDetails = ({ match }) => {
       })
       .then((res) => {
         console.log(res);
-        const reservations = res.reservations;
-        setReservations(reservations);
+        setReservations(res.reservations);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [url]);
 
   return (
     <Container>
@@ -88,23 +90,20 @@ const ReservationDetails = ({ match }) => {
               <ReservationDiv key={key}>
                 <ReservationDetailDiv>
                   <ReservationText>
-                    <b>Departure Time - </b>
-                    {reservation.flight.departureTime}
-                  </ReservationText>
-                </ReservationDetailDiv>
-                <ReservationDetailDiv>
-                  <ReservationText>
+                    <b>Time - </b>
+                    {reservation.flight.departureTime},{" "}
                     {reservation.flight.departureDate}
                   </ReservationText>
                 </ReservationDetailDiv>
-                <ReservationDetailDiv>
+                <ReservationDetailDiv className="tr">
                   <ReservationText>
-                    <b>Departure Airport - </b>
+                    <b>Airport - </b>
                     {reservation.flight.departureAirport}
                   </ReservationText>
                 </ReservationDetailDiv>
                 <ReservationDetailDiv className="tr">
                   <ReservationText>
+                    <b>Flight - </b>
                     {reservation.flight.flightName}
                   </ReservationText>
                 </ReservationDetailDiv>
@@ -114,7 +113,16 @@ const ReservationDetails = ({ match }) => {
                   </ReservationText>
                 </ReservationDetailDiv>
                 <ReservationDetailDiv className="tr">
-                  <View>View</View>
+                  <Link
+                    to={{
+                      pathname: "/show/reservation/" + reservation.id,
+                      state: {
+                        reservation: reservation,
+                      },
+                    }}
+                  >
+                    <View>View</View>
+                  </Link>
                 </ReservationDetailDiv>
               </ReservationDiv>
             );

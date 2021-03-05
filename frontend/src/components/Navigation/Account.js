@@ -53,7 +53,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="email"
               placeholder="johndoe@gmail.com"
-              defaultValue="hong.sng@ucdconnect.ie"
+              // defaultValue="hong.sng@ucdconnect.ie"
               required
             />
           </Form.Group>
@@ -62,7 +62,7 @@ function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
             <Form.Control
               type="password"
               placeholder=""
-              defaultValue="root"
+              // defaultValue="root"
               required
             />
           </Form.Group>
@@ -139,7 +139,7 @@ function RegisterModal({
               type="text"
               placeholder="John"
               required
-              defaultValue="pog"
+              // defaultValue="pog"
             />
           </Form.Group>
           <Form.Group controlId="formRegisterLastName">
@@ -148,7 +148,7 @@ function RegisterModal({
               type="text"
               placeholder="Doe"
               required
-              defaultValue="pog"
+              // defaultValue="pog"
             />
           </Form.Group>
           <Form.Group controlId="formRegisterAddress">
@@ -157,7 +157,7 @@ function RegisterModal({
               type="text"
               placeholder="University College Dublin"
               required
-              defaultValue="pog address"
+              // defaultValue="pog address"
             />
           </Form.Group>
           <Form.Group controlId="formRegisterPhoneNum">
@@ -166,7 +166,7 @@ function RegisterModal({
               type="text"
               placeholder="12341234"
               required
-              defaultValue="42069"
+              // defaultValue="42069"
             />
           </Form.Group>
 
@@ -176,8 +176,7 @@ function RegisterModal({
               type="email"
               placeholder="johndoe@gmail.com"
               required
-              defaultValue="pog@pog.com"
-              // defaultValue="test1@h1h111111o1.com"
+              // defaultValue="pog@pog.com"
             />
           </Form.Group>
           <Form.Group controlId="formRegisterPassword">
@@ -186,7 +185,7 @@ function RegisterModal({
               type="password"
               placeholder=""
               required
-              defaultValue="test"
+              // defaultValue="test"
               // isInvalid={!isPasswordsValid}
             />
             {/* <Form.Control.Feedback type="invalid">
@@ -199,7 +198,7 @@ function RegisterModal({
               type="password"
               placeholder=""
               required
-              defaultValue="test"
+              // defaultValue="test"
               // isInvalid={!isPasswordsValid}
             />
             {/* <Form.Control.Feedback type="invalid">

@@ -6,7 +6,7 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -49,14 +49,15 @@ const IconTitleDiv = styled.div.attrs({
 })``;
 
 const IconTitle = styled.p.attrs({
-  className: `f4`,
-})``;
+    className: `f4`
+})``
+
 
 const CreditCards = ({ location }) => {
   const [userId] = useState(location.state.user.id);
   const [creditCards, setCreditCards] = useState([]);
 
-  const url = customerEndpoint + "creditcard/all/" + userId;
+  const url = creditCardEndpoint + "/" + userId;
 
   function parseCardNumber(cardNum) {
     return (

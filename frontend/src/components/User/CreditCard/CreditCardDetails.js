@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer;
+const creditCardEndpoint =  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -27,12 +27,12 @@ const Btn = styled.div.attrs({
 })``;
 
 const Update = styled.p.attrs({
-  className: `f3 measure fw1 mt5 blue pointer dim tr`,
-})``;
+    className: `f4 measure fw1 mt5 blue pointer dim tr`
+})``
 
 const Delete = styled.p.attrs({
-  className: `f3 measure fw1 mt5 dark-red pointer dim tr mr7`,
-})``;
+    className: `f4 measure fw1 mt5 dark-red pointer dim tr mr5`
+})``
 
 const BodyRow = styled.div.attrs({
   className: `flex flex-column items-center`,
@@ -59,35 +59,36 @@ const DataText = styled.p.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const CreditCardDetails = ({ location }) => {
-  const [userId] = useState(location.state.user.id);
-  const [card] = useState(location.state.card);
-  const [isDelete, setIsDelete] = useState(false);
+const CreditCardDetails = ({ match, location }) => {
 
-  let history = useHistory();
+    const [userId] = useState(match.params.id);
+    const [card] = useState(location.state.card);
+    const [isDelete, setIsDelete] = useState(false);
 
-  const url = card != null ? customerEndpoint + "creditcard/" + card.id : "";
+    let history = useHistory();
 
-  useEffect(() => {
-    if (isDelete && card != null) {
-      // DELETE request using fetch with error handling
-      fetch(url, { method: "DELETE" })
-        .then(async (response) => {
-          const data = await response.json();
+    const url = card != null ? creditCardEndpoint + "/" + card.id : "";
 
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to responase status
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      history.go(-2);
-    }
-  }, [isDelete, card, url, history]);
+    useEffect(() => {
+        if (isDelete && card != null) {
+            // DELETE request using fetch with error handling
+            fetch(url, { method: 'DELETE' })
+                .then(async response => {
+                    const data = await response.json();
+    
+                    // check for error response
+                    if (!response.ok) {
+                        // get error message from body or default to responase status
+                        const error = (data && data.message) || response.status;
+                        return Promise.reject(error);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+                history.go(-2);
+        }
+    }, [isDelete, card, url, history]);
 
   function handleDelete() {
     setIsDelete(true);
