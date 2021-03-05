@@ -18,23 +18,25 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   const [bookedReservation, setBookedReservation] = useState(null);
 
   useEffect(() => {
-    // GET flight details.
-    fetch(`${flight_apis.get_by_id}/${flightId}`)
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        throw new Error(`${resp.status} Error retrieving flight.`);
-      })
-      .then((res) => {
-        console.log(res);
-        const flight = res.flight;
-        setFlight(flight);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [flightId]);
+    if (flightId && !flight) {
+      // GET flight details.
+      fetch(`${flight_apis.get_by_id}/${flightId}`)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`${resp.status} Error retrieving flight.`);
+        })
+        .then((res) => {
+          console.log(res);
+          const flight = res.flight;
+          setFlight(flight);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [flight, flightId]);
 
   useEffect(() => {
     if (flight && numPassengers && passengersDetails) {
