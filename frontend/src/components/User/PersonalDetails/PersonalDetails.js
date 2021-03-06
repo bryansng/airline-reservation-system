@@ -151,9 +151,9 @@ const PersonalDetails = ({ location }) => {
                 Update Account
               </Link>
             </div> */}
-            <div className="mr1">
+            {/* <div className="mr1">
               <Button onClick={handleDelete}>Delete Account</Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
