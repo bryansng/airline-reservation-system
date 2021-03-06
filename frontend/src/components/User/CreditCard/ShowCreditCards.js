@@ -53,7 +53,7 @@ const IconTitle = styled.p.attrs({
   className: `f4`,
 })``;
 
-const CreditCards = ({ location }) => {
+const ShowCreditCards = ({ location }) => {
   const [userId] = useState(location.state.user.id);
   const [creditCards, setCreditCards] = useState([]);
 
@@ -90,11 +90,11 @@ const CreditCards = ({ location }) => {
         <TitleContainer>
           <Title>Credit Cards</Title>
         </TitleContainer>
-        {/* <Btn>
+        <Btn>
           <Link
             style={{ color: "green" }}
             to={{
-              pathname: "/user/profile/" + userId + "/creditcards/add",
+              pathname: `/user/profile/creditcards/add`,
               state: {
                 isPost: true,
                 user: location.state.user,
@@ -103,7 +103,7 @@ const CreditCards = ({ location }) => {
           >
             <Add>Add Card</Add>
           </Link>
-        </Btn> */}
+        </Btn>
       </HeaderRow>
       <CardsContainer>
         <IconContainer>
@@ -117,8 +117,7 @@ const CreditCards = ({ location }) => {
                   style={{ color: "dimgray" }}
                   className="ba b--silver br4 tc ma4 grow pointer dim"
                   to={{
-                    pathname:
-                      `/user/profile/` + userId + "/creditcards/" + card.id,
+                    pathname: `/user/profile/creditcards/${card.id}`,
                     state: {
                       card: card,
                       user: location.state.user,
@@ -143,4 +142,4 @@ const CreditCards = ({ location }) => {
   );
 };
 
-export default CreditCards;
+export default ShowCreditCards;

@@ -59,7 +59,6 @@ const Save = styled.a.attrs({
   href: ``,
 })``;
 
-// https://reactrouter.com/web/api/match
 const EditPersonalDetails = ({ location, setUser }) => {
   let history = useHistory();
 

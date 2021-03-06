@@ -69,7 +69,7 @@ const Profile = ({ user }) => {
                   className="ba b--silver br4 tc mh2 pa3 grow pointer dim"
                   // to={`/user/profile/` + user.id + "/" + icon.suburl}
                   to={{
-                    pathname: `/user/profile/${user.id}/${icon.suburl}`,
+                    pathname: `/user/profile/${icon.suburl}`,
                     state: { user: user },
                   }}
                 >

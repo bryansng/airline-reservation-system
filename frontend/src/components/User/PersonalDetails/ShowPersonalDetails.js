@@ -75,7 +75,7 @@ const Button = styled.button.attrs({
 // })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ location, logOut }) => {
+const ShowPersonalDetails = ({ location, logOut }) => {
   let history = useHistory();
 
   // get user id from match.params.id and GET user data.
@@ -143,13 +143,13 @@ const PersonalDetails = ({ location, logOut }) => {
             <div className="mr1">
               <Link
                 to={{
-                  pathname: "/user/profile/" + userId + "/personaldetails/edit",
+                  pathname: "/user/profile/personaldetails/edit",
                   state: {
                     user: location.state.user,
                   },
                 }}
               >
-                Update Account
+                <Button type="button">Edit Details</Button>
               </Link>
             </div>
             <div className="mr1">
@@ -267,4 +267,4 @@ const PersonalDetails = ({ location, logOut }) => {
   );
 };
 
-export default PersonalDetails;
+export default ShowPersonalDetails;
