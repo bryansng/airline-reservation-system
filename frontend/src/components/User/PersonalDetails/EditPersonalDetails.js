@@ -60,7 +60,7 @@ const Save = styled.a.attrs({
 })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ location }) => {
+const EditPersonalDetails = ({ location, setUser }) => {
   let history = useHistory();
 
   console.log(location);
@@ -119,7 +119,10 @@ const PersonalDetails = ({ location }) => {
           }
           throw new Error(`${resp.status} Error updating customer.`);
         })
-        .then((res) => {})
+        .then((res) => {
+          console.log(res);
+          setUser(res.customer);
+        })
         .catch((error) => {
           console.error(error);
         });
@@ -142,9 +145,9 @@ const PersonalDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "First Name",
                 check: true,
@@ -168,9 +171,9 @@ const PersonalDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Last Name",
                 check: true,
@@ -200,9 +203,9 @@ const PersonalDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Phone Number",
                 check: true,
@@ -226,9 +229,9 @@ const PersonalDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Email",
                 check: true,
@@ -255,4 +258,4 @@ const PersonalDetails = ({ location }) => {
   );
 };
 
-export default PersonalDetails;
+export default EditPersonalDetails;

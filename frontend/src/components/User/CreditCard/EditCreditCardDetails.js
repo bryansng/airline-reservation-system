@@ -157,9 +157,9 @@ const EditCreditCardDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Card Number",
                 check: true,
@@ -183,9 +183,9 @@ const EditCreditCardDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Expiry Date",
                 check: true,
@@ -209,9 +209,9 @@ const EditCreditCardDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Security Code",
                 check: true,
@@ -235,9 +235,9 @@ const EditCreditCardDetails = ({ location }) => {
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              onBlur={(e) => {
-                console.log(e);
-              }}
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
               validationOption={{
                 name: "Name On Card",
                 check: true,

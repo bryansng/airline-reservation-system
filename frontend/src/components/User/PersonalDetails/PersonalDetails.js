@@ -75,7 +75,7 @@ const Button = styled.button.attrs({
 // })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ location }) => {
+const PersonalDetails = ({ location, logOut }) => {
   let history = useHistory();
 
   // get user id from match.params.id and GET user data.
@@ -87,6 +87,7 @@ const PersonalDetails = ({ location }) => {
 
   function handleDelete() {
     setIsDelete(true);
+    logOut();
   }
 
   // useEffect(() => {
@@ -144,16 +145,16 @@ const PersonalDetails = ({ location }) => {
                 to={{
                   pathname: "/user/profile/" + userId + "/personaldetails/edit",
                   state: {
-                    customer: customer,
+                    user: customer,
                   },
                 }}
               >
                 Update Account
               </Link>
             </div> */}
-            {/* <div className="mr1">
+            <div className="mr1">
               <Button onClick={handleDelete}>Delete Account</Button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

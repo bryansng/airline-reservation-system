@@ -85,12 +85,14 @@ function App() {
           <Route
             path="/user/profile/:id/personaldetails"
             exact
-            component={PersonalDetails}
+            render={(props) => <PersonalDetails {...props} logOut={logOut} />}
           />
           <Route
             path="/user/profile/:id/personaldetails/edit"
             exact
-            component={EditPersonalDetails}
+            render={(props) => (
+              <EditPersonalDetails {...props} setUser={setAppUser} />
+            )}
           />
           <Route
             path="/user/profile/:id/creditcards"
