@@ -140,18 +140,18 @@ const PersonalDetails = ({ location, logOut }) => {
         <div className="flex justify-between flex-wrap">
           <h2>Personal Details</h2>
           <div className="flex justify-end">
-            {/* <div className="mr1">
+            <div className="mr1">
               <Link
                 to={{
                   pathname: "/user/profile/" + userId + "/personaldetails/edit",
                   state: {
-                    user: customer,
+                    user: location.state.user,
                   },
                 }}
               >
                 Update Account
               </Link>
-            </div> */}
+            </div>
             <div className="mr1">
               <Button onClick={handleDelete}>Delete Account</Button>
             </div>
@@ -168,9 +168,9 @@ const PersonalDetails = ({ location, logOut }) => {
             </div>
           </div>
           <div className="mv2">
-            <div className="gray f5">Surname</div>
+            <div className="gray f5">Last Name</div>
             <div className="lh-copy">
-              {customer == null ? "n/a" : customer.surname}
+              {customer == null ? "n/a" : customer.lastName}
             </div>
           </div>
           <div className="mv2">

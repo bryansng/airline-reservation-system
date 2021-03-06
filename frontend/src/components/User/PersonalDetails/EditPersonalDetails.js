@@ -129,7 +129,17 @@ const EditPersonalDetails = ({ location, setUser }) => {
 
       history.go(-2);
     }
-  }, [address, email, firstName, history, isSave, lastName, phoneNum, url]);
+  }, [
+    address,
+    email,
+    firstName,
+    history,
+    isSave,
+    lastName,
+    phoneNum,
+    url,
+    setUser,
+  ]);
   return (
     <Container>
       <HeaderRow>
