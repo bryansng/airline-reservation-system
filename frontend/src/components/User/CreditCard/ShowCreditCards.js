@@ -54,10 +54,8 @@ const IconTitle = styled.p.attrs({
 })``;
 
 const ShowCreditCards = ({ location }) => {
-  const [userId] = useState(location.state.user.id);
+  const user = location.state.user;
   const [creditCards, setCreditCards] = useState([]);
-
-  const url = creditCardEndpoint + "/" + userId;
 
   function parseCardNumber(cardNum) {
     return (
@@ -66,12 +64,14 @@ const ShowCreditCards = ({ location }) => {
   }
 
   useEffect(() => {
-    fetch(url)
+    fetch(`${creditCardEndpoint}/${user.id}`)
       .then((resp) => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status} Error retrieving customer.`);
+        throw new Error(
+          `${resp.status} Error retrieving customer's credit cards.`
+        );
       })
       .then((res) => {
         const cardList = res.creditCards;
@@ -82,7 +82,7 @@ const ShowCreditCards = ({ location }) => {
       .catch((error) => {
         console.error(error);
       });
-  }, [url]);
+  }, []);
 
   return (
     <Container>

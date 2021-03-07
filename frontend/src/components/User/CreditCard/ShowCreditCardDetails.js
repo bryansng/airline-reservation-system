@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
-import { Link, useHistory } from "react-router-dom";
-
-import rest_endpoints from "../../../config/rest_endpoints.json";
-const creditCardEndpoint =
-  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
+import { Link } from "react-router-dom";
+import { Redirect } from "react-router";
+import { rest_endpoints } from "../../../config/rest_endpoints.json";
+const { credit_card: credit_card_apis } = rest_endpoints;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -60,38 +58,32 @@ const DataText = styled.p.attrs({
 })``;
 
 const CreditCardDetails = ({ location }) => {
+  const user = location.state.user;
   const creditCard = location.state.card;
-  const [isDelete, setIsDelete] = useState(false);
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
 
-  let history = useHistory();
+  const handleDelete = (evt) => {
+    evt.preventDefault();
 
-  const url =
-    creditCard != null ? creditCardEndpoint + "/" + creditCard.id : "";
+    // DELETE request using fetch with error handling
+    fetch(`${credit_card_apis.get_card_by_card_id}/${creditCard.id}`, {
+      method: "DELETE",
+    })
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
+        }
 
-  useEffect(() => {
-    if (isDelete && creditCard != null) {
-      // DELETE request using fetch with error handling
-      fetch(url, { method: "DELETE" })
-        .then(async (response) => {
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to responase status
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      history.go(-2);
-    }
-  }, [isDelete, url, creditCard, history]);
-
-  function handleDelete() {
-    setIsDelete(true);
-  }
+        throw new Error(`${resp.status} Error deleting card.`);
+      })
+      .then((res) => {
+        console.log(res);
+        setIsRequestSuccess(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const maskCreditCardNumber = (creditCardNunmber) => {
     const getSanitisedCardNumber = (creditCardNunmber) => {
@@ -110,74 +102,87 @@ const CreditCardDetails = ({ location }) => {
   };
 
   return (
-    <Container>
-      {creditCard ? (
-        <>
-          <HeaderRow>
-            <TitleContainer>
-              <Title>Card Details</Title>
-            </TitleContainer>
-            <Btn>
-              <Update>
-                <Link
-                  to={{
-                    pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
-                    state: {
-                      isAddCard: false,
-                      card: creditCard,
-                      user: location.state.user,
-                    },
-                  }}
-                >
-                  Update Card
-                </Link>
-              </Update>
-            </Btn>
-            <Btn>
-              <Delete onClick={handleDelete}>Delete Card</Delete>
-            </Btn>
-          </HeaderRow>
-          <BodyRow>
-            <BodyDiv>
-              <FieldDiv>
-                <FieldText>Card Number</FieldText>
-              </FieldDiv>
-              <DataDiv>
-                <DataText>
-                  {maskCreditCardNumber(creditCard.cardNumber)}
-                </DataText>
-              </DataDiv>
-            </BodyDiv>
-            <BodyDiv>
-              <FieldDiv>
-                <FieldText>Expiry Date</FieldText>
-              </FieldDiv>
-              <DataDiv>
-                <DataText>{creditCard.expiryDate}</DataText>
-              </DataDiv>
-            </BodyDiv>
-            <BodyDiv>
-              <FieldDiv>
-                <FieldText>Security Code</FieldText>
-              </FieldDiv>
-              <DataDiv>
-                <DataText>{creditCard.securityCode}</DataText>
-              </DataDiv>
-            </BodyDiv>
-            <BodyDiv>
-              <FieldDiv>
-                <FieldText>Name On Card</FieldText>
-              </FieldDiv>
-              <DataDiv>
-                <DataText>{creditCard.nameOnCard}</DataText>
-              </DataDiv>
-            </BodyDiv>
-          </BodyRow>
-        </>
-      ) : (
-        <div>Loading...</div>
+    <>
+      {isRequestSuccess && creditCard && (
+        <Redirect
+          push
+          to={{
+            pathname: `/user/profile/creditcards`,
+            state: { user: user },
+          }}
+        />
       )}
-    </Container>
+      <Container>
+        {creditCard ? (
+          <>
+            <HeaderRow>
+              <TitleContainer>
+                <Title>Card Details</Title>
+              </TitleContainer>
+              <Btn>
+                <Update>
+                  <Link
+                    to={{
+                      pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
+                      state: {
+                        isAddCard: false,
+                        card: creditCard,
+                        user: location.state.user,
+                      },
+                    }}
+                  >
+                    Edit Card
+                  </Link>
+                </Update>
+              </Btn>
+              <Btn>
+                <Delete onClick={(evt) => handleDelete(evt)}>
+                  Delete Card
+                </Delete>
+              </Btn>
+            </HeaderRow>
+            <BodyRow>
+              <BodyDiv>
+                <FieldDiv>
+                  <FieldText>Card Number</FieldText>
+                </FieldDiv>
+                <DataDiv>
+                  <DataText>
+                    {maskCreditCardNumber(creditCard.cardNumber)}
+                  </DataText>
+                </DataDiv>
+              </BodyDiv>
+              <BodyDiv>
+                <FieldDiv>
+                  <FieldText>Expiry Date</FieldText>
+                </FieldDiv>
+                <DataDiv>
+                  <DataText>{creditCard.expiryDate}</DataText>
+                </DataDiv>
+              </BodyDiv>
+              <BodyDiv>
+                <FieldDiv>
+                  <FieldText>Security Code</FieldText>
+                </FieldDiv>
+                <DataDiv>
+                  <DataText>{creditCard.securityCode}</DataText>
+                </DataDiv>
+              </BodyDiv>
+              <BodyDiv>
+                <FieldDiv>
+                  <FieldText>Name On Card</FieldText>
+                </FieldDiv>
+                <DataDiv>
+                  <DataText>{creditCard.nameOnCard}</DataText>
+                </DataDiv>
+              </BodyDiv>
+            </BodyRow>
+          </>
+        ) : (
+          <div>Loading...</div>
+        )}
+      </Container>
+    </>
   );
 };
 

@@ -56,7 +56,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("cardId") Long cardId) {
+    public ResponseEntity<GetCreditCardResponse> updateCardDetails(@PathVariable("cardId") Long cardId) {
         return customerService.deleteCardDetails(cardId);
     }
 

@@ -30,6 +30,7 @@ const EditCreditCardDetails = ({ location }) => {
   const user = location.state.user;
   const isAddCard = location.state.isAddCard;
   const [creditCard, setCreditCard] = useState(location.state.card);
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
 
   const limitInputSize = (input, size) => {
     return input.slice(0, size);
@@ -79,7 +80,6 @@ const EditCreditCardDetails = ({ location }) => {
           cardNumber: maskCreditCardNumber(creditCard.cardNumber),
         }
   );
-  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -135,8 +135,6 @@ const EditCreditCardDetails = ({ location }) => {
         );
       })
       .then((res) => {
-        console.log(res);
-
         // redirect to show updated credit card.
         setCreditCard(res.creditCard);
         setIsRequestSuccess(true);

@@ -127,13 +127,13 @@ public class CustomerService {
     return new ResponseEntity<>(new GetCreditCardResponse("Card does not exist", null), HttpStatus.CREATED);
   }
 
-  public ResponseEntity<String> deleteCardDetails(Long id) {
+  public ResponseEntity<GetCreditCardResponse> deleteCardDetails(Long id) {
     if (creditCardDetailsRepository.existsById(id)) {
       creditCardDetailsRepository.deleteById(id);
 
-      return new ResponseEntity<>("Card deleted", HttpStatus.OK);
+      return new ResponseEntity<>(new GetCreditCardResponse("Card deleted", null), HttpStatus.OK);
     }
-    return new ResponseEntity<>("Card does not exist", HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new GetCreditCardResponse("Card does not exist", null), HttpStatus.BAD_REQUEST);
   }
 
   /**
