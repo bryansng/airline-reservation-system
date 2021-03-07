@@ -150,18 +150,17 @@ public class Customer {
     this.setLastName(customerRequest.getLastName());
     this.setAddress(customerRequest.getAddress());
     this.setPhoneNum(customerRequest.getPhoneNum());
-    this.setType(type);
-    this.setAuth(this.auth);
+    // this.setType(type);
+    // this.setAuth(this.auth);
 
-    switch (type.toLowerCase()) {
-      case "member":
-        this.setRoles("USER");
-        break;
-      case "librarian":
-        this.setRoles("ADMIN");
-        break;
-
-    }
+    // switch (type.toLowerCase()) {
+    //   case "member":
+    //     this.setRoles("USER");
+    //     break;
+    //   case "librarian":
+    //     this.setRoles("ADMIN");
+    //     break;
+    // }
   }
 
   public List<Reservation> getReservations() {

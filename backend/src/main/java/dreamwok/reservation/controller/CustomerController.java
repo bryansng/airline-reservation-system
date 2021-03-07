@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
+import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
 import dreamwok.reservation.service.AuthService;
@@ -38,18 +39,18 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<CreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
+    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
         return customerService.getCardDetails(cardId);
     }
 
     @RequestMapping(value = "/creditcard/{customerId}", method = RequestMethod.POST)
-    public ResponseEntity<String> insertCardDetails(@PathVariable("customerId") Long customerId,
+    public ResponseEntity<GetCreditCardResponse> insertCardDetails(@PathVariable("customerId") Long customerId,
             @RequestBody CreditCardRequest creditCardRequest) {
         return customerService.insertCardDetails(customerId, creditCardRequest);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateCardDetails(@PathVariable("cardId") Long cardId,
+    public ResponseEntity<GetCreditCardResponse> updateCardDetails(@PathVariable("cardId") Long cardId,
             @RequestBody CreditCardRequest creditCardRequest) {
         return customerService.updateCardDetails(cardId, creditCardRequest);
     }
