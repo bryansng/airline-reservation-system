@@ -96,7 +96,7 @@ const ShowCreditCards = ({ location }) => {
             to={{
               pathname: `/user/profile/creditcards/add`,
               state: {
-                isPost: true,
+                isAddCard: true,
                 user: location.state.user,
               },
             }}

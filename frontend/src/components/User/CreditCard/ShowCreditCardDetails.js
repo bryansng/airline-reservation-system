@@ -61,16 +61,17 @@ const DataText = styled.p.attrs({
 
 // https://reactrouter.com/web/api/match
 const CreditCardDetails = ({ match, location }) => {
-  const [userId] = useState(match.params.id);
-  const [card] = useState(location.state.card);
+  const user = location.state.user;
+  const creditCard = location.state.card;
   const [isDelete, setIsDelete] = useState(false);
 
   let history = useHistory();
 
-  const url = card != null ? creditCardEndpoint + "/" + card.id : "";
+  const url =
+    creditCard != null ? creditCardEndpoint + "/" + creditCard.id : "";
 
   useEffect(() => {
-    if (isDelete && card != null) {
+    if (isDelete && creditCard != null) {
       // DELETE request using fetch with error handling
       fetch(url, { method: "DELETE" })
         .then(async (response) => {
@@ -88,7 +89,7 @@ const CreditCardDetails = ({ match, location }) => {
         });
       history.go(-2);
     }
-  }, [isDelete, card, url, history]);
+  }, [isDelete, url, creditCard, history]);
 
   function handleDelete() {
     setIsDelete(true);
@@ -112,66 +113,72 @@ const CreditCardDetails = ({ match, location }) => {
 
   return (
     <Container>
-      <HeaderRow>
-        <TitleContainer>
-          <Title>Card Details</Title>
-        </TitleContainer>
-        <Btn>
-          <Update>
-            <Link
-              to={{
-                pathname: `/user/profile/creditcards/${card.id}/creditcardsdetails/edit`,
-                state: {
-                  isPost: false,
-                  card: card,
-                  user: location.state.user,
-                },
-              }}
-            >
-              Update Card
-            </Link>
-          </Update>
-        </Btn>
-        <Btn>
-          <Delete onClick={handleDelete}>Delete Card</Delete>
-        </Btn>
-      </HeaderRow>
-      <BodyRow>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Card Number</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>
-              {card != null ? maskCreditCardNumber(card.cardNumber) : ""}
-            </DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Expiry Date</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.expiryDate : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Security Code</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.securityCode : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Name On Card</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.nameOnCard : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-      </BodyRow>
+      {creditCard ? (
+        <>
+          <HeaderRow>
+            <TitleContainer>
+              <Title>Card Details</Title>
+            </TitleContainer>
+            <Btn>
+              <Update>
+                <Link
+                  to={{
+                    pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
+                    state: {
+                      isAddCard: false,
+                      card: creditCard,
+                      user: location.state.user,
+                    },
+                  }}
+                >
+                  Update Card
+                </Link>
+              </Update>
+            </Btn>
+            <Btn>
+              <Delete onClick={handleDelete}>Delete Card</Delete>
+            </Btn>
+          </HeaderRow>
+          <BodyRow>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Card Number</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>
+                  {maskCreditCardNumber(creditCard.cardNumber)}
+                </DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Expiry Date</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{creditCard.expiryDate}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Security Code</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{creditCard.securityCode}</DataText>
+              </DataDiv>
+            </BodyDiv>
+            <BodyDiv>
+              <FieldDiv>
+                <FieldText>Name On Card</FieldText>
+              </FieldDiv>
+              <DataDiv>
+                <DataText>{creditCard.nameOnCard}</DataText>
+              </DataDiv>
+            </BodyDiv>
+          </BodyRow>
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
     </Container>
   );
 };
