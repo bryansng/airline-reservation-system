@@ -135,7 +135,7 @@ const ShowCreditCards = ({ location }) => {
               <IconTitleDiv>
                 <IconTitle>
                   {creditCards && creditCards.length === 0
-                    ? "You do not have any saved cards, add new card"
+                    ? "No saved cards. Add new card"
                     : "Add new card"}
                 </IconTitle>
               </IconTitleDiv>

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
-import * as dayjs from "dayjs";
-import ShowReservation from "./ShowReservation";
 import Card from "react-bootstrap/Card";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";

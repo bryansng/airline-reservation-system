@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import { Redirect } from "react-router";
 import { Link, useHistory } from "react-router-dom";
+import ErrorMessage from "../../Common/ErrorMessage";
 import rest_endpoints from "../../../config/rest_endpoints.json";
 const customerEndpoint = rest_endpoints.rest_endpoints.user.customer_profile;
 
@@ -22,6 +23,7 @@ const Button = styled.button.attrs({
 
 const ShowPersonalDetails = ({ location, logOut }) => {
   const user = location.state.user;
+  const [isDeleted, setIsDeleted] = useState(false);
   let history = useHistory();
 
   const handleDelete = (evt) => {
@@ -41,7 +43,13 @@ const ShowPersonalDetails = ({ location, logOut }) => {
       })
       .then(() => {
         logOut();
-        history.push("/");
+
+        setIsDeleted(true);
+
+        // delay.
+        setTimeout(function () {
+          history.push("/");
+        }, 3000);
       })
       .catch((error) => {
         console.error(error);
@@ -83,6 +91,12 @@ const ShowPersonalDetails = ({ location, logOut }) => {
           </div>
         </Card.Body>
       </Card>
+      {isDeleted && (
+        <ErrorMessage success>
+          Your account has been deleted successfully. Redirecting to homepage in
+          3 seconds...
+        </ErrorMessage>
+      )}
       <div className="flex justify-end">
         <div className="mr1">
           <Link
