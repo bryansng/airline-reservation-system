@@ -23,63 +23,13 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-// const Container = styled.div.attrs({
-//   className: `flex flex-column pr6 pl6`,
-// })``;
-
-// const HeaderRow = styled.div.attrs({
-//   className: `flex`,
-// })``;
-
-// const TitleContainer = styled.div.attrs({
-//   className: `pa3 mb2 w-50`,
-// })``;
-
-// const Title = styled.p.attrs({
-//   className: `f2 measure fw1 mt3 ml-5`,
-// })``;
-
-// const Btn = styled.div.attrs({
-//   className: `w-25 mt2 mb5 mr4`,
-// })``;
-
-// const Update = styled.p.attrs({
-//   className: `f3 measure fw1 mt5 blue pointer dim tr`,
-// })``;
-
-// const Delete = styled.p.attrs({
-//   className: `f3 measure fw1 mt5 dark-red pointer dim tl`,
-// })``;
-
-// const BodyRow = styled.div.attrs({
-//   className: `flex flex-column items-center`,
-// })``;
-
-// const BodyDiv = styled.div.attrs({
-//   className: `w-25`,
-// })``;
-
-// const FieldDiv = styled.div.attrs({
-//   className: ``,
-// })``;
-
-// const FieldText = styled.p.attrs({
-//   className: `f3  gray`,
-// })``;
-
-// const DataDiv = styled.div.attrs({
-//   className: `mb5`,
-// })``;
-
-// const DataText = styled.p.attrs({
-//   className: `f4 dark-gray fw3`,
-// })``;
-
 // https://reactrouter.com/web/api/match
 const PersonalDetails = ({ location, logOut }) => {
   let history = useHistory();
 
   // get user id from match.params.id and GET user data.
+  console.log(location);
+
   const user = location.state.user;
   console.log("user");
   console.log(user);
@@ -91,29 +41,6 @@ const PersonalDetails = ({ location, logOut }) => {
     setIsDelete(true);
     logOut();
   }
-
-  // useEffect(() => {
-  //     fetch(url)
-  //       .then((resp) => {
-  //         if (resp.ok) {
-  //           return resp.json();
-  //         }
-  //         throw new Error(`${resp.status} Error retrieving customer.`);
-  //       })
-  //       .then((res) => {
-  //         const cus = res.customer;
-  //         setCustomer({
-  //           email: cus.email,
-  //           address: cus.address,
-  //           firstName: cus.firstName,
-  //           lastName: cus.lastName,
-  //           phoneNum: cus.phoneNum,
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   }, [url]);
 
   useEffect(() => {
     if (isDelete) {
@@ -146,31 +73,11 @@ const PersonalDetails = ({ location, logOut }) => {
           }}
         />
       )}
-      <div>
-        <div className="flex justify-between flex-wrap">
-          <h2>Personal Details</h2>
-          <div className="flex justify-end">
-            <div className="mr1">
-              <Link
-                to={{
-                  pathname:
-                    "/user/profile/" + user.id + "/personaldetails/edit",
-                  state: {
-                    user: location.state.user,
-                  },
-                }}
-              >
-                Update Account
-              </Link>
-            </div>
-            <div className="mr1">
-              <Button onClick={handleDelete}>Delete Account</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Card>
-        {/* <Card.Header>Personal Details</Card.Header> */}
+      {/* <div>
+        <div className="flex justify-between flex-wrap"></div>
+      </div> */}
+      <Card className="mv3">
+        <Card.Header>Personal details</Card.Header>
         <Card.Body>
           <div className="mv2">
             <div className="gray f5">First name</div>
@@ -200,76 +107,23 @@ const PersonalDetails = ({ location, logOut }) => {
           </div>
         </Card.Body>
       </Card>
-
-      {/* <Container>
-        <HeaderRow>
-          <TitleContainer>
-            <Title>Personal Details</Title>
-          </TitleContainer>
-          <Btn>
-            <Update>
-              <Link
-                to={{
-                  pathname:
-                    "/user/profile/" +
-                    match.params.id +
-                    "/personaldetails/edit",
-                  state: {
-                    customer: customer,
-                  },
-                }}
-              >
-                Update Account
-              </Link>
-            </Update>
-          </Btn>
-          <Btn>
-            <Delete onClick={handleDelete}>Delete Account</Delete>
-          </Btn>
-        </HeaderRow>
-        <BodyRow>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>First Name</FieldText>
-            </FieldDiv>
-            <DataDiv>
-              <DataText>{customer == null ? "" : customer.firstName}</DataText>
-            </DataDiv>
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Last Name</FieldText>
-            </FieldDiv>
-            <DataDiv>
-              <DataText>{customer == null ? "" : customer.lastName}</DataText>
-            </DataDiv>
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Address</FieldText>
-            </FieldDiv>
-            <DataDiv>
-              <DataText>{customer == null ? "" : customer.address}</DataText>
-            </DataDiv>
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Phone Number</FieldText>
-            </FieldDiv>
-            <DataDiv>
-              <DataText>{customer == null ? "" : customer.phoneNum}</DataText>
-            </DataDiv>
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Email Address</FieldText>
-            </FieldDiv>
-            <DataDiv>
-              <DataText>{customer == null ? "" : customer.email}</DataText>
-            </DataDiv>
-          </BodyDiv>
-        </BodyRow>
-      </Container> */}
+      <div className="flex justify-end">
+        <div className="mr1">
+          <Link
+            to={{
+              pathname: "/user/profile/" + user.id + "/personaldetails/edit",
+              state: {
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Update Account</Button>
+          </Link>
+        </div>
+        <div className="ml1">
+          <Button onClick={handleDelete}>Delete Account</Button>
+        </div>
+      </div>
     </>
   );
 };
