@@ -98,31 +98,30 @@ public class CustomerService {
   public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
     String cardNumber = creditCardRequest.getCardNumber();
 
-    if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
-      CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
-      creditCard = creditCardDetailsRepository.save(creditCard);
+    // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
+    CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
+    creditCard = creditCardDetailsRepository.save(creditCard);
 
-      return new ResponseEntity<>(
-          new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)),
-          HttpStatus.CREATED);
-    }
+    return new ResponseEntity<>(
+        new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)), HttpStatus.CREATED);
+    // }
 
-    return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
+    // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
   }
 
   public ResponseEntity<GetCreditCardResponse> updateCardDetails(Long id, CreditCardRequest creditCardRequest) {
     if (creditCardDetailsRepository.existsById(id)) {
-      String cardNumber = creditCardRequest.getCardNumber();
-      if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
-        CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
-        currCreditCard.updateCard(creditCardRequest);
-        currCreditCard = creditCardDetailsRepository.save(currCreditCard);
+      // String cardNumber = creditCardRequest.getCardNumber();
+      // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
+      CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
+      currCreditCard.updateCard(creditCardRequest);
+      currCreditCard = creditCardDetailsRepository.save(currCreditCard);
 
-        return new ResponseEntity<>(
-            new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
-      }
+      return new ResponseEntity<>(
+          new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
+      // }
 
-      return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
+      // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
     }
 
     return new ResponseEntity<>(new GetCreditCardResponse("Card does not exist", null), HttpStatus.CREATED);
