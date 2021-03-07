@@ -144,7 +144,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
             <div className="mr1">
               <Link
                 to={{
-                  pathname: `/user/profile/${user.id}/personaldetails`,
+                  pathname: `/user/profile/personaldetails`,
                   state: { user: user },
                 }}
               >
@@ -161,7 +161,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
         <Redirect
           push
           to={{
-            pathname: `/user/profile/${user.id}/personaldetails`,
+            pathname: `/user/profile/personaldetails`,
             state: { user: updatedUser },
           }}
         />

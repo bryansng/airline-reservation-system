@@ -24,7 +24,7 @@ const CreditCardDetails = ({ location }) => {
   const user = location.state.user;
   const creditCard = location.state.card;
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
-
+  console.log(creditCard);
   const handleDelete = (evt) => {
     evt.preventDefault();
 
@@ -107,6 +107,16 @@ const CreditCardDetails = ({ location }) => {
           </Card>
           <div className="flex justify-end">
             <div className="mr1">
+              <Link
+                to={{
+                  pathname: `/user/profile/creditcards/`,
+                  state: { user: user },
+                }}
+              >
+                <Button type="button">View all cards</Button>
+              </Link>
+            </div>
+            <div className="mh1">
               <Link
                 to={{
                   pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
