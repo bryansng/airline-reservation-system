@@ -82,7 +82,6 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         })
         .then((res) => {
           const reservation = res.reservation;
-          console.log(res);
           setBookedReservation(reservation);
           setHasFormError(false);
         })

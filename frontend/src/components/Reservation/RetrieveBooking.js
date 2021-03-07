@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
+import ErrorMessage from "../Common/ErrorMessage";
 const { reservation: reservation_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
@@ -21,7 +22,10 @@ const Button = styled.button.attrs({
 `;
 
 const RetrieveBooking = () => {
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [reservation, setReservation] = useState(null);
+
   /*
   1. ability to retrieve booking by guests. (ensure flight has not occurred, i.e. error when booking's flight date has passed.)
 
@@ -41,15 +45,21 @@ const RetrieveBooking = () => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status} Error retrieving reservation.`);
+        throw resp;
       })
       .then((res) => {
         const reservation = res.reservation;
-        console.log(res);
         setReservation(reservation);
+        setHasFormError(false);
       })
       .catch((error) => {
-        console.error(error);
+        error.json().then((body) => {
+          setErrorMessage(
+            `Error ${error.status}: Invalid booking name (surname) and booking number.`
+          );
+          // setErrorMessage(`Error ${error.status}: ${body.message}`);
+          setHasFormError(true);
+        });
       });
   };
 
@@ -91,10 +101,11 @@ const RetrieveBooking = () => {
             </Card.Body>
           </Card>
           <div className="flex justify-end">
-            <div className="mt3">
+            <div className="mt2">
               <Button type="submit">Retrieve</Button>
             </div>
           </div>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
         </Form>
       )}
 
