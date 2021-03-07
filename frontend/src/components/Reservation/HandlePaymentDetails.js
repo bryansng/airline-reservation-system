@@ -83,6 +83,7 @@ const HandlePaymentDetails = ({
     // set default input to this new card.
     const theSelectedCard = savedCreditCards[savedCreditCardIndex];
     setCreditCardFormDefaultInput({
+      id: theSelectedCard.id,
       nameOnCard: theSelectedCard.nameOnCard,
       cardNumber: maskCreditCardNumber(theSelectedCard.cardNumber),
       expiryDate: getSanitisedExpiryDate(theSelectedCard.expiryDate),
@@ -103,13 +104,16 @@ const HandlePaymentDetails = ({
     const isSavePaymentDetails = isAuthenticated
       ? e.target.formIsSavePaymentDetails.checked
       : false;
+    var creditCardId = null;
 
     // if card number is the selected card.
     if (e.target.formCardNumber.value.indexOf("*") !== -1) {
       cardNumber = selectedCard.cardNumber;
+      creditCardId = selectedCard.id;
     }
 
     const paymentDetails = {
+      id: creditCardId,
       nameOnCard: nameOnCard,
       cardNumber: cardNumber,
       expiryDate: expiryDate,
