@@ -10,6 +10,9 @@ public class CustomerDTO {
   private String mobileNumber = "";
   private String address = "";
 
+  public CustomerDTO() {
+  }
+
   public CustomerDTO(Customer customer) {
     this.id = customer.getId();
     this.email = customer.getEmail();

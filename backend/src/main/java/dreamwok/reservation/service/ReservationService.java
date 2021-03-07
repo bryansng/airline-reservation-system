@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import dreamwok.reservation.core.common.ReservationStatus;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
+import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
+import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.Booking;
 import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
@@ -35,7 +37,8 @@ public class ReservationService {
   @Autowired
   BookingRepository bookingRepository;
 
-  public Reservation createReservation(Long flightId, List<Customer> customers, CreditCardDetails creditCardDetails) {
+  public Reservation createReservation(Long flightId, List<CustomerDTO> customers,
+      BookingCreditCardDetailsDTO creditCardDetailsDTO) {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
@@ -45,20 +48,21 @@ public class ReservationService {
     // check if customers exist.
     // if not, create them in database.
     List<Customer> updatedCustomers = new ArrayList<>();
-    for (Customer customer : customers) {
-      if (!customerRepository.existsByEmail(customer.getEmail())) {
-        updatedCustomers.add(customerRepository.save(customer));
+    for (CustomerDTO customerDTO : customers) {
+      if (!customerRepository.existsByEmail(customerDTO.getEmail())) {
+        updatedCustomers.add(customerRepository.save(new Customer(customerDTO)));
       } else {
-        updatedCustomers.add(customerRepository.findByEmail(customer.getEmail()));
+        updatedCustomers.add(customerRepository.findByEmail(customerDTO.getEmail()));
       }
     }
 
     // if isSavePaymentDetails
     // and customer.id in creditCardDetails matches paying customer by email.
     // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
-    if (creditCardDetails.getIsSavePaymentDetails()
-        && creditCardDetails.getCustomerId() == updatedCustomers.get(0).getId()) {
-      customerService.insertCardDetails(creditCardDetails.getCustomerId(), new CreditCardRequest(creditCardDetails));
+    if (creditCardDetailsDTO.getIsSavePaymentDetails()
+        && creditCardDetailsDTO.getCustomerId() == updatedCustomers.get(0).getId()) {
+      customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(),
+          new CreditCardRequest(creditCardDetailsDTO));
     }
 
     // create reservation.

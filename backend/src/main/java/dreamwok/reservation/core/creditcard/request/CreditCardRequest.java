@@ -1,5 +1,6 @@
 package dreamwok.reservation.core.creditcard.request;
 
+import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.model.CreditCardDetails;
 
 public class CreditCardRequest {
@@ -11,6 +12,11 @@ public class CreditCardRequest {
 
     public CreditCardRequest() {
 
+    }
+
+    public CreditCardRequest(BookingCreditCardDetailsDTO creditCardDetails) {
+        this(creditCardDetails.getNameOnCard(), creditCardDetails.getCardNumber(), creditCardDetails.getExpiryDate(),
+                creditCardDetails.getSecurityCode());
     }
 
     public CreditCardRequest(CreditCardDetails creditCardDetails) {

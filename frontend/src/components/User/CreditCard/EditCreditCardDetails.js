@@ -68,7 +68,8 @@ const EditCreditCardDetails = ({ location }) => {
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
+    const redactedPrefixCardNumberLength =
+      creditCardNumber.length >= 4 ? creditCardNumber.length - 4 : 0;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(

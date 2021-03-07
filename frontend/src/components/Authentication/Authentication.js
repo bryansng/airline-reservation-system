@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { auth: auth_apis } = rest_endpoints;
 
@@ -25,7 +25,7 @@ function useAuthentication({
     //   logOut();
     // }
     if (!isAuthenticated) {
-      signIn("hong.sng@ucdconnect.ie", "root");
+      // signIn("hong.sng@ucdconnect.ie", "root");
       // signIn("pog@pog.com", "test");
       // register("pog@pog.com", "test", "pog", "pog", "pog address", "42069");
     }

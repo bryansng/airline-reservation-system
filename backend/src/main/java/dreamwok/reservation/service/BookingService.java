@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
+import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Reservation;
@@ -23,7 +25,8 @@ public class BookingService {
   @Autowired
   BookingRepository bookingRepository;
 
-  public Reservation bookReservation(Long flightId, List<Customer> customers, CreditCardDetails creditCardDetails) {
+  public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
+      BookingCreditCardDetailsDTO creditCardDetails) {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
@@ -31,7 +34,7 @@ public class BookingService {
     return reservationService.createReservation(flightId, customers, creditCardDetails);
   }
 
-  public Boolean isValidCreditCardDetails(CreditCardDetails creditCardDetails) {
+  public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {
     Long creditCardDetailsId = creditCardDetails.getId();
 
     if (creditCardDetailsId == null) {
@@ -55,17 +58,17 @@ public class BookingService {
     return false;
   }
 
-  public Boolean isValidCreditCardDetailsAgainstAPI(CreditCardDetails creditCardDetails) {
+  public Boolean isValidCreditCardDetailsAgainstAPI(BookingCreditCardDetailsDTO creditCardDetails) {
     return true;
   }
 
-  public Boolean isValidCreditCardDetailsAgainstAPI(CreditCardDetails creditCardDetails,
+  public Boolean isValidCreditCardDetailsAgainstAPI(BookingCreditCardDetailsDTO creditCardDetails,
       CreditCardDetails realCreditCardDetails) {
     // check real against api.
     return true;
   }
 
-  public Boolean isValidCreditCardDetailsInDatabase(CreditCardDetails creditCardDetails,
+  public Boolean isValidCreditCardDetailsInDatabase(BookingCreditCardDetailsDTO creditCardDetails,
       CreditCardDetails realCreditCardDetails) {
     if (creditCardDetails.getCustomerId() != null) {
       Long customerId = creditCardDetails.getCustomerId();

@@ -19,7 +19,6 @@ public class CreditCardDetails {
   private String cardNumber;
   private String expiryDate;
   private String securityCode;
-  private Boolean isSavePaymentDetails = false;
 
   // @ManyToOne(fetch = FetchType.LAZY)
   // private Customer customer;
@@ -94,14 +93,6 @@ public class CreditCardDetails {
 
   public void setSecurityCode(String securityCode) {
     this.securityCode = securityCode;
-  }
-
-  public Boolean getIsSavePaymentDetails() {
-    return isSavePaymentDetails;
-  }
-
-  public void setIsSavePaymentDetails(Boolean isSavePaymentDetails) {
-    this.isSavePaymentDetails = isSavePaymentDetails;
   }
 
   // public Customer getCustomer() {

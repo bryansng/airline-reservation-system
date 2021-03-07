@@ -74,7 +74,6 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
 
       fetch(reservation_apis.create, requestOptions)
         .then((resp) => {
-          console.log(resp);
           if (resp.ok) {
             return resp.json();
           }
@@ -82,7 +81,6 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         })
         .then((res) => {
           const reservation = res.reservation;
-          console.log(res);
           setBookedReservation(reservation);
           setHasFormError(false);
         })

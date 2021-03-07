@@ -50,7 +50,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
         phoneNum: e.target.formMobileNumber.value,
       }),
     };
-    console.log(requestOptions);
+    // console.log(requestOptions);
 
     fetch(url, requestOptions)
       .then((resp) => {
@@ -60,7 +60,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
         throw new Error(`${resp.status} Error updating customer.`);
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setUser(res.customer);
         setUpdatedUser(res.customer);
         setIsSave(true);
@@ -152,7 +152,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
               </Link>
             </div>
             <div className="ml1">
-              <Button type="submit">Save</Button>
+              <Button type="submit">Save Changes</Button>
             </div>
           </div>
         </Form>
