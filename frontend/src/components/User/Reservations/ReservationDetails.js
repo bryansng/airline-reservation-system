@@ -3,57 +3,24 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router";
 import Card from "react-bootstrap/Card";
-import Accordion from "react-bootstrap/Accordion";
 import * as dayjs from "dayjs";
-// dayjs.extend(isBetween);
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
 const reservationEndpoint =
   rest_endpoints.rest_endpoints.reservation.get_all_by_customer_id;
-
-// const Container = styled.div.attrs({
-//   className: `flex flex-column pr6 pl6 justify-content-center`,
-// })``;
-
-// const HeaderRow = styled.div.attrs({
-//   className: `flex`,
-// })``;
-
-// const TitleContainer = styled.div.attrs({
-//   className: `pa3 mb2 w-50`,
-// })``;
-
-// const Title = styled.p.attrs({
-//   className: `f2 measure fw1 mt3 ml-5`,
-// })``;
-
-// const ReservationContainer = styled.div.attrs({
-//   className: `flex flex-column`,
-// })``;
-
-// const ReservationDiv = styled.div.attrs({
-//   className: `outline flex pa3 ma3`,
-// })``;
-
-// const ReservationText = styled.p.attrs({
-//   className: `f3 fw3`,
-// })``;
-
-// const NoReservationContainer = styled.div.attrs({
-//   className: ``,
-// })``;
-
-// const NoReservation = styled.p.attrs({
-//   className: `tc f2 fw3`,
-// })``;
-
-// const ReservationDetailDiv = styled.div.attrs({
-//   className: `w-25`,
-// })``;
-
-const View = styled.p.attrs({
-  className: `f3 dim pointer fw3`,
-})``;
+const Button = styled.button.attrs({
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+  ${(props) => props.disabled && `pointer-events: none;`}
+`;
 
 const ReservationDetails = ({ location }) => {
   const user = location.state.user;
@@ -78,6 +45,10 @@ const ReservationDetails = ({ location }) => {
       });
   }, [url]);
 
+  const isReservationCancelled = (reservation) => {
+    return reservation.reservationStatus === "CANCELLED";
+  };
+
   return (
     <>
       {!user && (
@@ -88,47 +59,36 @@ const ReservationDetails = ({ location }) => {
           }}
         />
       )}
-      <h2>Show Reservation</h2>
-      <Accordion defaultActiveKey="0">
-        {reservations.length === 0 ? (
-          <Card>
-            <Card.Body>No reservations</Card.Body>
-          </Card>
-        ) : (
-          reservations.map((reservation, key) => {
-            return (
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle
-                    as={Card.Header}
-                    variant="link"
-                    eventKey={key}
-                  >
-                    {`${reservation.flight.departureAirport} to ${reservation.flight.arrivalAirport}`}{" "}
-                    on{" "}
-                    {`${dayjs(reservation.flight.departureDateTime).format(
-                      "DD/MM/YYYY"
-                    )}`}
-                    &#8212; {reservation.flight.flightName}
-                    <Link
-                      to={{
-                        pathname: "/show/reservation/" + reservation.id,
-                        state: {
-                          reservation: reservation,
-                        },
-                      }}
-                    >
-                      <View>View</View>
-                    </Link>
-                  </Accordion.Toggle>
-                </Card.Header>
-                {/* <Accordion.Collapse eventKey={key}>
-                  <Card.Body>
+      <h2>Show all reservations</h2>
+      {reservations.length === 0 ? (
+        <Card className="mv3">
+          <Card.Body>No reservations</Card.Body>
+        </Card>
+      ) : (
+        reservations.map((reservation, key) => {
+          return (
+            <Card className="mv3">
+              <Card.Header
+                style={
+                  isReservationCancelled(reservation)
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                Status: {reservation.reservationStatus}
+              </Card.Header>
+              <Card.Body>
+                <div className="flex justify-between">
+                  <div>
                     <h5 className="mb-3">
                       {`${reservation.flight.departureAirport} to ${reservation.flight.arrivalAirport}`}{" "}
+                      on{" "}
+                      {`${dayjs(reservation.flight.departureDateTime).format(
+                        "DD/MM/YYYY"
+                      )}`}
                       &#8212; {reservation.flight.flightName}
                     </h5>
-                    <Card.Subtitle className="mb-4 text-muted">
+                    <Card.Subtitle className="text-muted">
                       {`${dayjs(reservation.flight.departureDateTime).format(
                         "DD/MM/YYYY"
                       )}`}
@@ -145,103 +105,23 @@ const ReservationDetails = ({ location }) => {
                         "HH:mm"
                       )}`}
                     </Card.Subtitle>
-
-                    <div className="mv2">
-                      <div className="gray f5">Booking number</div>
-                      <div className="lh-copy">{reservation.id}</div>
-                    </div>
-                    <div className="mv2">
-                      <div className="gray f5">Booking name</div>
-                      <div className="lh-copy">{`${reservation.customer.lastName}`}</div>
-                    </div>
-                    <div className="mv2">
-                      <div className="gray f5">Number of tickets</div>
-                      <div className="lh-copy">
-                        {reservation.bookings.length}
-                      </div>
-                    </div>
-                    <div className="mv2">
-                      <div className="gray f5">Flight number</div>
-                      <div className="lh-copy">
-                        {reservation.flight.flightName}
-                      </div>
-                    </div>
-                    <div className="mv2">
-                      <div className="gray f5">Check in before</div>
-                      <div className="lh-copy">
-                        {dayjs(reservation.flight.departureDateTime)
-                          .subtract(1, "hour")
-                          .format("HH:mm")}
-                      </div>
-                    </div>
-                    {reservation.bookings.map(
-                      (currPassengerBooking, currIndex) => (
-                        <div className="mv2">
-                          <div className="gray f5">
-                            Passenger {currIndex + 1}
-                          </div>
-                          <div className="lh-copy">{`${currPassengerBooking.firstName} ${currPassengerBooking.lastName}`}</div>
-                        </div>
-                      )
-                    )}
-                  </Card.Body>
-                </Accordion.Collapse> */}
-              </Card>
-            );
-          })
-        )}
-      </Accordion>
-      {/* <Container>
-        <HeaderRow>
-          <TitleContainer>
-            <Title>Reservations</Title>
-          </TitleContainer>
-        </HeaderRow>
-        <ReservationContainer>
-          {reservations.length === 0 ? (
-            <NoReservationContainer>
-              <NoReservation>No Reservations</NoReservation>
-            </NoReservationContainer>
-          ) : (
-            reservations.map((reservation, key) => {
-              return (
-                <ReservationDiv key={key}>
-                  <ReservationDetailDiv>
-                    <ReservationText>
-                      <b>Departure Time - </b>
-                      {reservation.flight.departureTime}
-                    </ReservationText>
-                  </ReservationDetailDiv>
-                  <ReservationDetailDiv>
-                    <ReservationText>
-                      {reservation.flight.departureDate}
-                    </ReservationText>
-                  </ReservationDetailDiv>
-                  <ReservationDetailDiv>
-                    <ReservationText>
-                      <b>Departure Airport - </b>
-                      {reservation.flight.departureAirport}
-                    </ReservationText>
-                  </ReservationDetailDiv>
-                  <ReservationDetailDiv className="tr">
-                    <ReservationText>
-                      {reservation.flight.flightName}
-                    </ReservationText>
-                  </ReservationDetailDiv>
-                  <ReservationDetailDiv className="tr">
-                    <ReservationText>
-                      {reservation.reservationStatus}
-                    </ReservationText>
-                  </ReservationDetailDiv>
-                  <ReservationDetailDiv className="tr">
-                    <View>View</View>
-                  </ReservationDetailDiv>
-                </ReservationDiv>
-              );
-            })
-          )}
-        </ReservationContainer>
-      </Container> */}
+                  </div>
+                  <Link
+                    to={{
+                      pathname: "/show/reservation/" + reservation.id,
+                      state: {
+                        reservation: reservation,
+                      },
+                    }}
+                  >
+                    <Button type="button">View</Button>
+                  </Link>
+                </div>
+              </Card.Body>
+            </Card>
+          );
+        })
+      )}
     </>
   );
 };
