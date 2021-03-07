@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Redirect } from "react-router";
 
 import { useHistory } from "react-router-dom";
 
@@ -56,6 +57,7 @@ const Save = styled.a.attrs({
 })``;
 
 const EditCreditCardDetails = ({ location }) => {
+  const user = location.state.user;
   const [userId] = useState(location.state.user.id);
   const [isPost] = useState(location.state.isPost);
   const [isSave, setIsSave] = useState(false);
@@ -144,6 +146,14 @@ const EditCreditCardDetails = ({ location }) => {
 
   return (
     <Container>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       <HeaderRow>
         <TitleContainer>
           <Title>Credit Card Details</Title>

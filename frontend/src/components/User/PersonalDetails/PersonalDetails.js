@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
+import { Redirect } from "react-router";
 
 import { Link, useHistory } from "react-router-dom";
 
@@ -79,11 +80,12 @@ const PersonalDetails = ({ location, logOut }) => {
   let history = useHistory();
 
   // get user id from match.params.id and GET user data.
-  const [userId] = useState(location.state.user.id);
-  const [customer, setCustomer] = useState(location.state.user);
+  const user = location.state.user;
+  console.log("user");
+  console.log(user);
   const [isDelete, setIsDelete] = useState(false);
 
-  const url = customerEndpoint + "/" + userId;
+  const url = customerEndpoint + "/" + user.id;
 
   function handleDelete() {
     setIsDelete(true);
@@ -136,6 +138,14 @@ const PersonalDetails = ({ location, logOut }) => {
 
   return (
     <>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       <div>
         <div className="flex justify-between flex-wrap">
           <h2>Personal Details</h2>
@@ -143,7 +153,8 @@ const PersonalDetails = ({ location, logOut }) => {
             <div className="mr1">
               <Link
                 to={{
-                  pathname: "/user/profile/" + userId + "/personaldetails/edit",
+                  pathname:
+                    "/user/profile/" + user.id + "/personaldetails/edit",
                   state: {
                     user: location.state.user,
                   },
@@ -164,32 +175,28 @@ const PersonalDetails = ({ location, logOut }) => {
           <div className="mv2">
             <div className="gray f5">First name</div>
             <div className="lh-copy">
-              {customer == null ? "n/a" : customer.firstName}
+              {user == null ? "n/a" : user.firstName}
             </div>
           </div>
           <div className="mv2">
             <div className="gray f5">Last Name</div>
             <div className="lh-copy">
-              {customer == null ? "n/a" : customer.lastName}
+              {user == null ? "n/a" : user.lastName}
             </div>
           </div>
           <div className="mv2">
             <div className="gray f5">Email address</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.email}
-            </div>
+            <div className="lh-copy">{user == null ? "n/a" : user.email}</div>
           </div>
           <div className="mv2">
             <div className="gray f5">Mobile Number</div>
             <div className="lh-copy">
-              {customer == null ? "n/a" : customer.mobileNumber}
+              {user == null ? "n/a" : user.mobileNumber}
             </div>
           </div>
           <div className="mv2">
             <div className="gray f5">Address</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.address}
-            </div>
+            <div className="lh-copy">{user == null ? "n/a" : user.address}</div>
           </div>
         </Card.Body>
       </Card>

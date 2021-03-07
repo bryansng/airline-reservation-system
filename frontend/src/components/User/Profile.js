@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaUser, FaPlane, FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
+import { Redirect } from "react-router";
 
 import { Link } from "react-router-dom";
 
@@ -55,6 +56,14 @@ const Profile = ({ user }) => {
 
   return (
     <Container>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       {user ? (
         <>
           <TitleContainer>

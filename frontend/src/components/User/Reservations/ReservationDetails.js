@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { Redirect } from "react-router";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import * as dayjs from "dayjs";
@@ -55,6 +56,7 @@ const View = styled.p.attrs({
 })``;
 
 const ReservationDetails = ({ location }) => {
+  const user = location.state.user;
   const [reservations, setReservations] = useState([]);
 
   const url = reservationEndpoint + "/" + location.state.user.id;
@@ -78,6 +80,14 @@ const ReservationDetails = ({ location }) => {
 
   return (
     <>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       <h2>Show Reservation</h2>
       <Accordion defaultActiveKey="0">
         {reservations.length === 0 ? (

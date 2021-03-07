@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
+import { Redirect } from "react-router";
 
 import { Link } from "react-router-dom";
 
@@ -54,6 +55,7 @@ const IconTitle = styled.p.attrs({
 })``;
 
 const CreditCards = ({ location }) => {
+  const user = location.state.user;
   const [userId] = useState(location.state.user.id);
   const [creditCards, setCreditCards] = useState([]);
 
@@ -86,6 +88,14 @@ const CreditCards = ({ location }) => {
 
   return (
     <Container>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       <HeaderRow>
         <TitleContainer>
           <Title>Credit Cards</Title>
