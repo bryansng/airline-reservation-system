@@ -59,9 +59,7 @@ const DataText = styled.p.attrs({
   className: `f4 dark-gray fw3`,
 })``;
 
-// https://reactrouter.com/web/api/match
-const CreditCardDetails = ({ match, location }) => {
-  const user = location.state.user;
+const CreditCardDetails = ({ location }) => {
   const creditCard = location.state.card;
   const [isDelete, setIsDelete] = useState(false);
 

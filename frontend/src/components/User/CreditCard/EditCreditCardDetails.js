@@ -30,6 +30,42 @@ const EditCreditCardDetails = ({ location }) => {
   const user = location.state.user;
   const isAddCard = location.state.isAddCard;
   const [creditCard, setCreditCard] = useState(location.state.card);
+
+  const limitInputSize = (input, size) => {
+    return input.slice(0, size);
+  };
+
+  const sanitiseNumbersOnlyInput = (input) => {
+    // replace all whitespace and alphabets with "".
+    return input.replace(/[^0-9.]/g, "");
+  };
+
+  const getSanitisedCardNumber = (cardNumber) => {
+    const currCardNumber = limitInputSize(
+      sanitiseNumbersOnlyInput(cardNumber),
+      19
+    );
+
+    // format card number to add space after every 4 digits.
+    return currCardNumber.replace(/(\d{4})/g, "$1 ").replace(/^\s+|\s+$/, "");
+  };
+
+  const maskCreditCardNumber = (creditCardNunmber) => {
+    const getSanitisedCardNumber = (creditCardNunmber) => {
+      // format card number to add space after every 4 digits.
+      return creditCardNunmber
+        .replace(/([/*|\d]{4})/g, "$1 ")
+        .replace(/^\s+|\s+$/, "");
+    };
+
+    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
+
+    return getSanitisedCardNumber(
+      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+    );
+  };
+
   const [creditCardFormDefaultInput] = useState(
     isAddCard
       ? {
@@ -38,7 +74,10 @@ const EditCreditCardDetails = ({ location }) => {
           expiryDate: "",
           securityCode: "",
         }
-      : creditCard
+      : {
+          ...creditCard,
+          cardNumber: maskCreditCardNumber(creditCard.cardNumber),
+        }
   );
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
 
@@ -46,11 +85,20 @@ const EditCreditCardDetails = ({ location }) => {
     e.preventDefault();
 
     const nameOnCard = e.target.formNameOnCard.value;
-    const cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
+    var cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
     const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
     );
+
+    // when editing card, if card number was not changed by user.
+    if (
+      !isAddCard &&
+      e.target.formCardNumber.value ===
+        maskCreditCardNumber(creditCard.cardNumber)
+    ) {
+      cardNumber = creditCard.cardNumber;
+    }
 
     const requestOptions = {
       method: isAddCard ? "POST" : "PUT",
@@ -65,6 +113,7 @@ const EditCreditCardDetails = ({ location }) => {
         nameOnCard: nameOnCard,
       }),
     };
+    console.log(requestOptions);
 
     fetch(
       `${credit_card_apis.get_card_by_card_id}/${
@@ -89,31 +138,12 @@ const EditCreditCardDetails = ({ location }) => {
         console.log(res);
 
         // redirect to show updated credit card.
-        setIsRequestSuccess(true);
         setCreditCard(res.creditCard);
+        setIsRequestSuccess(true);
       })
       .catch((error) => {
         console.error(error);
       });
-  };
-
-  const sanitiseNumbersOnlyInput = (input) => {
-    // replace all whitespace and alphabets with "".
-    return input.replace(/[^0-9.]/g, "");
-  };
-
-  const limitInputSize = (input, size) => {
-    return input.slice(0, size);
-  };
-
-  const getSanitisedCardNumber = (cardNumber) => {
-    const currCardNumber = limitInputSize(
-      sanitiseNumbersOnlyInput(cardNumber),
-      19
-    );
-
-    // format card number to add space after every 4 digits.
-    return currCardNumber.replace(/(\d{4})/g, "$1 ").replace(/^\s+|\s+$/, "");
   };
 
   const onChangeCardNumber = (e) => {
@@ -160,22 +190,6 @@ const EditCreditCardDetails = ({ location }) => {
     e.target.value = getSanitisedSecurityCode(e.target.value);
   };
 
-  const maskCreditCardNumber = (creditCardNunmber) => {
-    const getSanitisedCardNumber = (creditCardNunmber) => {
-      // format card number to add space after every 4 digits.
-      return creditCardNunmber
-        .replace(/([/*|\d]{4})/g, "$1 ")
-        .replace(/^\s+|\s+$/, "");
-    };
-
-    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
-    const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
-
-    return getSanitisedCardNumber(
-      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
-    );
-  };
-
   return (
     <div>
       {isRequestSuccess && creditCard && (
@@ -185,7 +199,7 @@ const EditCreditCardDetails = ({ location }) => {
             pathname: `/user/profile/creditcards/${creditCard.id}`,
             state: {
               card: creditCard,
-              user: location.state.user,
+              user: user,
             },
           }}
         />
@@ -246,7 +260,7 @@ const EditCreditCardDetails = ({ location }) => {
             </Link>{" "}
           </div>
           <div className="ml1">
-            <Button type="submit">Pay</Button>
+            <Button type="submit">Save Changes</Button>
           </div>
         </div>
       </Form>
