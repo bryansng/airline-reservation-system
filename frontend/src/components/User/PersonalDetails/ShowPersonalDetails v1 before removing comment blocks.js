@@ -75,15 +75,13 @@ const Button = styled.button.attrs({
 // })``;
 
 // https://reactrouter.com/web/api/match
-const PersonalDetails = ({ location, logOut }) => {
+const ShowPersonalDetails = ({ location, logOut }) => {
   let history = useHistory();
 
-  // get user id from match.params.id and GET user data.
-  const [userId] = useState(location.state.user.id);
-  const [customer, setCustomer] = useState(location.state.user);
+  const user = location.state.user;
   const [isDelete, setIsDelete] = useState(false);
 
-  const url = customerEndpoint + "/" + userId;
+  const url = customerEndpoint + "/" + user.id;
 
   function handleDelete() {
     setIsDelete(true);
@@ -143,13 +141,13 @@ const PersonalDetails = ({ location, logOut }) => {
             <div className="mr1">
               <Link
                 to={{
-                  pathname: "/user/profile/" + userId + "/personaldetails/edit",
+                  pathname: "/user/profile/personaldetails/edit",
                   state: {
                     user: location.state.user,
                   },
                 }}
               >
-                Update Account
+                <Button type="button">Edit Details</Button>
               </Link>
             </div>
             <div className="mr1">
@@ -160,38 +158,30 @@ const PersonalDetails = ({ location, logOut }) => {
       </div>
       <Card>
         {/* <Card.Header>Personal Details</Card.Header> */}
-        <Card.Body>
-          <div className="mv2">
-            <div className="gray f5">First name</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.firstName}
+        {user && (
+          <Card.Body>
+            <div className="mv2">
+              <div className="gray f5">First name</div>
+              <div className="lh-copy">{user.firstName}</div>
             </div>
-          </div>
-          <div className="mv2">
-            <div className="gray f5">Last Name</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.lastName}
+            <div className="mv2">
+              <div className="gray f5">Last Name</div>
+              <div className="lh-copy">{user.lastName}</div>
             </div>
-          </div>
-          <div className="mv2">
-            <div className="gray f5">Email address</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.email}
+            <div className="mv2">
+              <div className="gray f5">Email address</div>
+              <div className="lh-copy">{user.email}</div>
             </div>
-          </div>
-          <div className="mv2">
-            <div className="gray f5">Mobile Number</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.mobileNumber}
+            <div className="mv2">
+              <div className="gray f5">Mobile Number</div>
+              <div className="lh-copy">{user.mobileNumber}</div>
             </div>
-          </div>
-          <div className="mv2">
-            <div className="gray f5">Address</div>
-            <div className="lh-copy">
-              {customer == null ? "n/a" : customer.address}
+            <div className="mv2">
+              <div className="gray f5">Address</div>
+              <div className="lh-copy">{user.address}</div>
             </div>
-          </div>
-        </Card.Body>
+          </Card.Body>
+        )}
       </Card>
 
       {/* <Container>
@@ -267,4 +257,4 @@ const PersonalDetails = ({ location, logOut }) => {
   );
 };
 
-export default PersonalDetails;
+export default ShowPersonalDetails;

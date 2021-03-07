@@ -1,266 +1,283 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Form from "react-bootstrap/Form";
+import { Link } from "react-router-dom";
+import Card from "react-bootstrap/Card";
+import { Redirect } from "react-router";
+import { rest_endpoints } from "../../../config/rest_endpoints.json";
+const { credit_card: credit_card_apis } = rest_endpoints;
 
-import { useHistory } from "react-router-dom";
+const Button = styled.button.attrs({
+  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+  ${(props) => props.disabled && `pointer-events: none;`}
+`;
 
-import { Textbox } from "react-inputs-validation";
-
-import rest_endpoints from "../../../config/rest_endpoints.json";
-
-const creditCardEndpoint =
-  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
-
-const Container = styled.div.attrs({
-  className: `flex flex-column pr6 pl6`,
-})``;
-
-const HeaderRow = styled.div.attrs({
-  className: `flex`,
-})``;
-
-const TitleContainer = styled.div.attrs({
-  className: `pa3 mb2 w-50`,
-})``;
-
-const Title = styled.p.attrs({
-  className: `f2 measure fw1 mt3 ml-5`,
-})``;
-
-const BodyRow = styled.div.attrs({
-  className: `flex flex-column items-center`,
-})``;
-
-const BodyDiv = styled.div.attrs({
-  className: ``,
-})``;
-
-const Form = styled.form.attrs({
-  className: `w-30`,
-})``;
-
-const FieldDiv = styled.div.attrs({
-  className: `mt4`,
-})``;
-
-const FieldText = styled.p.attrs({
-  className: `f3 gray`,
-})``;
-
-const SaveDiv = styled.div.attrs({
-  className: `lh-copy mt3 tr`,
-})``;
-
-const Save = styled.a.attrs({
-  className: `pointer f4 mr2 link dim black db`,
-  href: ``,
-})``;
+const Grid = styled.div.attrs({})`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`;
 
 const EditCreditCardDetails = ({ location }) => {
-  const [userId] = useState(location.state.user.id);
-  const [isPost] = useState(location.state.isPost);
-  const [isSave, setIsSave] = useState(false);
+  const user = location.state.user;
+  const isAddCard = location.state.isAddCard;
+  const [creditCard, setCreditCard] = useState(location.state.card);
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
 
-  const [isValidCardNumber, setIsValidCardNumber] = useState(false);
-  const [isValidExpiryDate, setIsValidExpiryDate] = useState(false);
-  const [isValidSecurityCode, setIsValidSecurityCode] = useState(false);
-  const [isValidNameOnCard, setIsValidNameOnCard] = useState(false);
+  const limitInputSize = (input, size) => {
+    return input.slice(0, size);
+  };
 
-  const [cardNumber, setCardNumber] = useState(
-    location.state.card == null ? null : location.state.card.cardNumber
+  const sanitiseNumbersOnlyInput = (input) => {
+    // if contains character '*'.
+    if (input.indexOf("*") !== -1) {
+      return "";
+    }
+
+    // replace all whitespace and alphabets with "".
+    return input.replace(/[^0-9.]/g, "");
+  };
+
+  const getSanitisedCardNumber = (cardNumber) => {
+    const currCardNumber = limitInputSize(
+      sanitiseNumbersOnlyInput(cardNumber),
+      19
+    );
+
+    // format card number to add space after every 4 digits.
+    return currCardNumber.replace(/(\d{4})/g, "$1 ").replace(/^\s+|\s+$/, "");
+  };
+
+  const maskSecurityCode = (creditCardSecurityCode) => {
+    return "*".repeat(creditCardSecurityCode.length);
+  };
+
+  const maskCreditCardNumber = (creditCardNumber) => {
+    const getSanitisedCardNumber = (creditCardNumber) => {
+      // format card number to add space after every 4 digits.
+      return creditCardNumber
+        .replace(/([/*|\d]{4})/g, "$1 ")
+        .replace(/^\s+|\s+$/, "");
+    };
+
+    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
+    const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
+
+    return getSanitisedCardNumber(
+      redactedPrefixCardNumber + creditCardNumber.slice(-4)
+    );
+  };
+
+  const [creditCardFormDefaultInput] = useState(
+    isAddCard
+      ? {
+          nameOnCard: "",
+          cardNumber: "",
+          expiryDate: "",
+          securityCode: "",
+        }
+      : {
+          ...creditCard,
+          securityCode: maskSecurityCode(creditCard.securityCode),
+          cardNumber: maskCreditCardNumber(creditCard.cardNumber),
+        }
   );
-  const [expiryDate, setExpiryDate] = useState(
-    location.state.card == null ? null : location.state.card.expiryDate
-  );
-  const [securityCode, setSecurityCode] = useState(
-    location.state.card == null ? null : location.state.card.securityCode
-  );
-  const [nameOnCard, setNameOnCard] = useState(
-    location.state.card == null ? null : location.state.card.nameOnCard
-  );
 
-  let history = useHistory();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const url = creditCardEndpoint + "/" + userId;
-  console.log("url: " + url);
+    const nameOnCard = e.target.formNameOnCard.value;
+    var cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
+    const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
+    var securityCode = getSanitisedSecurityCode(
+      e.target.formSecurityCode.value
+    );
 
-  function handleSave() {
+    // when editing card, if card number was not changed by user.
+    // this works because '*' characters cannot be manually inputted by the user.
     if (
-      isValidCardNumber &&
-      isValidExpiryDate &&
-      isValidSecurityCode &&
-      isValidNameOnCard
+      !isAddCard &&
+      e.target.formCardNumber.value.indexOf("*") !== -1
+      // e.target.formCardNumber.value ===
+      //   maskCreditCardNumber(creditCard.cardNumber)
     ) {
-      setIsSave(true);
-    } else {
-      let msg = isPost ? "Cannot add new card" : "Cannot update card";
-      alert(msg + "\n\nPlease fill in fields appropriately");
+      cardNumber = creditCard.cardNumber;
     }
-  }
 
-  useEffect(() => {
-    if (isSave) {
-      const requestOptions = {
-        method: isPost ? "POST" : "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `bearer ${token}`,
-        },
-        body: JSON.stringify({
-          cardNumber: cardNumber,
-          expiryDate: expiryDate,
-          securityCode: securityCode,
-          nameOnCard: nameOnCard,
-        }),
-      };
-      fetch(url, requestOptions)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-
-          throw new Error(
-            `${resp.status} ${
-              isPost ? "Error posting customer." : "Error updating customer."
-            }`
-          );
-        })
-        .then((res) => {})
-        .catch((error) => {
-          console.error(error);
-        });
-
-      history.go(-2);
+    if (!isAddCard && e.target.formSecurityCode.value.indexOf("*") !== -1) {
+      securityCode = creditCard.securityCode;
     }
-  }, [
-    cardNumber,
-    expiryDate,
-    history,
-    isPost,
-    isSave,
-    nameOnCard,
-    securityCode,
-    url,
-  ]);
+
+    const requestOptions = {
+      method: isAddCard ? "POST" : "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `bearer ${token}`,
+      },
+      body: JSON.stringify({
+        cardNumber: cardNumber,
+        expiryDate: expiryDate,
+        securityCode: securityCode,
+        nameOnCard: nameOnCard,
+      }),
+    };
+
+    fetch(
+      `${credit_card_apis.get_card_by_card_id}/${
+        isAddCard ? user.id : creditCard.id
+      }`,
+      requestOptions
+    )
+      .then((resp) => {
+        if (resp.ok) {
+          return resp.json();
+        }
+
+        throw new Error(
+          `${resp.status} ${
+            isAddCard
+              ? "Error adding new credit card."
+              : "Error updating credit card details."
+          }`
+        );
+      })
+      .then((res) => {
+        // redirect to show updated credit card.
+        setCreditCard(res.creditCard);
+        setIsRequestSuccess(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const onChangeCardNumber = (e) => {
+    e.preventDefault();
+
+    // sanitize user input.
+    e.target.value = getSanitisedCardNumber(e.target.value);
+  };
+
+  const getSanitisedExpiryDate = (expiryDate) => {
+    const currExpiryDate = limitInputSize(
+      sanitiseNumbersOnlyInput(expiryDate),
+      4
+    ).replace(/\//g, "");
+
+    // format expiry date to add forward slash after months.
+    if (currExpiryDate.length < 3) {
+      return currExpiryDate;
+    }
+    return (
+      currExpiryDate.substring(0, 2) + "/" + currExpiryDate.substring(2, 4)
+    );
+  };
+
+  const onChangeExpiryDate = (e) => {
+    e.preventDefault();
+
+    // sanitize user input.
+    e.target.value = getSanitisedExpiryDate(e.target.value);
+  };
+
+  const getSanitisedSecurityCode = (securityCode) => {
+    const currSecurityCode = limitInputSize(
+      sanitiseNumbersOnlyInput(securityCode),
+      3
+    );
+    return currSecurityCode;
+  };
+
+  const onChangeSecurityCode = (e) => {
+    e.preventDefault();
+
+    // sanitize user input.
+    e.target.value = getSanitisedSecurityCode(e.target.value);
+  };
 
   return (
-    <Container>
-      <HeaderRow>
-        <TitleContainer>
-          <Title>Credit Card Details</Title>
-        </TitleContainer>
-      </HeaderRow>
-      <BodyRow>
-        <Form>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Card Number</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Card Number",
-                check: true,
-                required: true,
-                customFunc: (num) => {
-                  const reg = /^\d+$/;
-                  if (num.length === 16 && reg.test(num)) {
-                    setIsValidCardNumber(true);
-                    return true;
-                  } else {
-                    return "is not a valid card number";
-                  }
-                },
-              }}
-              onChange={(name, e) => setCardNumber(name)}
-            />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Expiry Date</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Expiry Date",
-                check: true,
-                required: true,
-                customFunc: (date) => {
-                  const reg = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-                  if (reg.test(date)) {
-                    setIsValidExpiryDate(true);
-                    return true;
-                  } else {
-                    return "is not a valid expiry date";
-                  }
-                },
-              }}
-              onChange={(name, e) => setExpiryDate(name)}
-            />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Security Code</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Security Code",
-                check: true,
-                required: true,
-                customFunc: (num) => {
-                  const reg = /^\d+$/;
-                  if (num.length === 3 && reg.test(num)) {
-                    setIsValidSecurityCode(true);
-                    return true;
-                  } else {
-                    return "is not a valid security code";
-                  }
-                },
-              }}
-              onChange={(name, e) => setSecurityCode(name)}
-            />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Name On Card</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Name On Card",
-                check: true,
-                required: true,
-                customFunc: (name) => {
-                  const reg = /^[a-zA-Z]+$/;
-                  if (reg.test(name)) {
-                    setIsValidNameOnCard(true);
-                    return true;
-                  } else {
-                    return "is not a valid name";
-                  }
-                },
-              }}
-              onChange={(name, e) => setNameOnCard(name)}
-            />
-          </BodyDiv>
-          <SaveDiv>
-            <Save onClick={handleSave}>Save</Save>
-          </SaveDiv>
-        </Form>
-      </BodyRow>
-    </Container>
+    <div>
+      {isRequestSuccess && creditCard && (
+        <Redirect
+          push
+          to={{
+            pathname: `/user/profile/creditcards/${creditCard.id}`,
+            state: {
+              card: creditCard,
+              user: user,
+            },
+          }}
+        />
+      )}
+      <Form onSubmit={(e) => handleSubmit(e)}>
+        <Card className="mv">
+          <Card.Header>{isAddCard ? "Add" : "Edit"} Credit Card</Card.Header>
+          <Card.Body>
+            <Grid>
+              <Form.Group className="mh1" controlId="formNameOnCard">
+                <Form.Label className="dark-gray f5">Name on Card</Form.Label>
+                <Form.Control
+                  type="text"
+                  // placeholder="John Doe"
+                  defaultValue={creditCardFormDefaultInput.nameOnCard}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formCardNumber">
+                <Form.Label className="dark-gray f5">Card Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  // placeholder="1234 5678 8765 4321"
+                  defaultValue={creditCardFormDefaultInput.cardNumber}
+                  onChange={(evt) => onChangeCardNumber(evt)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formExpiryDate">
+                <Form.Label className="dark-gray f5">Expiry Date</Form.Label>
+                <Form.Control
+                  type="text"
+                  // placeholder="04/25"
+                  defaultValue={creditCardFormDefaultInput.expiryDate}
+                  onChange={(evt) => onChangeExpiryDate(evt)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mh1" controlId="formSecurityCode">
+                <Form.Label className="dark-gray f5">
+                  CVV or Security Code
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  // placeholder="412"
+                  defaultValue={creditCardFormDefaultInput.securityCode}
+                  onChange={(evt) => onChangeSecurityCode(evt)}
+                  required
+                />
+              </Form.Group>
+            </Grid>
+          </Card.Body>
+        </Card>
+        <div className="flex justify-end">
+          <div className="mr1">
+            <Link to="/">
+              <Button type="button">Cancel</Button>
+            </Link>{" "}
+          </div>
+          <div className="ml1">
+            <Button type="submit">Save Changes</Button>
+          </div>
+        </div>
+      </Form>
+    </div>
   );
 };
 

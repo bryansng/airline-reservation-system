@@ -53,11 +53,9 @@ const IconTitle = styled.p.attrs({
   className: `f4`,
 })``;
 
-const CreditCards = ({ location }) => {
-  const [userId] = useState(location.state.user.id);
+const ShowCreditCards = ({ location }) => {
+  const user = location.state.user;
   const [creditCards, setCreditCards] = useState([]);
-
-  const url = creditCardEndpoint + "/" + userId;
 
   function parseCardNumber(cardNum) {
     return (
@@ -66,23 +64,22 @@ const CreditCards = ({ location }) => {
   }
 
   useEffect(() => {
-    fetch(url)
+    fetch(`${creditCardEndpoint}/${user.id}`)
       .then((resp) => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status} Error retrieving customer.`);
+        throw new Error(
+          `${resp.status} Error retrieving customer's credit cards.`
+        );
       })
       .then((res) => {
-        const cardList = res.creditCards;
-        setCreditCards({
-          cards: cardList,
-        });
+        setCreditCards(res.creditCards);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [url]);
+  }, []);
 
   return (
     <Container>
@@ -90,35 +87,34 @@ const CreditCards = ({ location }) => {
         <TitleContainer>
           <Title>Credit Cards</Title>
         </TitleContainer>
-        {/* <Btn>
+        <Btn>
           <Link
             style={{ color: "green" }}
             to={{
-              pathname: "/user/profile/" + userId + "/creditcards/add",
+              pathname: `/user/profile/creditcards/add`,
               state: {
-                isPost: true,
+                isAddCard: true,
                 user: location.state.user,
               },
             }}
           >
             <Add>Add Card</Add>
           </Link>
-        </Btn> */}
+        </Btn>
       </HeaderRow>
       <CardsContainer>
-        <IconContainer>
-          {creditCards.length === 0 ? (
-            <div>No Cards</div>
-          ) : (
-            creditCards.cards.map((card, key) => {
+        {creditCards.length === 0 ? (
+          <div>You do not have any saved cards.</div>
+        ) : (
+          <IconContainer>
+            {creditCards.map((card, key) => {
               return (
                 <Link
                   key={key}
                   style={{ color: "dimgray" }}
                   className="ba b--silver br4 tc ma4 grow pointer dim"
                   to={{
-                    pathname:
-                      `/user/profile/` + userId + "/creditcards/" + card.id,
+                    pathname: `/user/profile/creditcards/${card.id}`,
                     state: {
                       card: card,
                       user: location.state.user,
@@ -135,12 +131,12 @@ const CreditCards = ({ location }) => {
                   </IconContext.Provider>
                 </Link>
               );
-            })
-          )}
-        </IconContainer>
+            })}
+          </IconContainer>
+        )}
       </CardsContainer>
     </Container>
   );
 };
 
-export default CreditCards;
+export default ShowCreditCards;

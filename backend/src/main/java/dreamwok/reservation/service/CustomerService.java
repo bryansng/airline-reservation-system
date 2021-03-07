@@ -6,7 +6,6 @@ import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +22,10 @@ import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
+import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
+import dreamwok.reservation.dto.CreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 
 @Service
@@ -83,53 +84,56 @@ public class CustomerService {
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
   }
 
-  public ResponseEntity<CreditCardResponse> getCardDetails(Long cardId) {
+  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId) {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      List<CreditCardDetails> cards = new ArrayList<>();
-      cards.add(card.get());
-
-      return new ResponseEntity<>(new CreditCardResponse("Found card for customer", cards), HttpStatus.OK);
+      return new ResponseEntity<>(
+          new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(card.get())), HttpStatus.OK);
     }
 
-    return new ResponseEntity<>(new CreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(new GetCreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
   }
 
-  public ResponseEntity<String> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
+  public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
     String cardNumber = creditCardRequest.getCardNumber();
 
-    System.out.println(cardNumber);
+    // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
+    CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
+    creditCard = creditCardDetailsRepository.save(creditCard);
 
-    if (creditCardDetailsRepository.existsByCardNumber(cardNumber) == null) {
-      CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
-      creditCardDetailsRepository.save(creditCard);
+    return new ResponseEntity<>(
+        new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)), HttpStatus.CREATED);
+    // }
 
-      return new ResponseEntity<>("Card details inserted.", HttpStatus.CREATED);
-    }
-
-    return new ResponseEntity<>("Card exists.", HttpStatus.CONFLICT);
+    // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
   }
 
-  public ResponseEntity<String> updateCardDetails(Long id, CreditCardRequest creditCardRequest) {
+  public ResponseEntity<GetCreditCardResponse> updateCardDetails(Long id, CreditCardRequest creditCardRequest) {
     if (creditCardDetailsRepository.existsById(id)) {
+      // String cardNumber = creditCardRequest.getCardNumber();
+      // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
       CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
       currCreditCard.updateCard(creditCardRequest);
-      creditCardDetailsRepository.save(currCreditCard);
+      currCreditCard = creditCardDetailsRepository.save(currCreditCard);
 
-      return new ResponseEntity<>("Detail updated", HttpStatus.OK);
+      return new ResponseEntity<>(
+          new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
+      // }
+
+      // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
     }
 
-    return new ResponseEntity<>("Card does not exist", HttpStatus.CREATED);
+    return new ResponseEntity<>(new GetCreditCardResponse("Card does not exist", null), HttpStatus.CREATED);
   }
 
-  public ResponseEntity<String> deleteCardDetails(Long id) {
+  public ResponseEntity<GetCreditCardResponse> deleteCardDetails(Long id) {
     if (creditCardDetailsRepository.existsById(id)) {
       creditCardDetailsRepository.deleteById(id);
 
-      return new ResponseEntity<>("Card deleted", HttpStatus.OK);
+      return new ResponseEntity<>(new GetCreditCardResponse("Card deleted", null), HttpStatus.OK);
     }
-    return new ResponseEntity<>("Card does not exist", HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new GetCreditCardResponse("Card does not exist", null), HttpStatus.BAD_REQUEST);
   }
 
   /**

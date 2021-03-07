@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import { Textbox } from "react-inputs-validation";
-
 import { useHistory } from "react-router-dom";
 
+import { Textbox } from "react-inputs-validation";
+
 import rest_endpoints from "../../../config/rest_endpoints.json";
-const customerEndpoint = rest_endpoints.rest_endpoints.user.customer_profile;
+
+const creditCardEndpoint =
+  rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
@@ -44,12 +46,6 @@ const FieldText = styled.p.attrs({
   className: `f3 gray`,
 })``;
 
-const Input = styled.input.attrs({
-  className: `input-reset ba b--black-20 pa2 mb4 db w-100`,
-  type: `text`,
-  ariaDescribedby: `name-desc`,
-})``;
-
 const SaveDiv = styled.div.attrs({
   className: `lh-copy mt3 tr`,
 })``;
@@ -59,69 +55,76 @@ const Save = styled.a.attrs({
   href: ``,
 })``;
 
-const EditPersonalDetails = ({ location, setUser }) => {
-  let history = useHistory();
-
-  console.log(location);
-  const url = customerEndpoint + "/" + location.state.user.id;
+const EditCreditCardDetails = ({ location }) => {
+  const [userId] = useState(location.state.user.id);
+  const [isPost] = useState(location.state.isPost);
   const [isSave, setIsSave] = useState(false);
 
-  const [isValidFirstName, setIsValidFirstName] = useState(false);
-  const [isValidLastName, setIsValidLastName] = useState(false);
-  const [isValidPhoneNum, setIsValidPhoneNum] = useState(false);
-  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidCardNumber, setIsValidCardNumber] = useState(false);
+  const [isValidExpiryDate, setIsValidExpiryDate] = useState(false);
+  const [isValidSecurityCode, setIsValidSecurityCode] = useState(false);
+  const [isValidNameOnCard, setIsValidNameOnCard] = useState(false);
 
-  const [email, setEmail] = useState(location.state.user.email);
-  const [lastName, setLastName] = useState(location.state.user.lastName);
-  const [firstName, setFirstName] = useState(location.state.user.firstName);
-  const [address, setAddress] = useState(location.state.user.address);
-  const [phoneNum, setPhoneNum] = useState(location.state.user.phoneNum);
+  const [cardNumber, setCardNumber] = useState(
+    location.state.card == null ? null : location.state.card.cardNumber
+  );
+  const [expiryDate, setExpiryDate] = useState(
+    location.state.card == null ? null : location.state.card.expiryDate
+  );
+  const [securityCode, setSecurityCode] = useState(
+    location.state.card == null ? null : location.state.card.securityCode
+  );
+  const [nameOnCard, setNameOnCard] = useState(
+    location.state.card == null ? null : location.state.card.nameOnCard
+  );
+
+  let history = useHistory();
+
+  const url = creditCardEndpoint + "/" + userId;
+  console.log("url: " + url);
 
   function handleSave() {
     if (
-      isValidFirstName &&
-      isValidLastName &&
-      isValidPhoneNum &&
-      isValidEmail
+      isValidCardNumber &&
+      isValidExpiryDate &&
+      isValidSecurityCode &&
+      isValidNameOnCard
     ) {
       setIsSave(true);
     } else {
-      alert(
-        "Cannot update personal details\n\nPlease fill in fields appropriately"
-      );
+      let msg = isPost ? "Cannot add new card" : "Cannot update card";
+      alert(msg + "\n\nPlease fill in fields appropriately");
     }
   }
 
   useEffect(() => {
     if (isSave) {
       const requestOptions = {
-        method: "PUT",
+        method: isPost ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
           // Authorization: `bearer ${token}`,
         },
         body: JSON.stringify({
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          address: address,
-          phoneNum: phoneNum,
-          bornOn: "2018-03-29T13:34:00.000",
-          auth: "member",
+          cardNumber: cardNumber,
+          expiryDate: expiryDate,
+          securityCode: securityCode,
+          nameOnCard: nameOnCard,
         }),
       };
-
       fetch(url, requestOptions)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
           }
-          throw new Error(`${resp.status} Error updating customer.`);
+
+          throw new Error(
+            `${resp.status} ${
+              isPost ? "Error posting customer." : "Error updating customer."
+            }`
+          );
         })
-        .then((res) => {
-          console.log(res);
-          setUser(res.customer);
-        })
+        .then((res) => {})
         .catch((error) => {
           console.error(error);
         });
@@ -129,28 +132,28 @@ const EditPersonalDetails = ({ location, setUser }) => {
       history.go(-2);
     }
   }, [
-    address,
-    email,
-    firstName,
+    cardNumber,
+    expiryDate,
     history,
+    isPost,
     isSave,
-    lastName,
-    phoneNum,
+    nameOnCard,
+    securityCode,
     url,
-    setUser,
   ]);
+
   return (
     <Container>
       <HeaderRow>
         <TitleContainer>
-          <Title>Personal Details</Title>
+          <Title>Credit Card Details</Title>
         </TitleContainer>
       </HeaderRow>
       <BodyRow>
         <Form>
           <BodyDiv>
             <FieldDiv>
-              <FieldText>First Name</FieldText>
+              <FieldText>Card Number</FieldText>
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
@@ -158,83 +161,25 @@ const EditPersonalDetails = ({ location, setUser }) => {
               //   console.log(e);
               // }}
               validationOption={{
-                name: "First Name",
-                check: true,
-                required: true,
-                customFunc: (name) => {
-                  const reg = /^[a-zA-Z]+$/;
-                  if (reg.test(name)) {
-                    setIsValidFirstName(true);
-                    return true;
-                  } else {
-                    return "is not a valid name";
-                  }
-                },
-              }}
-              onChange={(name, e) => setFirstName(name)}
-            />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Last Name</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Last Name",
-                check: true,
-                required: true,
-                customFunc: (name) => {
-                  const reg = /^[a-zA-Z]+$/;
-                  if (reg.test(name)) {
-                    setIsValidLastName(true);
-                    return true;
-                  } else {
-                    return "is not a valid name";
-                  }
-                },
-              }}
-              onChange={(name, e) => setLastName(name)}
-            />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Address</FieldText>
-            </FieldDiv>
-            <Input onChange={(e) => setAddress(e.target.value)} />
-          </BodyDiv>
-          <BodyDiv>
-            <FieldDiv>
-              <FieldText>Phone Number</FieldText>
-            </FieldDiv>
-            <Textbox
-              classNameInput="input-reset ba b--black-20 pa2 db w-100"
-              // onBlur={(e) => {
-              //   console.log(e);
-              // }}
-              validationOption={{
-                name: "Phone Number",
+                name: "Card Number",
                 check: true,
                 required: true,
                 customFunc: (num) => {
                   const reg = /^\d+$/;
-                  if (reg.test(num)) {
-                    setIsValidPhoneNum(true);
+                  if (num.length === 16 && reg.test(num)) {
+                    setIsValidCardNumber(true);
                     return true;
                   } else {
-                    return "is not a valid phone number";
+                    return "is not a valid card number";
                   }
                 },
               }}
-              onChange={(name, e) => setPhoneNum(name)}
+              onChange={(name, e) => setCardNumber(name)}
             />
           </BodyDiv>
           <BodyDiv>
             <FieldDiv>
-              <FieldText>Email Address</FieldText>
+              <FieldText>Expiry Date</FieldText>
             </FieldDiv>
             <Textbox
               classNameInput="input-reset ba b--black-20 pa2 db w-100"
@@ -242,20 +187,72 @@ const EditPersonalDetails = ({ location, setUser }) => {
               //   console.log(e);
               // }}
               validationOption={{
-                name: "Email",
+                name: "Expiry Date",
                 check: true,
                 required: true,
-                customFunc: (email) => {
-                  const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                  if (reg.test(email)) {
-                    setIsValidEmail(true);
+                customFunc: (date) => {
+                  const reg = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+                  if (reg.test(date)) {
+                    setIsValidExpiryDate(true);
                     return true;
                   } else {
-                    return "is not a valid email";
+                    return "is not a valid expiry date";
                   }
                 },
               }}
-              onChange={(name, e) => setEmail(name)}
+              onChange={(name, e) => setExpiryDate(name)}
+            />
+          </BodyDiv>
+          <BodyDiv>
+            <FieldDiv>
+              <FieldText>Security Code</FieldText>
+            </FieldDiv>
+            <Textbox
+              classNameInput="input-reset ba b--black-20 pa2 db w-100"
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
+              validationOption={{
+                name: "Security Code",
+                check: true,
+                required: true,
+                customFunc: (num) => {
+                  const reg = /^\d+$/;
+                  if (num.length === 3 && reg.test(num)) {
+                    setIsValidSecurityCode(true);
+                    return true;
+                  } else {
+                    return "is not a valid security code";
+                  }
+                },
+              }}
+              onChange={(name, e) => setSecurityCode(name)}
+            />
+          </BodyDiv>
+          <BodyDiv>
+            <FieldDiv>
+              <FieldText>Name On Card</FieldText>
+            </FieldDiv>
+            <Textbox
+              classNameInput="input-reset ba b--black-20 pa2 db w-100"
+              // onBlur={(e) => {
+              //   console.log(e);
+              // }}
+              validationOption={{
+                name: "Name On Card",
+                check: true,
+                required: true,
+                customFunc: (name) => {
+                  const reg = /^[a-zA-Z]+$/;
+                  if (reg.test(name)) {
+                    setIsValidNameOnCard(true);
+                    return true;
+                  } else {
+                    return "is not a valid name";
+                  }
+                },
+              }}
+              onChange={(name, e) => setNameOnCard(name)}
             />
           </BodyDiv>
           <SaveDiv>
@@ -267,4 +264,4 @@ const EditPersonalDetails = ({ location, setUser }) => {
   );
 };
 
-export default EditPersonalDetails;
+export default EditCreditCardDetails;

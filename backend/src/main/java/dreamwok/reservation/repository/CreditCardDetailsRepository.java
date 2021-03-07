@@ -13,6 +13,5 @@ public interface CreditCardDetailsRepository extends JpaRepository<CreditCardDet
     @Query("SELECT c from CreditCardDetails c WHERE c.customerId = ?1")
     List<CreditCardDetails> findAllById(Long customerId);
 
-    @Query("SELECT c from CreditCardDetails c WHERE c.cardNumber = ?1")
     Boolean existsByCardNumber(String cardNumber);
 }

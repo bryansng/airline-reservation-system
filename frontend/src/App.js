@@ -7,12 +7,12 @@ import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
-import PersonalDetails from "./components/User/PersonalDetails/PersonalDetails";
+import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
-import CreditCards from "./components/User/CreditCard/CreditCards";
-import CreditCardDetails from "./components/User/CreditCard/CreditCardDetails";
+import ShowCreditCards from "./components/User/CreditCard/ShowCreditCards";
+import CreditCardDetails from "./components/User/CreditCard/ShowCreditCardDetails";
 import EditCreditCardDetails from "./components/User/CreditCard/EditCreditCardDetails";
-import ReservationDetails from "./components/User/Reservations/ReservationDetails";
+import ShowReservations from "./components/User/Reservations/ShowReservations";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 const Container = styled.div.attrs({
@@ -81,43 +81,45 @@ function App() {
             exact
             component={ShowReservation}
           />
-          <Route path="/user/profile/:id" exact component={Profile} />
+          <Route path="/user/profile" exact component={Profile} />
           <Route
-            path="/user/profile/:id/personaldetails"
+            path="/user/profile/personaldetails"
             exact
-            render={(props) => <PersonalDetails {...props} logOut={logOut} />}
+            render={(props) => (
+              <ShowPersonalDetails {...props} logOut={logOut} />
+            )}
           />
           <Route
-            path="/user/profile/:id/personaldetails/edit"
+            path="/user/profile/personaldetails/edit"
             exact
             render={(props) => (
               <EditPersonalDetails {...props} setUser={setAppUser} />
             )}
           />
           <Route
-            path="/user/profile/:id/creditcards"
+            path="/user/profile/creditcards"
             exact
-            component={CreditCards}
+            component={ShowCreditCards}
           />
           <Route
-            path="/user/profile/:id/creditcards/add"
+            path="/user/profile/creditcards/add"
             exact
             component={EditCreditCardDetails}
           />
           <Route
-            path="/user/profile/:id/creditcards/:creditcardid"
+            path="/user/profile/creditcards/:creditcardid"
             exact
             component={CreditCardDetails}
           />
           <Route
-            path="/user/profile/:id/creditcards/:creditcardid/creditcardsdetails/edit"
+            path="/user/profile/creditcards/:creditcardid/creditcardsdetails/edit"
             exact
             component={EditCreditCardDetails}
           />
           <Route
-            path="/user/profile/:id/reservations"
+            path="/user/profile/reservations"
             exact
-            component={ReservationDetails}
+            component={ShowReservations}
           />
         </Switch>
       </Container>

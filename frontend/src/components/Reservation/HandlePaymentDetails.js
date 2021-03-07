@@ -39,6 +39,7 @@ const HandlePaymentDetails = ({
   loggedInUser,
   isAuthenticated,
 }) => {
+  const [selectedCard, setSelectedCard] = useState([]);
   const [savedCreditCards, setSavedCreditCards] = useState([]);
   const [creditCardFormDefaultInput, setCreditCardFormDefaultInput] = useState({
     nameOnCard: "",
@@ -80,20 +81,22 @@ const HandlePaymentDetails = ({
 
     // get card index.
     // set default input to this new card.
-    const selectedCard = savedCreditCards[savedCreditCardIndex];
+    const theSelectedCard = savedCreditCards[savedCreditCardIndex];
     setCreditCardFormDefaultInput({
-      nameOnCard: selectedCard.nameOnCard,
-      cardNumber: maskCreditCardNumber(selectedCard.cardNumber),
-      expiryDate: getSanitisedExpiryDate(selectedCard.expiryDate),
+      id: theSelectedCard.id,
+      nameOnCard: theSelectedCard.nameOnCard,
+      cardNumber: maskCreditCardNumber(theSelectedCard.cardNumber),
+      expiryDate: getSanitisedExpiryDate(theSelectedCard.expiryDate),
       securityCode: "",
     });
+    setSelectedCard(theSelectedCard);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const nameOnCard = e.target.formNameOnCard.value;
-    const cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
+    var cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
     const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
@@ -101,8 +104,16 @@ const HandlePaymentDetails = ({
     const isSavePaymentDetails = isAuthenticated
       ? e.target.formIsSavePaymentDetails.checked
       : false;
+    var creditCardId = null;
+
+    // if card number is the selected card.
+    if (e.target.formCardNumber.value.indexOf("*") !== -1) {
+      cardNumber = selectedCard.cardNumber;
+      creditCardId = selectedCard.id;
+    }
 
     const paymentDetails = {
+      id: creditCardId,
       nameOnCard: nameOnCard,
       cardNumber: cardNumber,
       expiryDate: expiryDate,
@@ -110,11 +121,15 @@ const HandlePaymentDetails = ({
       isSavePaymentDetails: isSavePaymentDetails,
       customerId: isAuthenticated && loggedInUser ? loggedInUser.id : null,
     };
-    console.log(paymentDetails);
     setPaymentDetails(paymentDetails);
   };
 
   const sanitiseNumbersOnlyInput = (input) => {
+    // if contains character '*'.
+    if (input.indexOf("*") !== -1) {
+      return "";
+    }
+
     // replace all whitespace and alphabets with "".
     return input.replace(/[^0-9.]/g, "");
   };
@@ -177,19 +192,19 @@ const HandlePaymentDetails = ({
     e.target.value = getSanitisedSecurityCode(e.target.value);
   };
 
-  const maskCreditCardNumber = (creditCardNunmber) => {
-    const getSanitisedCardNumber = (creditCardNunmber) => {
+  const maskCreditCardNumber = (creditCardNumber) => {
+    const getSanitisedCardNumber = (creditCardNumber) => {
       // format card number to add space after every 4 digits.
-      return creditCardNunmber
+      return creditCardNumber
         .replace(/([/*|\d]{4})/g, "$1 ")
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(
-      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+      redactedPrefixCardNumber + creditCardNumber.slice(-4)
     );
   };
 
