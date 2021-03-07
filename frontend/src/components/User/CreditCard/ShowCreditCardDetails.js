@@ -2,60 +2,23 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router";
+import Card from "react-bootstrap/Card";
 import { rest_endpoints } from "../../../config/rest_endpoints.json";
 const { credit_card: credit_card_apis } = rest_endpoints;
 
-const Container = styled.div.attrs({
-  className: `flex flex-column pr6 pl6`,
-})``;
-
-const HeaderRow = styled.div.attrs({
-  className: `flex`,
-})``;
-
-const TitleContainer = styled.div.attrs({
-  className: `pa3 mb2 w-50`,
-})``;
-
-const Title = styled.p.attrs({
-  className: `f2 measure fw1 mt3 ml-5`,
-})``;
-
-const Btn = styled.div.attrs({
-  className: `w-25 mt2 mb5 mr4`,
-})``;
-
-const Update = styled.p.attrs({
-  className: `f4 measure fw1 mt5 blue pointer dim tr`,
-})``;
-
-const Delete = styled.p.attrs({
-  className: `f4 measure fw1 mt5 dark-red pointer dim tr mr5`,
-})``;
-
-const BodyRow = styled.div.attrs({
-  className: `flex flex-column items-center`,
-})``;
-
-const BodyDiv = styled.div.attrs({
-  className: `w-25`,
-})``;
-
-const FieldDiv = styled.div.attrs({
-  className: ``,
-})``;
-
-const FieldText = styled.p.attrs({
-  className: `f3 gray`,
-})``;
-
-const DataDiv = styled.div.attrs({
-  className: `mb5`,
-})``;
-
-const DataText = styled.p.attrs({
-  className: `f4 dark-gray fw3`,
-})``;
+const Button = styled.button.attrs({
+  className: `ma0 relative w-100 b--gray mh0 br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+  ${(props) => props.disabled && `pointer-events: none;`}
+`;
 
 const CreditCardDetails = ({ location }) => {
   const user = location.state.user;
@@ -102,6 +65,15 @@ const CreditCardDetails = ({ location }) => {
 
   return (
     <>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
+
       {isRequestSuccess && creditCard && (
         <Redirect
           push
@@ -111,76 +83,51 @@ const CreditCardDetails = ({ location }) => {
           }}
         />
       )}
-      <Container>
-        {creditCard ? (
-          <>
-            <HeaderRow>
-              <TitleContainer>
-                <Title>Card Details</Title>
-              </TitleContainer>
-              <Btn>
-                <Update>
-                  <Link
-                    to={{
-                      pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
-                      state: {
-                        isAddCard: false,
-                        card: creditCard,
-                        user: location.state.user,
-                      },
-                    }}
-                  >
-                    Edit Card
-                  </Link>
-                </Update>
-              </Btn>
-              <Btn>
-                <Delete onClick={(evt) => handleDelete(evt)}>
-                  Delete Card
-                </Delete>
-              </Btn>
-            </HeaderRow>
-            <BodyRow>
-              <BodyDiv>
-                <FieldDiv>
-                  <FieldText>Card Number</FieldText>
-                </FieldDiv>
-                <DataDiv>
-                  <DataText>
-                    {maskCreditCardNumber(creditCard.cardNumber)}
-                  </DataText>
-                </DataDiv>
-              </BodyDiv>
-              <BodyDiv>
-                <FieldDiv>
-                  <FieldText>Expiry Date</FieldText>
-                </FieldDiv>
-                <DataDiv>
-                  <DataText>{creditCard.expiryDate}</DataText>
-                </DataDiv>
-              </BodyDiv>
-              <BodyDiv>
-                <FieldDiv>
-                  <FieldText>Security Code</FieldText>
-                </FieldDiv>
-                <DataDiv>
-                  <DataText>{creditCard.securityCode}</DataText>
-                </DataDiv>
-              </BodyDiv>
-              <BodyDiv>
-                <FieldDiv>
-                  <FieldText>Name On Card</FieldText>
-                </FieldDiv>
-                <DataDiv>
-                  <DataText>{creditCard.nameOnCard}</DataText>
-                </DataDiv>
-              </BodyDiv>
-            </BodyRow>
-          </>
-        ) : (
-          <div>Loading...</div>
-        )}
-      </Container>
+
+      {creditCard ? (
+        <>
+          <Card className="mv3">
+            <Card.Header>Card details</Card.Header>
+            <Card.Body>
+              <div className="mv2">
+                <div className="gray f5">Card number</div>
+                <div className="lh-copy">
+                  {maskCreditCardNumber(creditCard.cardNumber)}
+                </div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Expiry date</div>
+                <div className="lh-copy">{creditCard.expiryDate}</div>
+              </div>
+              <div className="mv2">
+                <div className="gray f5">Name on card</div>
+                <div className="lh-copy">{creditCard.nameOnCard}</div>
+              </div>
+            </Card.Body>
+          </Card>
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link
+                to={{
+                  pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,
+                  state: {
+                    isAddCard: false,
+                    card: creditCard,
+                    user: location.state.user,
+                  },
+                }}
+              >
+                <Button type="button">Edit Card</Button>
+              </Link>
+            </div>
+            <div className="ml1">
+              <Button onClick={(evt) => handleDelete(evt)}>Delete Card</Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 
@@ -22,40 +22,33 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-// https://reactrouter.com/web/api/match
 const ShowPersonalDetails = ({ location, logOut }) => {
+  const user = location.state.user;
   let history = useHistory();
 
-  const user = location.state.user;
-  const [isDelete, setIsDelete] = useState(false);
+  const handleDelete = (evt) => {
+    evt.preventDefault();
 
-  const url = customerEndpoint + "/" + user.id;
+    // DELETE request using fetch with error handling
+    fetch(`${customerEndpoint}/${user.id}`, { method: "DELETE" })
+      .then(async (response) => {
+        const data = await response.json();
 
-  function handleDelete() {
-    setIsDelete(true);
-    logOut();
-  }
-
-  useEffect(() => {
-    if (isDelete) {
-      // DELETE request using fetch with error handling
-      fetch(url, { method: "DELETE" })
-        .then(async (response) => {
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to response status
-            const error = (data && data.message) || response.status;
-            return Promise.reject(error);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      history.push("/");
-    }
-  }, [history, isDelete, url]);
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status;
+          return Promise.reject(error);
+        }
+      })
+      .then(() => {
+        logOut();
+        history.push("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <>
@@ -76,7 +69,9 @@ const ShowPersonalDetails = ({ location, logOut }) => {
               </Link>
             </div>
             <div className="mr1">
-              <Button onClick={handleDelete}>Delete Account</Button>
+              <Button onClick={(evt) => handleDelete(evt)}>
+                Delete Account
+              </Button>
             </div>
           </div>
         </div>

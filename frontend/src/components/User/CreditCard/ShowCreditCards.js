@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
-
+import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
@@ -18,19 +18,11 @@ const HeaderRow = styled.div.attrs({
 })``;
 
 const TitleContainer = styled.div.attrs({
-  className: `pa3 mb2 w-50`,
+  className: `pa3 mb2 center`,
 })``;
 
 const Title = styled.p.attrs({
-  className: `f2 measure fw1 mt3 ml-5`,
-})``;
-
-const Btn = styled.div.attrs({
-  className: `w-50`,
-})``;
-
-const Add = styled.p.attrs({
-  className: `f3 measure fw1 mt5 green pointer dim tr`,
+  className: `f2 measure fw1 mt3 tc`,
 })``;
 
 const CardsContainer = styled.div.attrs({
@@ -79,35 +71,28 @@ const ShowCreditCards = ({ location }) => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user]);
 
   return (
     <Container>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
       <HeaderRow>
         <TitleContainer>
           <Title>Credit Cards</Title>
         </TitleContainer>
-        <Btn>
-          <Link
-            style={{ color: "green" }}
-            to={{
-              pathname: `/user/profile/creditcards/add`,
-              state: {
-                isAddCard: true,
-                user: location.state.user,
-              },
-            }}
-          >
-            <Add>Add Card</Add>
-          </Link>
-        </Btn>
       </HeaderRow>
       <CardsContainer>
-        {creditCards.length === 0 ? (
-          <div>You do not have any saved cards.</div>
-        ) : (
-          <IconContainer>
-            {creditCards.map((card, key) => {
+        <IconContainer>
+          {creditCards &&
+            creditCards.length !== 0 &&
+            creditCards.map((card, key) => {
               return (
                 <Link
                   key={key}
@@ -132,8 +117,31 @@ const ShowCreditCards = ({ location }) => {
                 </Link>
               );
             })}
-          </IconContainer>
-        )}
+          <Link
+            style={{ color: "dimgray" }}
+            className="ba b--silver br4 tc ma4 grow pointer dim"
+            to={{
+              pathname: `/user/profile/creditcards/add`,
+              state: {
+                isAddCard: true,
+                user: location.state.user,
+              },
+            }}
+          >
+            <IconContext.Provider value={{ size: "15em" }}>
+              <Icon>
+                <FaCreditCard />
+              </Icon>
+              <IconTitleDiv>
+                <IconTitle>
+                  {creditCards && creditCards.length === 0
+                    ? "You do not have any saved cards, add new card"
+                    : "Add new card"}
+                </IconTitle>
+              </IconTitleDiv>
+            </IconContext.Provider>
+          </Link>
+        </IconContainer>
       </CardsContainer>
     </Container>
   );
