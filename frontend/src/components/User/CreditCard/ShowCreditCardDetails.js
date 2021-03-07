@@ -47,19 +47,20 @@ const CreditCardDetails = ({ location }) => {
       });
   };
 
-  const maskCreditCardNumber = (creditCardNunmber) => {
-    const getSanitisedCardNumber = (creditCardNunmber) => {
+  const maskCreditCardNumber = (creditCardNumber) => {
+    const getSanitisedCardNumber = (creditCardNumber) => {
       // format card number to add space after every 4 digits.
-      return creditCardNunmber
+      return creditCardNumber
         .replace(/([/*|\d]{4})/g, "$1 ")
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumberLength =
+      creditCardNumber.length >= 4 ? creditCardNumber.length - 4 : 0;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(
-      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+      redactedPrefixCardNumber + creditCardNumber.slice(-4)
     );
   };
 
@@ -107,6 +108,16 @@ const CreditCardDetails = ({ location }) => {
           </Card>
           <div className="flex justify-end">
             <div className="mr1">
+              <Link
+                to={{
+                  pathname: `/user/profile/creditcards/`,
+                  state: { user: user },
+                }}
+              >
+                <Button type="button">View all cards</Button>
+              </Link>
+            </div>
+            <div className="mh1">
               <Link
                 to={{
                   pathname: `/user/profile/creditcards/${creditCard.id}/creditcardsdetails/edit`,

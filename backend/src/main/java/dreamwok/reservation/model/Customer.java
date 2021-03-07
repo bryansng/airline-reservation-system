@@ -15,6 +15,8 @@ import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import dreamwok.reservation.core.customer.request.CustomerRequest;
+import dreamwok.reservation.dto.CustomerDTO;
+
 import java.util.List;
 
 import javax.persistence.*;
@@ -53,6 +55,11 @@ public class Customer {
 
   public Customer() {
 
+  }
+
+  public Customer(CustomerDTO customerDTO) {
+    this(customerDTO.getEmail(), customerDTO.getFirstName(), customerDTO.getLastName(), customerDTO.getAddress(),
+        customerDTO.getMobileNumber());
   }
 
   public Customer(String email, String firstName, String lastName, String address, String phoneNum) {

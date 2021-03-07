@@ -68,7 +68,8 @@ const EditCreditCardDetails = ({ location }) => {
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
+    const redactedPrefixCardNumberLength =
+      creditCardNumber.length >= 4 ? creditCardNumber.length - 4 : 0;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(
@@ -268,9 +269,21 @@ const EditCreditCardDetails = ({ location }) => {
         </Card>
         <div className="flex justify-end">
           <div className="mr1">
-            <Link to="/">
+            <Link
+              to={
+                isAddCard
+                  ? {
+                      pathname: `/user/profile/creditcards/`,
+                      state: { user: user },
+                    }
+                  : {
+                      pathname: `/user/profile/creditcards/${creditCard.id}`,
+                      state: { user: user, card: creditCard },
+                    }
+              }
+            >
               <Button type="button">Cancel</Button>
-            </Link>{" "}
+            </Link>
           </div>
           <div className="ml1">
             <Button type="submit">Save Changes</Button>

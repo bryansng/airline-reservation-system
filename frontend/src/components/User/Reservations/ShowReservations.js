@@ -122,6 +122,20 @@ const ShowReservations = ({ location }) => {
           );
         })
       )}
+      <div className="flex justify-end">
+        <div className="">
+          <Link
+            to={{
+              pathname: "/user/profile/",
+              state: {
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Back to profile dashboard</Button>
+          </Link>
+        </div>
+      </div>
     </>
   );
 };

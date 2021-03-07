@@ -2,13 +2,13 @@ package dreamwok.reservation.core.booking.request;
 
 import java.util.List;
 
-import dreamwok.reservation.model.CreditCardDetails;
-import dreamwok.reservation.model.Customer;
+import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
+import dreamwok.reservation.dto.CustomerDTO;
 
 public class BookReservationRequest {
   private Long flightId;
-  private List<Customer> customers;
-  private CreditCardDetails creditCardDetails;
+  private List<CustomerDTO> customers;
+  private BookingCreditCardDetailsDTO creditCardDetails;
 
   public BookReservationRequest() {
   }
@@ -21,19 +21,19 @@ public class BookReservationRequest {
     this.flightId = flightId;
   }
 
-  public List<Customer> getCustomers() {
+  public List<CustomerDTO> getCustomers() {
     return this.customers;
   }
 
-  public void setCustomers(List<Customer> customers) {
+  public void setCustomers(List<CustomerDTO> customers) {
     this.customers = customers;
   }
 
-  public CreditCardDetails getCreditCardDetails() {
+  public BookingCreditCardDetailsDTO getCreditCardDetails() {
     return this.creditCardDetails;
   }
 
-  public void setCreditCardDetails(CreditCardDetails creditCardDetails) {
+  public void setCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {
     this.creditCardDetails = creditCardDetails;
   }
 }

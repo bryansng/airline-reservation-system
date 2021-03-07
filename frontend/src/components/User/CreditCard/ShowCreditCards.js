@@ -9,6 +9,20 @@ import rest_endpoints from "../../../config/rest_endpoints.json";
 const creditCardEndpoint =
   rest_endpoints.rest_endpoints.credit_card.get_all_by_customer_id;
 
+const Button = styled.button.attrs({
+  className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+  ${(props) => props.disabled && `pointer-events: none;`}
+`;
+
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
 })``;
@@ -74,76 +88,94 @@ const ShowCreditCards = ({ location }) => {
   }, [user]);
 
   return (
-    <Container>
-      {!user && (
-        <Redirect
-          push
-          to={{
-            pathname: `/`,
-          }}
-        />
-      )}
-      <HeaderRow>
-        <TitleContainer>
-          <Title>Credit Cards</Title>
-        </TitleContainer>
-      </HeaderRow>
-      <CardsContainer>
-        <IconContainer>
-          {creditCards &&
-            creditCards.length !== 0 &&
-            creditCards.map((card, key) => {
-              return (
-                <Link
-                  key={key}
-                  style={{ color: "dimgray" }}
-                  className="ba b--silver br4 tc ma4 grow pointer dim"
-                  to={{
-                    pathname: `/user/profile/creditcards/${card.id}`,
-                    state: {
-                      card: card,
-                      user: location.state.user,
-                    },
-                  }}
-                >
-                  <IconContext.Provider value={{ size: "15em" }}>
-                    <Icon>
-                      <FaCreditCard />
-                    </Icon>
-                    <IconTitleDiv>
-                      <IconTitle>{parseCardNumber(card.cardNumber)}</IconTitle>
-                    </IconTitleDiv>
-                  </IconContext.Provider>
-                </Link>
-              );
-            })}
-          <Link
-            style={{ color: "dimgray" }}
-            className="ba b--silver br4 tc ma4 grow pointer dim"
+    <>
+      <Container>
+        {!user && (
+          <Redirect
+            push
             to={{
-              pathname: `/user/profile/creditcards/add`,
+              pathname: `/`,
+            }}
+          />
+        )}
+        <HeaderRow>
+          <TitleContainer>
+            <Title>Credit Cards</Title>
+          </TitleContainer>
+        </HeaderRow>
+        <CardsContainer>
+          <IconContainer>
+            {creditCards &&
+              creditCards.length !== 0 &&
+              creditCards.map((card, key) => {
+                return (
+                  <Link
+                    key={key}
+                    style={{ color: "dimgray" }}
+                    className="ba b--silver br4 tc ma4 grow pointer dim"
+                    to={{
+                      pathname: `/user/profile/creditcards/${card.id}`,
+                      state: {
+                        card: card,
+                        user: location.state.user,
+                      },
+                    }}
+                  >
+                    <IconContext.Provider value={{ size: "15em" }}>
+                      <Icon>
+                        <FaCreditCard />
+                      </Icon>
+                      <IconTitleDiv>
+                        <IconTitle>
+                          {parseCardNumber(card.cardNumber)}
+                        </IconTitle>
+                      </IconTitleDiv>
+                    </IconContext.Provider>
+                  </Link>
+                );
+              })}
+            <Link
+              style={{ color: "dimgray" }}
+              className="ba b--silver br4 tc ma4 grow pointer dim"
+              to={{
+                pathname: `/user/profile/creditcards/add`,
+                state: {
+                  isAddCard: true,
+                  user: location.state.user,
+                },
+              }}
+            >
+              <IconContext.Provider value={{ size: "15em" }}>
+                <Icon>
+                  <FaCreditCard />
+                </Icon>
+                <IconTitleDiv>
+                  <IconTitle>
+                    {creditCards && creditCards.length === 0
+                      ? "No saved cards. Add new card"
+                      : "Add new card"}
+                  </IconTitle>
+                </IconTitleDiv>
+              </IconContext.Provider>
+            </Link>
+          </IconContainer>
+        </CardsContainer>
+      </Container>
+      <div className="flex justify-end">
+        <div className="">
+          <Link
+            to={{
+              pathname: "/user/profile/",
               state: {
-                isAddCard: true,
                 user: location.state.user,
               },
             }}
           >
-            <IconContext.Provider value={{ size: "15em" }}>
-              <Icon>
-                <FaCreditCard />
-              </Icon>
-              <IconTitleDiv>
-                <IconTitle>
-                  {creditCards && creditCards.length === 0
-                    ? "No saved cards. Add new card"
-                    : "Add new card"}
-                </IconTitle>
-              </IconTitleDiv>
-            </IconContext.Provider>
+            <Button type="button">Back to profile dashboard</Button>
           </Link>
-        </IconContainer>
-      </CardsContainer>
-    </Container>
+        </div>
+      </div>
+    </>
   );
 };
 
