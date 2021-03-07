@@ -69,7 +69,7 @@ const RetrieveBooking = () => {
                   controlId="formCustomerLastName"
                   className="w-50 mr2"
                 >
-                  <Form.Label className="gray f6">Booking name</Form.Label>
+                  <Form.Label className="dark-gray f5">Booking name</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Doe"
@@ -79,7 +79,9 @@ const RetrieveBooking = () => {
                   <Form.Text className="text-muted">Case-sensitive</Form.Text>
                 </Form.Group>
                 <Form.Group controlId="formBookingNumber" className="w-50 ml2">
-                  <Form.Label className="gray f6">Booking number</Form.Label>
+                  <Form.Label className="dark-gray f5">
+                    Booking number
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="1"

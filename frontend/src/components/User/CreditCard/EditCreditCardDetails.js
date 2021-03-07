@@ -8,7 +8,7 @@ import { rest_endpoints } from "../../../config/rest_endpoints.json";
 const { credit_card: credit_card_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
-  className: `ma2 relative w-100 b--gray ma0 br2 ba hover-bg-light-gray tc`,
+  className: `mv2 mh0 relative w-100 b--gray br2 ba hover-bg-light-gray tc`,
 })`
   padding: 6px 20px;
   transition: 0.15s ease-out;
@@ -218,7 +218,7 @@ const EditCreditCardDetails = ({ location }) => {
         />
       )}
       <Form onSubmit={(e) => handleSubmit(e)}>
-        <Card className="mv">
+        <Card className="mv3">
           <Card.Header>{isAddCard ? "Add" : "Edit"} Credit Card</Card.Header>
           <Card.Body>
             <Grid>

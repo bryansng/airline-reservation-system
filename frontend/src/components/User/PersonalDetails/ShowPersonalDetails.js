@@ -1,11 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
-
+import { Redirect } from "react-router";
 import { Link, useHistory } from "react-router-dom";
-
 import rest_endpoints from "../../../config/rest_endpoints.json";
-
 const customerEndpoint = rest_endpoints.rest_endpoints.user.customer_profile;
 
 const Button = styled.button.attrs({
@@ -52,57 +50,56 @@ const ShowPersonalDetails = ({ location, logOut }) => {
 
   return (
     <>
-      <div>
-        <div className="flex justify-between flex-wrap">
-          <h2>Personal Details</h2>
-          <div className="flex justify-end">
-            <div className="mr1">
-              <Link
-                to={{
-                  pathname: "/user/profile/personaldetails/edit",
-                  state: {
-                    user: location.state.user,
-                  },
-                }}
-              >
-                <Button type="button">Edit Details</Button>
-              </Link>
-            </div>
-            <div className="mr1">
-              <Button onClick={(evt) => handleDelete(evt)}>
-                Delete Account
-              </Button>
-            </div>
+      {!user && (
+        <Redirect
+          push
+          to={{
+            pathname: `/`,
+          }}
+        />
+      )}
+      <Card className="mv3">
+        <Card.Header>Personal details</Card.Header>
+        <Card.Body>
+          <div className="mv2">
+            <div className="gray f5">First name</div>
+            <div className="lh-copy">{user.firstName}</div>
           </div>
+          <div className="mv2">
+            <div className="gray f5">Last Name</div>
+            <div className="lh-copy">{user.lastName}</div>
+          </div>
+          <div className="mv2">
+            <div className="gray f5">Email address</div>
+            <div className="lh-copy">{user.email}</div>
+          </div>
+          <div className="mv2">
+            <div className="gray f5">Mobile Number</div>
+            <div className="lh-copy">{user.mobileNumber}</div>
+          </div>
+          <div className="mv2">
+            <div className="gray f5">Address</div>
+            <div className="lh-copy">{user.address}</div>
+          </div>
+        </Card.Body>
+      </Card>
+      <div className="flex justify-end">
+        <div className="mr1">
+          <Link
+            to={{
+              pathname: "/user/profile/personaldetails/edit",
+              state: {
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Edit Account</Button>
+          </Link>
+        </div>
+        <div className="ml1">
+          <Button onClick={(evt) => handleDelete(evt)}>Delete Account</Button>
         </div>
       </div>
-      <Card>
-        {/* <Card.Header>Personal Details</Card.Header> */}
-        {user && (
-          <Card.Body>
-            <div className="mv2">
-              <div className="gray f5">First name</div>
-              <div className="lh-copy">{user.firstName}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f5">Last Name</div>
-              <div className="lh-copy">{user.lastName}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f5">Email address</div>
-              <div className="lh-copy">{user.email}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f5">Mobile Number</div>
-              <div className="lh-copy">{user.mobileNumber}</div>
-            </div>
-            <div className="mv2">
-              <div className="gray f5">Address</div>
-              <div className="lh-copy">{user.address}</div>
-            </div>
-          </Card.Body>
-        )}
-      </Card>
     </>
   );
 };
