@@ -19,11 +19,11 @@ const HeaderRow = styled.div.attrs({
 })``;
 
 const TitleContainer = styled.div.attrs({
-  className: `pa3 mb2 w-50`,
+  className: `pa3 mb2 center`,
 })``;
 
 const Title = styled.p.attrs({
-  className: `f2 measure fw1 mt3 ml-5`,
+  className: `f2 measure fw1 mt3 tc`,
 })``;
 
 const Btn = styled.div.attrs({
@@ -100,26 +100,11 @@ const CreditCards = ({ location }) => {
         <TitleContainer>
           <Title>Credit Cards</Title>
         </TitleContainer>
-        {/* <Btn>
-          <Link
-            style={{ color: "green" }}
-            to={{
-              pathname: "/user/profile/" + userId + "/creditcards/add",
-              state: {
-                isPost: true,
-                user: location.state.user,
-              },
-            }}
-          >
-            <Add>Add Card</Add>
-          </Link>
-        </Btn> */}
       </HeaderRow>
       <CardsContainer>
         <IconContainer>
-          {creditCards.length === 0 ? (
-            <div>No Cards</div>
-          ) : (
+          {creditCards.cards &&
+            creditCards.cards.length !== 0 &&
             creditCards.cards.map((card, key) => {
               return (
                 <Link
@@ -145,8 +130,31 @@ const CreditCards = ({ location }) => {
                   </IconContext.Provider>
                 </Link>
               );
-            })
-          )}
+            })}
+          <Link
+            style={{ color: "dimgray" }}
+            className="ba b--silver br4 tc ma4 grow pointer dim"
+            to={{
+              pathname: "/user/profile/" + userId + "/creditcards/add",
+              state: {
+                isPost: true,
+                user: location.state.user,
+              },
+            }}
+          >
+            <IconContext.Provider value={{ size: "15em" }}>
+              <Icon>
+                <FaCreditCard />
+              </Icon>
+              <IconTitleDiv>
+                <IconTitle>
+                  {creditCards.cards && creditCards.cards.length === 0
+                    ? "No cards on file, add new card"
+                    : "Add new card"}
+                </IconTitle>
+              </IconTitleDiv>
+            </IconContext.Provider>
+          </Link>
         </IconContainer>
       </CardsContainer>
     </Container>

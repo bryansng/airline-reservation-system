@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router";
+import Card from "react-bootstrap/Card";
 
 import { Link, useHistory } from "react-router-dom";
 
@@ -8,6 +9,19 @@ import rest_endpoints from "../../../config/rest_endpoints.json";
 const creditCardEndpoint =
   rest_endpoints.rest_endpoints.credit_card.get_card_by_card_id;
 
+const Button = styled.button.attrs({
+  className: `ma0 relative w-100 b--gray mh0 br2 ba hover-bg-light-gray tc`,
+})`
+  padding: 6px 20px;
+  transition: 0.15s ease-out;
+  background-color: transparent;
+  min-width: 100px;
+  &:hover {
+    border-color: #505050;
+    transition: 0.15s ease-in;
+  }
+  ${(props) => props.disabled && `pointer-events: none;`}
+`;
 const Container = styled.div.attrs({
   className: `flex flex-column pr6 pl6`,
 })``;
@@ -113,7 +127,7 @@ const CreditCardDetails = ({ match, location }) => {
   };
 
   return (
-    <Container>
+    <>
       {!user && (
         <Redirect
           push
@@ -122,72 +136,50 @@ const CreditCardDetails = ({ match, location }) => {
           }}
         />
       )}
-      <HeaderRow>
-        <TitleContainer>
-          <Title>Card Details</Title>
-        </TitleContainer>
-        <Btn>
-          <Update>
-            <Link
-              to={{
-                pathname:
-                  "/user/profile/" +
-                  userId +
-                  "/creditcards/" +
-                  card.id +
-                  "/creditcardsdetails/edit",
-                state: {
-                  isPost: false,
-                  card: card,
-                  user: location.state.user,
-                },
-              }}
-            >
-              Update Card
-            </Link>
-          </Update>
-        </Btn>
-        <Btn>
-          <Delete onClick={handleDelete}>Delete Card</Delete>
-        </Btn>
-      </HeaderRow>
-      <BodyRow>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Card Number</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>
-              {card != null ? maskCreditCardNumber(card.cardNumber) : ""}
-            </DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Expiry Date</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.expiryDate : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Security Code</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.securityCode : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-        <BodyDiv>
-          <FieldDiv>
-            <FieldText>Name On Card</FieldText>
-          </FieldDiv>
-          <DataDiv>
-            <DataText>{card != null ? card.nameOnCard : ""}</DataText>
-          </DataDiv>
-        </BodyDiv>
-      </BodyRow>
-    </Container>
+      <Card className="mv3">
+        <Card.Header>Card details</Card.Header>
+        <Card.Body>
+          <div className="mv2">
+            <div className="gray f5">Card number</div>
+            <div className="lh-copy">
+              {card ? maskCreditCardNumber(card.cardNumber) : ""}
+            </div>
+          </div>
+          <div className="mv2">
+            <div className="gray f5">Expiry date</div>
+            <div className="lh-copy">{card ? card.expiryDate : ""}</div>
+          </div>
+          <div className="mv2">
+            <div className="gray f5">Name on card</div>
+            <div className="lh-copy">{card ? card.nameOnCard : ""}</div>
+          </div>
+        </Card.Body>
+      </Card>
+      <div className="flex justify-end">
+        <div className="mr1">
+          <Link
+            to={{
+              pathname:
+                "/user/profile/" +
+                userId +
+                "/creditcards/" +
+                card.id +
+                "/creditcardsdetails/edit",
+              state: {
+                isPost: false,
+                card: card,
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Update card</Button>
+          </Link>
+        </div>
+        <div className="ml1">
+          <Button onClick={handleDelete}>Delete card</Button>
+        </div>
+      </div>
+    </>
   );
 };
 
