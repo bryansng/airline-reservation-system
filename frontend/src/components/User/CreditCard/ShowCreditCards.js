@@ -74,10 +74,7 @@ const ShowCreditCards = ({ location }) => {
         );
       })
       .then((res) => {
-        const cardList = res.creditCards;
-        setCreditCards({
-          cards: cardList,
-        });
+        setCreditCards(res.creditCards);
       })
       .catch((error) => {
         console.error(error);
@@ -106,11 +103,11 @@ const ShowCreditCards = ({ location }) => {
         </Btn>
       </HeaderRow>
       <CardsContainer>
-        <IconContainer>
-          {creditCards.length === 0 ? (
-            <div>No Cards</div>
-          ) : (
-            creditCards.cards.map((card, key) => {
+        {creditCards.length === 0 ? (
+          <div>You do not have any saved cards.</div>
+        ) : (
+          <IconContainer>
+            {creditCards.map((card, key) => {
               return (
                 <Link
                   key={key}
@@ -134,9 +131,9 @@ const ShowCreditCards = ({ location }) => {
                   </IconContext.Provider>
                 </Link>
               );
-            })
-          )}
-        </IconContainer>
+            })}
+          </IconContainer>
+        )}
       </CardsContainer>
     </Container>
   );
