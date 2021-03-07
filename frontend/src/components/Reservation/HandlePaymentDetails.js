@@ -188,19 +188,19 @@ const HandlePaymentDetails = ({
     e.target.value = getSanitisedSecurityCode(e.target.value);
   };
 
-  const maskCreditCardNumber = (creditCardNunmber) => {
-    const getSanitisedCardNumber = (creditCardNunmber) => {
+  const maskCreditCardNumber = (creditCardNumber) => {
+    const getSanitisedCardNumber = (creditCardNumber) => {
       // format card number to add space after every 4 digits.
-      return creditCardNunmber
+      return creditCardNumber
         .replace(/([/*|\d]{4})/g, "$1 ")
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(
-      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+      redactedPrefixCardNumber + creditCardNumber.slice(-4)
     );
   };
 

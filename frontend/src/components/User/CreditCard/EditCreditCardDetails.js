@@ -37,6 +37,11 @@ const EditCreditCardDetails = ({ location }) => {
   };
 
   const sanitiseNumbersOnlyInput = (input) => {
+    // if contains character '*'.
+    if (input.indexOf("*") !== -1) {
+      return "";
+    }
+
     // replace all whitespace and alphabets with "".
     return input.replace(/[^0-9.]/g, "");
   };
@@ -51,19 +56,23 @@ const EditCreditCardDetails = ({ location }) => {
     return currCardNumber.replace(/(\d{4})/g, "$1 ").replace(/^\s+|\s+$/, "");
   };
 
-  const maskCreditCardNumber = (creditCardNunmber) => {
-    const getSanitisedCardNumber = (creditCardNunmber) => {
+  const maskSecurityCode = (creditCardSecurityCode) => {
+    return "*".repeat(creditCardSecurityCode.length);
+  };
+
+  const maskCreditCardNumber = (creditCardNumber) => {
+    const getSanitisedCardNumber = (creditCardNumber) => {
       // format card number to add space after every 4 digits.
-      return creditCardNunmber
+      return creditCardNumber
         .replace(/([/*|\d]{4})/g, "$1 ")
         .replace(/^\s+|\s+$/, "");
     };
 
-    const redactedPrefixCardNumberLength = creditCardNunmber.length - 4;
+    const redactedPrefixCardNumberLength = creditCardNumber.length - 4;
     const redactedPrefixCardNumber = "*".repeat(redactedPrefixCardNumberLength);
 
     return getSanitisedCardNumber(
-      redactedPrefixCardNumber + creditCardNunmber.slice(-4)
+      redactedPrefixCardNumber + creditCardNumber.slice(-4)
     );
   };
 
@@ -77,6 +86,7 @@ const EditCreditCardDetails = ({ location }) => {
         }
       : {
           ...creditCard,
+          securityCode: maskSecurityCode(creditCard.securityCode),
           cardNumber: maskCreditCardNumber(creditCard.cardNumber),
         }
   );
@@ -87,7 +97,7 @@ const EditCreditCardDetails = ({ location }) => {
     const nameOnCard = e.target.formNameOnCard.value;
     var cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
     const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
-    const securityCode = getSanitisedSecurityCode(
+    var securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
     );
 
@@ -95,10 +105,15 @@ const EditCreditCardDetails = ({ location }) => {
     // this works because '*' characters cannot be manually inputted by the user.
     if (
       !isAddCard &&
-      e.target.formCardNumber.value ===
-        maskCreditCardNumber(creditCard.cardNumber)
+      e.target.formCardNumber.value.indexOf("*") !== -1
+      // e.target.formCardNumber.value ===
+      //   maskCreditCardNumber(creditCard.cardNumber)
     ) {
       cardNumber = creditCard.cardNumber;
+    }
+
+    if (!isAddCard && e.target.formSecurityCode.value.indexOf("*") !== -1) {
+      securityCode = creditCard.securityCode;
     }
 
     const requestOptions = {
