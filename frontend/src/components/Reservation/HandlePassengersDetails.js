@@ -103,6 +103,18 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
     );
   };
 
+  const sanitiseNumbersOnlyInput = (input) => {
+    // replace all whitespace and alphabets with "".
+    return input.replace(/[^/+0-9.]/g, "");
+  };
+
+  const onChangeMobileNumber = (e) => {
+    e.preventDefault();
+
+    // sanitize user input.
+    e.target.value = sanitiseNumbersOnlyInput(e.target.value);
+  };
+
   const ActualFormComponent = () => {
     return (
       <Card className="mv3">
@@ -164,6 +176,7 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
                     ? loggedInUser.mobileNumber
                     : "testMobileNumber"
                 }
+                onChange={(evt) => onChangeMobileNumber(evt)}
                 required
               />
             </Form.Group>

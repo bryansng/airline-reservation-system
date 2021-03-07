@@ -77,7 +77,6 @@ const CreditCardDetails = ({ location }) => {
         throw new Error(`${resp.status} Error deleting card.`);
       })
       .then((res) => {
-        console.log(res);
         setIsRequestSuccess(true);
       })
       .catch((error) => {

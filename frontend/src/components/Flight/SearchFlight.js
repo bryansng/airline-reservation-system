@@ -63,7 +63,6 @@ const SearchFlight = () => {
       })
       .then((res) => {
         const flights = res.flight;
-        console.log(res);
         setFlights(flights);
         setNumberOfPassengers(numPassengers);
       })

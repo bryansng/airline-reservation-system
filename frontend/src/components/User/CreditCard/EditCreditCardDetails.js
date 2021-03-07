@@ -92,6 +92,7 @@ const EditCreditCardDetails = ({ location }) => {
     );
 
     // when editing card, if card number was not changed by user.
+    // this works because '*' characters cannot be manually inputted by the user.
     if (
       !isAddCard &&
       e.target.formCardNumber.value ===
@@ -113,7 +114,6 @@ const EditCreditCardDetails = ({ location }) => {
         nameOnCard: nameOnCard,
       }),
     };
-    console.log(requestOptions);
 
     fetch(
       `${credit_card_apis.get_card_by_card_id}/${

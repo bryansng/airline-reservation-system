@@ -27,7 +27,6 @@ const ShowReservations = ({ location }) => {
         throw new Error(`${resp.status} Error retrieving customer.`);
       })
       .then((res) => {
-        console.log(res);
         setReservations(res.reservations);
       })
       .catch((error) => {

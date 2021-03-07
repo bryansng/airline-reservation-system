@@ -39,6 +39,7 @@ const HandlePaymentDetails = ({
   loggedInUser,
   isAuthenticated,
 }) => {
+  const [selectedCard, setSelectedCard] = useState([]);
   const [savedCreditCards, setSavedCreditCards] = useState([]);
   const [creditCardFormDefaultInput, setCreditCardFormDefaultInput] = useState({
     nameOnCard: "",
@@ -80,20 +81,21 @@ const HandlePaymentDetails = ({
 
     // get card index.
     // set default input to this new card.
-    const selectedCard = savedCreditCards[savedCreditCardIndex];
+    const theSelectedCard = savedCreditCards[savedCreditCardIndex];
     setCreditCardFormDefaultInput({
-      nameOnCard: selectedCard.nameOnCard,
-      cardNumber: maskCreditCardNumber(selectedCard.cardNumber),
-      expiryDate: getSanitisedExpiryDate(selectedCard.expiryDate),
+      nameOnCard: theSelectedCard.nameOnCard,
+      cardNumber: maskCreditCardNumber(theSelectedCard.cardNumber),
+      expiryDate: getSanitisedExpiryDate(theSelectedCard.expiryDate),
       securityCode: "",
     });
+    setSelectedCard(theSelectedCard);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const nameOnCard = e.target.formNameOnCard.value;
-    const cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
+    var cardNumber = sanitiseNumbersOnlyInput(e.target.formCardNumber.value);
     const expiryDate = getSanitisedExpiryDate(e.target.formExpiryDate.value);
     const securityCode = getSanitisedSecurityCode(
       e.target.formSecurityCode.value
@@ -101,6 +103,11 @@ const HandlePaymentDetails = ({
     const isSavePaymentDetails = isAuthenticated
       ? e.target.formIsSavePaymentDetails.checked
       : false;
+
+    // if card number is the selected card.
+    if (e.target.formCardNumber.value.indexOf("*") !== -1) {
+      cardNumber = selectedCard.cardNumber;
+    }
 
     const paymentDetails = {
       nameOnCard: nameOnCard,
@@ -110,11 +117,15 @@ const HandlePaymentDetails = ({
       isSavePaymentDetails: isSavePaymentDetails,
       customerId: isAuthenticated && loggedInUser ? loggedInUser.id : null,
     };
-    console.log(paymentDetails);
     setPaymentDetails(paymentDetails);
   };
 
   const sanitiseNumbersOnlyInput = (input) => {
+    // if contains character '*'.
+    if (input.indexOf("*") !== -1) {
+      return "";
+    }
+
     // replace all whitespace and alphabets with "".
     return input.replace(/[^0-9.]/g, "");
   };
