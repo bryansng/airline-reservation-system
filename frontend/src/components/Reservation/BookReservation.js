@@ -4,6 +4,7 @@ import HandlePaymentDetails from "./HandlePaymentDetails";
 import ConfirmItineraryDetails from "./ConfirmItineraryDetails";
 import Itinerary from "./Itinerary";
 import { Redirect } from "react-router";
+import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
@@ -16,6 +17,8 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   const [isConfirmedBooking, setIsConfirmedBooking] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [bookedReservation, setBookedReservation] = useState(null);
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (flightId && !flight) {
@@ -67,21 +70,28 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           creditCardDetails: paymentDetails,
         }),
       };
+      // console.log(requestOptions);
 
       fetch(reservation_apis.create, requestOptions)
         .then((resp) => {
+          console.log(resp);
           if (resp.ok) {
             return resp.json();
           }
-          throw new Error(`${resp.status} Error booking a reservation.`);
+          throw resp;
         })
         .then((res) => {
           const reservation = res.reservation;
           console.log(res);
           setBookedReservation(reservation);
+          setHasFormError(false);
         })
         .catch((error) => {
-          console.error(error);
+          error.json().then((body) => {
+            setErrorMessage(`Error ${error.status}: ${body.message}`);
+            setPaymentDetails(null);
+            setHasFormError(true);
+          });
         });
     }
   }, [flightId, passengersDetails, paymentDetails]);
@@ -100,9 +110,6 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
     <div>
       <h2 className="mb2">Reservation</h2>
       <Itinerary flight={flight} numPassengers={numPassengers} />
-      {/* {<div>Reserving for user with id: {userId}</div>}
-      {<div>Reserving for flight with id: {flightId}</div>}
-      {<div>Reserving for {numPassengers} passengers</div>} */}
       {!passengersDetails && (
         <HandlePassengersDetails
           setPassengersDetails={setPassengersDetails}
@@ -118,6 +125,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           setIsConfirmedBooking={setIsConfirmedBooking}
         />
       )}
+      {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
       {isConfirmedBooking && !paymentDetails && (
         <HandlePaymentDetails
           setPaymentDetails={setPaymentDetails}

@@ -73,7 +73,7 @@ const RetrieveBooking = () => {
                   <Form.Control
                     type="text"
                     placeholder="Doe"
-                    defaultValue="testLastName"
+                    // defaultValue="testLastName"
                     required
                   />
                   <Form.Text className="text-muted">Case-sensitive</Form.Text>
@@ -82,8 +82,8 @@ const RetrieveBooking = () => {
                   <Form.Label className="gray f6">Booking number</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="12345678"
-                    defaultValue="12345678"
+                    placeholder="1"
+                    // defaultValue="12345678"
                     required
                   />
                 </Form.Group>

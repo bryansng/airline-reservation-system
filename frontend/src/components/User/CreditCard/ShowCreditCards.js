@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { FaCreditCard } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { Redirect } from "react-router";
-
 import { Link } from "react-router-dom";
 
 import rest_endpoints from "../../../config/rest_endpoints.json";
@@ -26,14 +25,6 @@ const Title = styled.p.attrs({
   className: `f2 measure fw1 mt3 tc`,
 })``;
 
-const Btn = styled.div.attrs({
-  className: `w-50`,
-})``;
-
-const Add = styled.p.attrs({
-  className: `f3 measure fw1 mt5 green pointer dim tr`,
-})``;
-
 const CardsContainer = styled.div.attrs({
   className: `flex flex-wrap pr6 pl6 justify-content-center`,
 })``;
@@ -54,12 +45,9 @@ const IconTitle = styled.p.attrs({
   className: `f4`,
 })``;
 
-const CreditCards = ({ location }) => {
+const ShowCreditCards = ({ location }) => {
   const user = location.state.user;
-  const [userId] = useState(location.state.user.id);
   const [creditCards, setCreditCards] = useState([]);
-
-  const url = creditCardEndpoint + "/" + userId;
 
   function parseCardNumber(cardNum) {
     return (
@@ -68,23 +56,22 @@ const CreditCards = ({ location }) => {
   }
 
   useEffect(() => {
-    fetch(url)
+    fetch(`${creditCardEndpoint}/${user.id}`)
       .then((resp) => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status} Error retrieving customer.`);
+        throw new Error(
+          `${resp.status} Error retrieving customer's credit cards.`
+        );
       })
       .then((res) => {
-        const cardList = res.creditCards;
-        setCreditCards({
-          cards: cardList,
-        });
+        setCreditCards(res.creditCards);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [url]);
+  }, [user]);
 
   return (
     <Container>
@@ -103,17 +90,16 @@ const CreditCards = ({ location }) => {
       </HeaderRow>
       <CardsContainer>
         <IconContainer>
-          {creditCards.cards &&
-            creditCards.cards.length !== 0 &&
-            creditCards.cards.map((card, key) => {
+          {creditCards &&
+            creditCards.length !== 0 &&
+            creditCards.map((card, key) => {
               return (
                 <Link
                   key={key}
                   style={{ color: "dimgray" }}
                   className="ba b--silver br4 tc ma4 grow pointer dim"
                   to={{
-                    pathname:
-                      `/user/profile/` + userId + "/creditcards/" + card.id,
+                    pathname: `/user/profile/creditcards/${card.id}`,
                     state: {
                       card: card,
                       user: location.state.user,
@@ -135,9 +121,9 @@ const CreditCards = ({ location }) => {
             style={{ color: "dimgray" }}
             className="ba b--silver br4 tc ma4 grow pointer dim"
             to={{
-              pathname: "/user/profile/" + userId + "/creditcards/add",
+              pathname: `/user/profile/creditcards/add`,
               state: {
-                isPost: true,
+                isAddCard: true,
                 user: location.state.user,
               },
             }}
@@ -148,8 +134,8 @@ const CreditCards = ({ location }) => {
               </Icon>
               <IconTitleDiv>
                 <IconTitle>
-                  {creditCards.cards && creditCards.cards.length === 0
-                    ? "No cards on file, add new card"
+                  {creditCards && creditCards.length === 0
+                    ? "You do not have any saved cards, add new card"
                     : "Add new card"}
                 </IconTitle>
               </IconTitleDiv>
@@ -161,4 +147,4 @@ const CreditCards = ({ location }) => {
   );
 };
 
-export default CreditCards;
+export default ShowCreditCards;

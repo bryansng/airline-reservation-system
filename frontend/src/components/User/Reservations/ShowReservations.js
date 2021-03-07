@@ -8,6 +8,7 @@ import * as dayjs from "dayjs";
 import rest_endpoints from "../../../config/rest_endpoints.json";
 const reservationEndpoint =
   rest_endpoints.rest_endpoints.reservation.get_all_by_customer_id;
+
 const Button = styled.button.attrs({
   className: `ma0 relative w-100 b--gray center br2 ba hover-bg-light-gray tc`,
 })`
@@ -22,11 +23,11 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const ReservationDetails = ({ location }) => {
+const ShowReservations = ({ location }) => {
   const user = location.state.user;
   const [reservations, setReservations] = useState([]);
 
-  const url = reservationEndpoint + "/" + location.state.user.id;
+  const url = reservationEndpoint + "/" + user.id;
 
   useEffect(() => {
     fetch(url)
@@ -37,7 +38,6 @@ const ReservationDetails = ({ location }) => {
         throw new Error(`${resp.status} Error retrieving customer.`);
       })
       .then((res) => {
-        console.log(res);
         setReservations(res.reservations);
       })
       .catch((error) => {
@@ -126,4 +126,4 @@ const ReservationDetails = ({ location }) => {
   );
 };
 
-export default ReservationDetails;
+export default ShowReservations;
