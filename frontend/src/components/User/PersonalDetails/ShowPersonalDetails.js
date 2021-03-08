@@ -22,8 +22,12 @@ const Button = styled.button.attrs({
 `;
 
 const ShowPersonalDetails = ({ location, logOut }) => {
+  const DELETE_REDIRECT_DELAY = 3000;
   const user = location.state.user;
   const [isDeleted, setIsDeleted] = useState(false);
+  const [redirectTimer, setRedirectTimer] = useState(
+    DELETE_REDIRECT_DELAY / 1000
+  );
   let history = useHistory();
 
   const handleDelete = (evt) => {
@@ -46,10 +50,18 @@ const ShowPersonalDetails = ({ location, logOut }) => {
 
         setIsDeleted(true);
 
-        // delay.
-        setTimeout(function () {
+        // update delete timer.
+        const deleteTimerInterval = setInterval(() => {
+          setRedirectTimer((oldVal) => {
+            return oldVal - 1;
+          });
+        }, 1000);
+
+        // redirects after a delay.
+        setTimeout(() => {
+          clearInterval(deleteTimerInterval);
           history.push("/");
-        }, 3000);
+        }, DELETE_REDIRECT_DELAY + 1000);
       })
       .catch((error) => {
         console.error(error);
@@ -93,8 +105,8 @@ const ShowPersonalDetails = ({ location, logOut }) => {
       </Card>
       {isDeleted && (
         <ErrorMessage success>
-          Your account has been deleted successfully. Redirecting to homepage in
-          3 seconds...
+          Your account has been deleted successfully. Redirecting to homepage in{" "}
+          {redirectTimer} seconds...
         </ErrorMessage>
       )}
       <div className="flex justify-end">

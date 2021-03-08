@@ -14,4 +14,6 @@ public interface AuthRepository extends JpaRepository<Auth, String> {
   String findEmailByEmail(String email);
 
   boolean existsByEmail(String email);
+
+  Auth deleteByEmail(String email);
 }
