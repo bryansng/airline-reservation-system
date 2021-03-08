@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
-import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Reservation;
 import dreamwok.reservation.repository.BookingRepository;
 import dreamwok.reservation.repository.CreditCardDetailsRepository;
@@ -94,7 +93,7 @@ public class BookingService {
 
     String nameOnCard = creditCardDetails.getNameOnCard();
     String realNameOnCard = realCreditCardDetails.getNameOnCard();
-    if (!(nameOnCard.length() >= 8 && nameOnCard.equals(realNameOnCard))) {
+    if (!(nameOnCard.length() >= 1 && nameOnCard.equals(realNameOnCard))) {
       return false;
     }
 

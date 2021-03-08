@@ -67,7 +67,7 @@ const ShowReservations = ({ location }) => {
       ) : (
         reservations.map((reservation, key) => {
           return (
-            <Card className="mv3">
+            <Card key={key} className="mv3">
               <Card.Header
                 style={
                   isReservationCancelled(reservation)

@@ -41,8 +41,8 @@ public class Customer {
   private LocalDateTime joinedOn = LocalDateTime.now();
   private String type = "member";
 
-  // @OneToOne(cascade = CascadeType.ALL)
-  @OneToOne()
+  @OneToOne(cascade = CascadeType.ALL)
+  // @OneToOne()
   private Auth auth;
 
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

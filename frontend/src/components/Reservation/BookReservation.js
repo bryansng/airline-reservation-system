@@ -82,7 +82,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         .then((res) => {
           const reservation = res.reservation;
           setBookedReservation(reservation);
-          setHasFormError(false);
+          // setHasFormError(false);
         })
         .catch((error) => {
           error.json().then((body) => {

@@ -8,6 +8,7 @@ VALUES
   ('xuan.liew@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
   ('braddy.yeoh@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
   ('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
+  ('first@last.com', '$2a$10$bD7XybItjI.bpU0RA6W4ieTJ1MHf.FyRhMvNqrduURNkUQR1sqLq2'),
   ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
 
 INSERT INTO customers
@@ -20,7 +21,8 @@ VALUES
   ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
   ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
   ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'a@a.com'),
-  ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com');
+  ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com'),
+  ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com');
 
 INSERT INTO flights
   (id, flight_name, departure_airport, arrival_airport, departure_date_time, arrival_date_time, flight_price, num_of_seats)
@@ -70,7 +72,8 @@ VALUES
   (1, 'Braddy Yeoh', '4319123412341234', '04/20', '123'),
   (1, 'Braddy Yeoh', '4319432143214321', '05/23', '321'),
   (2, 'Cao Cao', '4319567834532343', '01/24', '345'),
-  (3, 'Liu Bei', '5230132245653455', '04/22', '456');
+  (3, 'Liu Bei', '5230132245653455', '04/22', '456'),
+  (9, 'first last', '23423423442424433', '32/42', '123');
   -- (1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
   -- (1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
   -- (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
