@@ -33,6 +33,10 @@ We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to f
    Password: root
    ```
 
+### Frontend usage notes
+
+- Session/token based authentication is not implemented, so try not to refresh the page while logged in, as that will require you to log in again.
+- Clicking cancel when booking a flight cancels the entire booking process, thefore users will have to restart the booking process from scratch.
 
 ## Built With
 
