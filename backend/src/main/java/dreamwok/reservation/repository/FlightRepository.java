@@ -15,7 +15,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
       String departureAirport, String arrivalAirport, LocalDateTime departureDateTimeStart,
       LocalDateTime departureDateTimeEnd, Integer numOfSeats, Pageable pageable);
 
-  Page<Flight> findByDepartureAirportContainsIgnoreCaseAndArrivalAirportContainsIgnoreCaseAndDepartureDateTimeGreaterThanEqualAndNumOfSeatsGreaterThanEqual(
+  Page<Flight> findByDepartureAirportContainsIgnoreCaseAndArrivalAirportContainsIgnoreCaseAndDepartureDateTimeGreaterThanEqualAndNumOfSeatsGreaterThanEqualOrderByDepartureDateTimeAsc(
       String departureAirport, String arrivalAirport, LocalDateTime departureDateTime, Integer numOfSeats,
       Pageable pageable);
 

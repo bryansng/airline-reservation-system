@@ -30,7 +30,7 @@ public class FlightService {
   public Page<Flight> searchFromDate(String departureAirport, String arrivalAirport, LocalDateTime departureDateTime,
       Integer numOfPassengers, int pageNum) {
     Page<Flight> flights = flightRepository
-        .findByDepartureAirportContainsIgnoreCaseAndArrivalAirportContainsIgnoreCaseAndDepartureDateTimeGreaterThanEqualAndNumOfSeatsGreaterThanEqual(
+        .findByDepartureAirportContainsIgnoreCaseAndArrivalAirportContainsIgnoreCaseAndDepartureDateTimeGreaterThanEqualAndNumOfSeatsGreaterThanEqualOrderByDepartureDateTimeAsc(
             departureAirport, arrivalAirport, departureDateTime, numOfPassengers,
             PageRequest.of(pageNum, Common.PAGINATION_ROWS));
     return flights;

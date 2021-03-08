@@ -14,13 +14,13 @@ VALUES
 INSERT INTO customers
   (first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email)
 VALUES
-  ('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'hong.sng@ucdconnect.ie'),
+  ('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'member', '1998-01-01', NOW(), 'USER', 'hong.sng@ucdconnect.ie'),
   ('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie'),
   ('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
   ('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
-  ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'xuan.liew@ucdconnect.ie'),
-  ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'braddy.yeoh@ucdconnect.ie'),
-  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'librarian', '1998-01-01', NOW(), 'ADMIN', 'a@a.com'),
+  ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'member', '1998-01-01', NOW(), 'USER', 'xuan.liew@ucdconnect.ie'),
+  ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'braddy.yeoh@ucdconnect.ie'),
+  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com'),
   ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com'),
   ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com');
 
@@ -83,9 +83,12 @@ VALUES
 INSERT INTO reservations
   (id, total_cost, customer_id, flight_id, reservation_status)
 VALUES
-  (3, 40, 1, 33, 1),
-  (4, 40, 1, 34, 1),
-  (5, 40, 1, 35, 1);
+  (3, 40, 1, 33, 0),
+  (4, 40, 1, 34, 0),
+  (5, 40, 1, 35, 0);
+  -- (3, 40, 1, 33, 0, DATE_ADD(NOW(), INTERVAL 2 MINUTE)),
+  -- (4, 40, 1, 34, 0, DATE_ADD(NOW(), INTERVAL 1 MINUTE)),
+  -- (5, 40, 1, 35, 0, DATE_ADD(NOW(), INTERVAL 3 MINUTE));
 
 
 INSERT INTO bookings

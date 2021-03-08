@@ -24,7 +24,7 @@ A COMP47660 Secure Software Engineering web app project built using React, Sprin
 
 We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to facilitate testing.
 
-1. Searching for available flights: Try `KUL to KCH on tomorrow's date` or `KUL to KCH on 16/04`.
+1. Searching for available flights: Try `KUL to KCH on tomorrow's date` or `KUL to KCH on 16/04`. Search returns all flights from the date specified onwards, as there are limited flights in our db.
 2. Cancelling reservations within 24hrs: Book **TST 0001** (KUL to KCH on tomorrow's date) to for both guest and member accounts.
 3. Registering with an email you used to book guest flights will link the guest flights to the member account.
 4. Logging in with the following details will allow you to test Executive Club Member features quickly as it already has booked flights and saved credit cards recorded.
