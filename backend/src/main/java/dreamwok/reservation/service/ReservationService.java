@@ -89,7 +89,11 @@ public class ReservationService {
       return null;
     }
 
-    List<Reservation> reversations = customer.getReservations();
+    List<Reservation> reversations = reservationRepository
+        .findByCustomerIdOrderByFlightDepartureDateTimeDescReservationStatusAsc(customer.getId());
+    // List<Reservation> reversations = reservationRepository
+    //     .findByCustomerIdOrderByCreatedOnDescReservationStatusAsc(customer.getId());
+    // List<Reservation> reversations = customer.getReservations();
     List<Reservation> updatedReservations = new ArrayList<>();
     for (Reservation reservation : reversations) {
       updatedReservations.add(checkAndSetIfReservationFlightPast(reservation));

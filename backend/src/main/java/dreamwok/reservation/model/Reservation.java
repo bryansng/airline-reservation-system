@@ -1,5 +1,6 @@
 package dreamwok.reservation.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.*;
@@ -26,6 +27,9 @@ public class Reservation {
 
   @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY)
   private List<Booking> bookings;
+
+  // @Column(nullable = true)
+  // private LocalDateTime createdOn = LocalDateTime.now();
 
   public Reservation() {
   }
