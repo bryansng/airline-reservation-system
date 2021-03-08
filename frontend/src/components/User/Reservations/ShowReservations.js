@@ -85,7 +85,7 @@ const ShowReservations = ({ location }) => {
                       on{" "}
                       {`${dayjs(reservation.flight.departureDateTime).format(
                         "DD/MM/YYYY"
-                      )}`}
+                      )}`}{" "}
                       &#8212; {reservation.flight.flightName}
                     </h5>
                     <Card.Subtitle className="text-muted">
