@@ -114,7 +114,8 @@ const SearchFlight = () => {
                 <Form.Control
                   type="date"
                   placeholder="Date"
-                  defaultValue="2021-04-16"
+                  // defaultValue="2021-04-16"
+                  defaultValue={dayjs().format("YYYY-MM-DD")}
                   required
                 />
               </Form.Group>

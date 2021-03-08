@@ -59,7 +59,10 @@ VALUES
   (30, 'SL 1173', 'PEN', 'SZB', '2021-03-15T20:40:00', '2021-03-15T21:40:00', 31, 3),
 
   (31, 'AA 1249', 'LGA', 'MIA', '2021-04-01T06:00:00', '2021-04-01T09:04:00', 58, 4),
-  (32, 'F9 2879', 'LGA', 'MIA', '2021-04-01T22:45:00', '2021-04-02T01:46:00', 40, 23);
+  (32, 'F9 2879', 'LGA', 'MIA', '2021-04-01T22:45:00', '2021-04-02T01:46:00', 40, 23),
+  (33, 'TST 0001', 'KUL', 'KCH', DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 2 DAY), 40, 23),
+  (34, 'TST 0001', 'KUL', 'KCH', NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 40, 23),
+  (35, 'TST 0001', 'KUL', 'KCH', DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), 40, 23);
 
 INSERT INTO credit_card_details
   (customer_id, name_on_card, card_number, expiry_date, security_code)
@@ -73,35 +76,19 @@ VALUES
   -- (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
   -- (3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
 
--- --
--- INSERT INTO books(id, book_name, isbn)
--- VALUES (1, "Thinking Fast", "1234");
--- INSERT INTO books(id, book_name, isbn)
--- VALUES (2, "Harry Potter", "1235");
--- INSERT INTO books(id, book_name, isbn)
--- VALUES (3, "Madame Bovary", "1010");
 
--- -- Create and Populate the New Tables
--- /* create table authors(
--- id INT NOT NULL AUTO_INCREMENT,
--- author_first_name VARCHAR(20) NOT NULL,
--- author_last_name VARCHAR(20) NOT NULL, PRIMARY KEY (id)); */
--- INSERT INTO authors(id, author_first_name, author_last_name)
--- VALUES (1, "Daniel", "Kanheman");
--- INSERT INTO authors(id, author_first_name, author_last_name)
--- VALUES (2, "Gustav", "Flaubert");
--- INSERT INTO authors(id, author_first_name, author_last_name)
--- VALUES (3, "Joanne K.", "Rowling");
--- INSERT INTO authors(id, author_first_name, author_last_name)
--- VALUES (4, "Amos", "Tversky");
+INSERT INTO reservations
+  (id, total_cost, customer_id, flight_id, reservation_status)
+VALUES
+  (3, 40, 1, 33, 1),
+  (4, 40, 1, 34, 1),
+  (5, 40, 1, 35, 1);
 
 
--- -- Create and Populate the “authorship” table
--- /* create table authorship(
--- id_book INT NOT NULL,
--- id_author INT NOT NULL,
--- PRIMARY KEY (id_book, id_author)); */
--- INSERT INTO authorship(id_book, id_author) VALUES (3,1);
--- INSERT INTO authorship(id_book, id_author) VALUES (3,4);
--- INSERT INTO authorship(id_book, id_author) VALUES (5,3);
--- INSERT INTO authorship(id_book, id_author) VALUES (6,2);
+INSERT INTO bookings
+  (id, reservation_id, customer_id, is_checked_in, is_cancelled)
+VALUES
+  (3, 3, 1, FALSE, FALSE),
+  (4, 4, 1, FALSE, FALSE),
+  (5, 5, 1, FALSE, FALSE);
+
