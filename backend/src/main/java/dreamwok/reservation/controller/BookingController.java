@@ -51,8 +51,7 @@ public class BookingController {
         request.getCreditCardDetails());
 
     if (reservation == null) {
-      return new ResponseEntity<>(
-          new BookReservationResponse("Invalid credit card credentials or Invalid flight id.", null),
+      return new ResponseEntity<>(new BookReservationResponse("Incorrect/invalid credit card credentials.", null),
           HttpStatus.BAD_REQUEST);
     }
 

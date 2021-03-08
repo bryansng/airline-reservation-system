@@ -1,5 +1,6 @@
 package dreamwok.reservation.service;
 
+import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 import dreamwok.reservation.model.Auth;
@@ -33,6 +34,9 @@ import dreamwok.reservation.dto.CustomerDTO;
 public class CustomerService {
   @Autowired
   CustomerRepository customerRepository;
+
+  @Autowired
+  AuthRepository authRepository;
 
   @Autowired
   CreditCardDetailsRepository creditCardDetailsRepository;
@@ -206,11 +210,17 @@ public class CustomerService {
   }
 
   public ResponseEntity<CustomerResponse> delete(Long id) {
-    if (customerRepository.existsById(id)) {
-      Optional<Customer> optionalCustomer = customerRepository.findById(id);
-      customerRepository.deleteById(id);
+    Optional<Customer> customerOptional = customerRepository.findById(id);
 
-      Customer customer = optionalCustomer.isPresent() ? optionalCustomer.get() : null;
+    if (customerOptional.isPresent()) {
+      Customer customer = customerOptional.get();
+
+      // remove auth from authRepo.
+      // remove auth from customer.
+      Auth auth = customer.getAuth();
+      customer.setAuth(null);
+      authRepository.deleteById(auth.getEmail());
+      // authRepository.deleteByEmail(auth.getEmail());
 
       return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", new CustomerDTO(customer)),
           HttpStatus.OK);

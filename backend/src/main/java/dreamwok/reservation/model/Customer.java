@@ -42,6 +42,7 @@ public class Customer {
   private String type = "member";
 
   @OneToOne(cascade = CascadeType.ALL)
+  // @OneToOne()
   private Auth auth;
 
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
