@@ -103,7 +103,8 @@ function useAuthentication({
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status}: Username or email already exists.`);
+        throw new Error(`Error: Username or email already exists.`);
+        // throw new Error(`${resp.status}: Username or email already exists.`);
       })
       .then((res) => {
         console.log(res);
@@ -142,7 +143,8 @@ function useAuthentication({
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status}: User Credentials incorrect.`);
+        throw new Error(`Error: User Credentials incorrect.`);
+        // throw new Error(`${resp.status}: User Credentials incorrect.`);
       })
       .then((res) => {
         console.log(res);
