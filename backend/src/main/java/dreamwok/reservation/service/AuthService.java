@@ -49,7 +49,17 @@ public class AuthService {
   @Autowired
   CustomerDetailsService customerDetailsService;
 
+  @Autowired
+  LoginIPAttemptService loginIPAttemptService;
+
   public ResponseEntity<SignInResponse> login(@RequestBody SignInRequest signInRequest, HttpServletRequest request) {
+    // System.out.println("ip: " + loginIPAttemptService.getClientIP(request));
+    String ipAddress = loginIPAttemptService.getClientIP(request);
+    if (loginIPAttemptService.isBlocked(ipAddress)) {
+      return new ResponseEntity<>(new SignInResponse("400",
+          "Failed to login. Exceeded IP authentication attempts. Please try again later.", null), HttpStatus.OK);
+    }
+
     String email = signInRequest.getEmail();
     String password = signInRequest.getPassword();
 
@@ -57,14 +67,17 @@ public class AuthService {
     Auth auth = authRepository.findByEmail(email);
     if (customer != null && auth != null) {
       if (isExceededFailedAuthAttempts(customer)) {
-        return new ResponseEntity<>(new SignInResponse("400",
-            "Failed to login. Exceeded authentication attempts. Please try again later.", null), HttpStatus.OK);
+        return new ResponseEntity<>(
+            new SignInResponse("400",
+                "Failed to login. Exceeded account authentication attempts. Please try again later.", null),
+            HttpStatus.OK);
       }
 
       // if email and password in request body same as in db.
       if (auth.getEmail().equals(email) && securityConfig.getPasswordEncoder().matches(password, auth.getHash())) {
         // reset failed auth attempts.
         resetFailedAuthAttempts(customer);
+        loginIPAttemptService.loginSucceeded(ipAddress);
 
         securityConfig.configAuth(auth, securityConfig.getAuth(), customer.getRoles());
         authenticateUserAndSetSession(customer, request);
@@ -74,6 +87,7 @@ public class AuthService {
 
       // incorrect credentials.
       incrementFailedAuthAttempts(customer);
+      loginIPAttemptService.loginFailed(ipAddress);
       return new ResponseEntity<>(new SignInResponse("400", "Failed to login. Email or password incorrect.", null),
           HttpStatus.OK);
     }
