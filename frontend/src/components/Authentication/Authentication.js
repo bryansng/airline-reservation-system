@@ -143,18 +143,22 @@ function useAuthentication({
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`Error: User Credentials incorrect.`);
+        throw new Error(`Unexpected error during request.`);
         // throw new Error(`${resp.status}: User Credentials incorrect.`);
       })
       .then((res) => {
         console.log(res);
         console.log(res.customer);
-        setToken(res.token);
-        window.localStorage.setItem("token", res.token);
-        setIsAuthenticated(true);
-        setUser({ ...user, ...res.customer });
-        onSuccessCallback();
-        console.log("User signed in successfully.");
+        if (res.statusCode !== "200" || res.customer == null) {
+          onErrorCallback(res.message);
+        } else {
+          setToken(res.token);
+          window.localStorage.setItem("token", res.token);
+          setIsAuthenticated(true);
+          setUser({ ...user, ...res.customer });
+          onSuccessCallback();
+          console.log("User signed in successfully.");
+        }
       })
       .catch((error) => {
         onErrorCallback(error.message);

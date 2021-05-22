@@ -12,17 +12,17 @@ VALUES
   ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
 
 INSERT INTO customers
-  (first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email)
+  (first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email, num_failed_auth_attempts)
 VALUES
-  ('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'member', '1998-01-01', NOW(), 'USER', 'hong.sng@ucdconnect.ie'),
-  ('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie'),
-  ('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie'),
-  ('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie'),
-  ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'member', '1998-01-01', NOW(), 'USER', 'xuan.liew@ucdconnect.ie'),
-  ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'braddy.yeoh@ucdconnect.ie'),
-  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com'),
-  ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com'),
-  ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com');
+  ('Bryan', 'Sng', 'hong.sng@ucdconnect.ie', '339', 'Somewhere on Earth', 'member', '1998-01-01', NOW(), 'USER', 'hong.sng@ucdconnect.ie', 0),
+  ('James', 'Bond', 'bond.james@ucdconnect.ie', '007', 'MI6', 'member', '1998-01-01', NOW(), 'USER', 'bond.james@ucdconnect.ie', 0),
+  ('Obi', 'Wan', 'wan.obi@ucdconnect.ie', '69', 'The High Ground', 'member', '1998-01-01', NOW(), 'USER', 'wan.obi@ucdconnect.ie', 0),
+  ('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie', 0),
+  ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'member', '1998-01-01', NOW(), 'USER', 'xuan.liew@ucdconnect.ie', 0),
+  ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'braddy.yeoh@ucdconnect.ie', 0),
+  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com', 0),
+  ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com', 0),
+  ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com', 0);
 
 INSERT INTO flights
   (id, flight_name, departure_airport, arrival_airport, departure_date_time, arrival_date_time, flight_price, num_of_seats)
