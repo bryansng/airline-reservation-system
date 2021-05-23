@@ -125,6 +125,18 @@ const ShowPersonalDetails = ({ location, logOut }) => {
         <div className="mh1">
           <Link
             to={{
+              pathname: "/user/profile/personaldetails/password/edit",
+              state: {
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Change Password</Button>
+          </Link>
+        </div>
+        <div className="mh1">
+          <Link
+            to={{
               pathname: "/user/profile/personaldetails/edit",
               state: {
                 user: location.state.user,

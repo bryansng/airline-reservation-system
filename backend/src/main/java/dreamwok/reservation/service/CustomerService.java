@@ -24,6 +24,7 @@ import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
+import dreamwok.reservation.core.customer.request.ChangePasswordRequest;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
 import dreamwok.reservation.dto.CreditCardDetailsDTO;
@@ -166,6 +167,28 @@ public class CustomerService {
       Customer newCustomer = customerRepository.save(currCustomer);
       return new ResponseEntity<>(new CustomerResponse("Customer updated", new CustomerDTO(newCustomer)),
           HttpStatus.OK);
+    }
+    return new ResponseEntity<>(new CustomerResponse("Failed to update. Customer ID does not exist.", null),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  public ResponseEntity<CustomerResponse> updatePassword(Long id, ChangePasswordRequest request) {
+    if (customerRepository.existsById(id)) {
+      Customer currCustomer = customerRepository.findById(id).get();
+      Auth auth = currCustomer.getAuth();
+
+      // if password matches user's.
+      // hash new password and update.
+      if (auth.getEmail().equals(request.getEmail())
+          && securityConfig.getPasswordEncoder().matches(request.getOldPassword(), auth.getHash())) {
+        auth.setHash(securityConfig.getPasswordEncoder().encode(request.getNewPassword()));
+        currCustomer.setAuth(auth);
+        Customer updatedCustomer = customerRepository.save(currCustomer);
+        return new ResponseEntity<>(new CustomerResponse("Customer password updated", new CustomerDTO(updatedCustomer)),
+            HttpStatus.OK);
+      }
+      return new ResponseEntity<>(new CustomerResponse("Failed to update password. Incorrect credentials.", null),
+          HttpStatus.BAD_REQUEST);
     }
     return new ResponseEntity<>(new CustomerResponse("Failed to update. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);

@@ -9,6 +9,7 @@ import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
 import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
+import EditPassword from "./components/User/PersonalDetails/EditPassword";
 import ShowCreditCards from "./components/User/CreditCard/ShowCreditCards";
 import CreditCardDetails from "./components/User/CreditCard/ShowCreditCardDetails";
 import EditCreditCardDetails from "./components/User/CreditCard/EditCreditCardDetails";
@@ -95,6 +96,11 @@ function App() {
             render={(props) => (
               <EditPersonalDetails {...props} setUser={setAppUser} />
             )}
+          />
+          <Route
+            path="/user/profile/personaldetails/password/edit"
+            exact
+            render={(props) => <EditPassword {...props} setUser={setAppUser} />}
           />
           <Route
             path="/user/profile/creditcards"

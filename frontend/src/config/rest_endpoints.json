@@ -6,7 +6,8 @@
     },
     "user": {
       "customer": "http://localhost:8080/customer/",
-      "customer_profile": "http://localhost:8080/customer/profile"
+      "customer_profile": "http://localhost:8080/customer/profile",
+      "change_password": "http://localhost:8080/customer/profile/password"
     },
     "reservation": {
       "create": "http://localhost:8080/book",

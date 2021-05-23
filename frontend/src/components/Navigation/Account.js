@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ErrorMessage from "../Common/ErrorMessage";
+import ShowCheckOrCrossBox from "../Common/ShowCheckOrCrossBox";
 import passwordValidator from "password-validator";
 import { Link } from "react-router-dom";
 
@@ -37,33 +38,6 @@ const Button = styled.button.attrs({
 `;
 
 const Container = styled.div.attrs({ className: `ma0 pa0` })``;
-
-const ShowCheckOrCrossBox = ({ isCheck }) => {
-  const defaultSize = "10px";
-  const defaultStyle = {
-    display: "inline-block",
-    height: defaultSize,
-    width: defaultSize,
-  };
-  return (
-    <>
-      {isCheck ? (
-        <div style={{ ...defaultStyle, backgroundColor: "#19a974" }}></div>
-      ) : (
-        <div style={{ ...defaultStyle, backgroundColor: "#ff4136" }}></div>
-      )}
-      {/* {isCheck ? (
-        <span style={{ color: "transparent", textShadow: "0 0 0 #19a974" }}>
-          &#9745;
-        </span>
-      ) : (
-        <span style={{ color: "transparent", textShadow: "0 0 0 #ff4136" }}>
-          &#9746;
-        </span>
-      )} */}
-    </>
-  );
-};
 
 function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
   const [hasFormError, setHasFormError] = useState(false);

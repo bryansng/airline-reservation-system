@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
+import dreamwok.reservation.core.customer.request.ChangePasswordRequest;
 import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
 import dreamwok.reservation.service.AuthService;
@@ -63,7 +64,7 @@ public class CustomerController {
     /**
      * Customer
      *
-     * @param customerRequest
+     * @param request
      * @return
      */
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.GET)
@@ -85,5 +86,11 @@ public class CustomerController {
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.DELETE)
     public ResponseEntity<CustomerResponse> deleteCustomer(@PathVariable("customerId") Long customerId) {
         return customerService.delete(customerId);
+    }
+
+    @RequestMapping(value = "/profile/password/{customerId}", method = RequestMethod.PUT)
+    public ResponseEntity<CustomerResponse> updatePassword(@PathVariable("customerId") Long customerId,
+            @RequestBody ChangePasswordRequest request) {
+        return customerService.updatePassword(customerId, request);
     }
 }
