@@ -1,5 +1,7 @@
 package dreamwok.reservation.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,25 +42,27 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
-        return customerService.getCardDetails(cardId);
+    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId,
+            HttpServletRequest httpRequest) {
+        return customerService.getCardDetails(cardId, httpRequest);
     }
 
     @RequestMapping(value = "/creditcard/{customerId}", method = RequestMethod.POST)
     public ResponseEntity<GetCreditCardResponse> insertCardDetails(@PathVariable("customerId") Long customerId,
-            @RequestBody CreditCardRequest creditCardRequest) {
-        return customerService.insertCardDetails(customerId, creditCardRequest);
+            @RequestBody CreditCardRequest creditCardRequest, HttpServletRequest httpRequest) {
+        return customerService.insertCardDetails(customerId, creditCardRequest, httpRequest);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.PUT)
     public ResponseEntity<GetCreditCardResponse> updateCardDetails(@PathVariable("cardId") Long cardId,
-            @RequestBody CreditCardRequest creditCardRequest) {
-        return customerService.updateCardDetails(cardId, creditCardRequest);
+            @RequestBody CreditCardRequest creditCardRequest, HttpServletRequest httpRequest) {
+        return customerService.updateCardDetails(cardId, creditCardRequest, httpRequest);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.DELETE)
-    public ResponseEntity<GetCreditCardResponse> updateCardDetails(@PathVariable("cardId") Long cardId) {
-        return customerService.deleteCardDetails(cardId);
+    public ResponseEntity<GetCreditCardResponse> updateCardDetails(@PathVariable("cardId") Long cardId,
+            HttpServletRequest httpRequest) {
+        return customerService.deleteCardDetails(cardId, httpRequest);
     }
 
     /**
@@ -90,7 +94,7 @@ public class CustomerController {
 
     @RequestMapping(value = "/profile/password/{customerId}", method = RequestMethod.PUT)
     public ResponseEntity<CustomerResponse> updatePassword(@PathVariable("customerId") Long customerId,
-            @RequestBody ChangePasswordRequest request) {
-        return customerService.updatePassword(customerId, request);
+            @RequestBody ChangePasswordRequest changePasswordRequest, HttpServletRequest httpRequest) {
+        return customerService.updatePassword(customerId, changePasswordRequest, httpRequest);
     }
 }

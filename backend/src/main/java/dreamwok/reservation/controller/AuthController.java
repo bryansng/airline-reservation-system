@@ -12,6 +12,7 @@ import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.service.AuthService;
 import dreamwok.reservation.service.CustomerService;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
 

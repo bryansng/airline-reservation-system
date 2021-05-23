@@ -8,6 +8,7 @@ import dreamwok.reservation.core.auth.response.SignInResponse;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CustomerRepository;
+import lombok.extern.log4j.Log4j2;
 import dreamwok.reservation.model.Auth;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import dreamwok.reservation.model.Customer;
 
 @Service
+@Log4j2
 public class AuthService {
   private final int MAX_ALLOWED_FAILED_AUTH_ATTEMPTS = 3;
   // private final long AUTH_TIMEOUT_DURATION = 5; // 2 hours, in seconds.
@@ -56,6 +58,7 @@ public class AuthService {
     // System.out.println("ip: " + loginIPAttemptService.getClientIP(request));
     String ipAddress = loginIPAttemptService.getClientIP(request);
     if (loginIPAttemptService.isBlocked(ipAddress)) {
+      log.debug(String.format("Failed to login by IP %s due to exceeded IP authentication attempts.", ipAddress));
       return new ResponseEntity<>(new SignInResponse("400",
           "Failed to login. Exceeded IP authentication attempts. Please try again later.", null), HttpStatus.OK);
     }
@@ -67,6 +70,9 @@ public class AuthService {
     Auth auth = authRepository.findByEmail(email);
     if (customer != null && auth != null) {
       if (isExceededFailedAuthAttempts(customer)) {
+        log.debug(
+            String.format("Failed to login to user id %s by IP %s due to exceeded account authentication attempts.",
+                customer.getId().toString(), ipAddress));
         return new ResponseEntity<>(
             new SignInResponse("400",
                 "Failed to login. Exceeded account authentication attempts. Please try again later.", null),
@@ -81,6 +87,8 @@ public class AuthService {
 
         securityConfig.configAuth(auth, securityConfig.getAuth(), customer.getRoles());
         authenticateUserAndSetSession(customer, request);
+
+        log.debug(String.format("Successful login to user id %s by IP %s.", customer.getId().toString(), ipAddress));
         return new ResponseEntity<>(new SignInResponse("200", "Logged in successfully.", new CustomerDTO(customer)),
             HttpStatus.OK);
       }
@@ -88,11 +96,15 @@ public class AuthService {
       // incorrect credentials.
       incrementFailedAuthAttempts(customer);
       loginIPAttemptService.loginFailed(ipAddress);
+      log.debug(String.format("Failed to login to user id %s by IP %s due to incorrect email or password.",
+          customer.getId().toString(), ipAddress));
       return new ResponseEntity<>(new SignInResponse("400", "Failed to login. Email or password incorrect.", null),
           HttpStatus.OK);
     }
 
     // email does not exist.
+    log.debug(String.format("Failed to login using email %s by IP %s due to email does not exist in database.", email,
+        ipAddress));
     return new ResponseEntity<>(new SignInResponse("400", "Failed to login. Customer does not exist.", null),
         HttpStatus.OK);
   }
@@ -133,7 +145,8 @@ public class AuthService {
 
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) {
-    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest);
+    String ipAddress = loginIPAttemptService.getClientIP(request);
+    ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest, ipAddress);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
       Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
