@@ -3,7 +3,25 @@ import styled from "styled-components";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ErrorMessage from "../Common/ErrorMessage";
+import passwordValidator from "password-validator";
 import { Link } from "react-router-dom";
+
+// create schema and add password requirements.
+var schema = new passwordValidator();
+schema
+  .is()
+  .min(8)
+  .has()
+  .uppercase()
+  .has()
+  .lowercase()
+  .has()
+  .digits(2)
+  .has()
+  .symbols(1)
+  .has()
+  .not()
+  .spaces();
 
 const Button = styled.button.attrs({
   className: `b--gray ma0 br2 ba hover-bg-light-gray ml1 mr1`,
@@ -19,6 +37,33 @@ const Button = styled.button.attrs({
 `;
 
 const Container = styled.div.attrs({ className: `ma0 pa0` })``;
+
+const ShowCheckOrCrossBox = ({ isCheck }) => {
+  const defaultSize = "10px";
+  const defaultStyle = {
+    display: "inline-block",
+    height: defaultSize,
+    width: defaultSize,
+  };
+  return (
+    <>
+      {isCheck ? (
+        <div style={{ ...defaultStyle, backgroundColor: "#19a974" }}></div>
+      ) : (
+        <div style={{ ...defaultStyle, backgroundColor: "#ff4136" }}></div>
+      )}
+      {/* {isCheck ? (
+        <span style={{ color: "transparent", textShadow: "0 0 0 #19a974" }}>
+          &#9745;
+        </span>
+      ) : (
+        <span style={{ color: "transparent", textShadow: "0 0 0 #ff4136" }}>
+          &#9746;
+        </span>
+      )} */}
+    </>
+  );
+};
 
 function SignInModal({ show, onHide, toggleBetweenSignInRegister, signIn }) {
   const [hasFormError, setHasFormError] = useState(false);
@@ -88,6 +133,16 @@ function RegisterModal({
   const [hasFormError, setHasFormError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordsValid, setIsPasswordsValid] = useState(true);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [failedRules, setFailedRules] = useState([
+    "min",
+    "lowercase",
+    "uppercase",
+    "digits",
+    "symbols",
+    "spaces",
+  ]);
 
   const onSubmitError = (msg) => {
     setErrorMessage(msg);
@@ -109,7 +164,7 @@ function RegisterModal({
     const address = e.target.formRegisterAddress.value;
     const phoneNum = e.target.formRegisterPhoneNum.value;
 
-    if (password !== confirmPassword) {
+    if (password !== confirmPassword || failedRules.length !== 0) {
       setIsPasswordsValid(false);
     } else {
       register(
@@ -124,6 +179,14 @@ function RegisterModal({
       );
       setIsPasswordsValid(true);
     }
+  };
+
+  const updatePasswordStrength = (e) => {
+    e.preventDefault();
+    const password = e.target.value;
+    const failedRules = schema.validate(password, { list: true });
+    setFailedRules(failedRules);
+    setPassword(password);
   };
 
   return (
@@ -187,7 +250,44 @@ function RegisterModal({
               required
               // defaultValue="test"
               // isInvalid={!isPasswordsValid}
+              onChange={(evt) => updatePasswordStrength(evt)}
             />
+            <Form.Text id="passwordHelpBlock" muted>
+              <div>
+                <ShowCheckOrCrossBox isCheck={!failedRules.includes("min")} />{" "}
+                Password is at least 8 characters long.
+              </div>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={!failedRules.includes("lowercase")}
+                />{" "}
+                Password has lowercase letters.
+              </div>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={!failedRules.includes("uppercase")}
+                />{" "}
+                Password has uppercase letters.
+              </div>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={!failedRules.includes("digits")}
+                />{" "}
+                Password has at least 2 numbers.
+              </div>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={!failedRules.includes("symbols")}
+                />{" "}
+                Password has at least 1 symbol, !@#$%^&*)(+_.
+              </div>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={!failedRules.includes("spaces")}
+                />{" "}
+                Password has no spaces.
+              </div>
+            </Form.Text>
             {/* <Form.Control.Feedback type="invalid">
               Passwords do not match.
             </Form.Control.Feedback> */}
@@ -200,14 +300,25 @@ function RegisterModal({
               required
               // defaultValue="test"
               // isInvalid={!isPasswordsValid}
+              onChange={(evt) => setConfirmPassword(evt.target.value)}
             />
             {/* <Form.Control.Feedback type="invalid">
               Passwords do not match.
             </Form.Control.Feedback> */}
+            <Form.Text id="passwordHelpBlock" muted>
+              <div>
+                <ShowCheckOrCrossBox
+                  isCheck={password !== "" && password === confirmPassword}
+                />{" "}
+                Password matches.
+              </div>
+            </Form.Text>
           </Form.Group>
           {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
           {!isPasswordsValid && (
-            <ErrorMessage error>Passwords do not match.</ErrorMessage>
+            <ErrorMessage error>
+              Error: Please ensure password requirements are met.
+            </ErrorMessage>
           )}
         </Modal.Body>
         <Modal.Footer>
