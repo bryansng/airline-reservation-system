@@ -1,6 +1,7 @@
 package dreamwok.reservation.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dreamwok.reservation.core.flight.response.FlightsResponse;
+import dreamwok.reservation.core.flight.request.FlightRequest;
 import dreamwok.reservation.core.flight.response.GetFlightByIdResponse;
+import dreamwok.reservation.core.flight.response.FlightsResponse;
 import dreamwok.reservation.dto.FlightDTO;
 import dreamwok.reservation.model.Flight;
 import dreamwok.reservation.repository.FlightRepository;
@@ -100,4 +103,39 @@ public class FlightController {
 		FlightDTO flightDTO = new FlightDTO(flight);
 		return new ResponseEntity<>(new GetFlightByIdResponse("Flight retrieved successfully.", flightDTO), HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/flight/{flightId}", method = RequestMethod.DELETE)
+	public ResponseEntity<GetFlightByIdResponse> deleteFlightById(@PathVariable("flightId") Long flightId) {
+		return flightService.deleteFlightById(flightId);
+	}
+
+	// @RequestMapping(value = "/flight/{flightId}", method = RequestMethod.PUT)
+	// public ResponseEntity<GetFlightByIdResponse> editFlightById(@PathVariable("flightId") Long flightId,
+	// 		@RequestParam String flightName, @RequestParam String departureAirport, @RequestParam String arrivalAirport,
+	// 		@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureDateTime,
+	// 		@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime arrivalDateTime,
+	// 		@RequestParam Integer numOfSeats, @RequestParam Double flightPrice) {
+	// 	return flightService.editFlightById(flightId, flightName, departureAirport, arrivalAirport, departureDateTime,
+	// 			arrivalDateTime, flightPrice, numOfSeats);
+	// }
+
+	@RequestMapping(value = "/flight/{flightId}", method = RequestMethod.PUT)
+	public ResponseEntity<GetFlightByIdResponse> editFlightById(@PathVariable("flightId") Long flightId,
+			@RequestBody FlightRequest flightRequest) {
+		return flightService.editFlightById(flightId, flightRequest);
+	}
+
+	@RequestMapping(value = "/flight", method = RequestMethod.POST)
+	public ResponseEntity<GetFlightByIdResponse> createFlight(@RequestBody FlightRequest flightRequest) {
+		return flightService.createFlight(flightRequest);
+	}
+
+	@GetMapping("/flight/all")
+	public ResponseEntity<FlightsResponse> getAllFlights() {
+		Page<Flight> flights = flightService.getAllFlights();
+
+		return new ResponseEntity<>(new FlightsResponse("Flights returned successfully.", flights.getContent()),
+				HttpStatus.OK);
+	}
+
 }

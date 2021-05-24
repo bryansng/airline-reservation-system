@@ -25,6 +25,7 @@ public class FlightDTO {
 
     this.id = flight.getId();
     this.flightPrice = flight.getFlightPrice();
+    this.numOfSeats = flight.getNumOfSeats();
     this.flightName = flight.getFlightName();
     this.departureAirport = flight.getDepartureAirport();
     this.arrivalAirport = flight.getArrivalAirport();

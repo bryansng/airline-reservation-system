@@ -1,6 +1,8 @@
 package dreamwok.reservation.model;
 
 import dreamwok.reservation.service.Common;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -37,13 +39,25 @@ public class Flight {
   }
 
   public Flight(String flightName, String departureAirport, String arrivalAirport, String departureDateTime,
-      String arrivalDateTime, Double flightPrice) {
+      String arrivalDateTime, Double flightPrice, Integer numOfSeats) {
     this.flightName = flightName;
     this.departureAirport = departureAirport;
     this.arrivalAirport = arrivalAirport;
     this.departureDateTime = Common.convertStringDateToDateTime(departureDateTime);
     this.arrivalDateTime = Common.convertStringDateToDateTime(arrivalDateTime);
     this.flightPrice = flightPrice;
+    this.numOfSeats = numOfSeats;
+  }
+
+  public Flight(String flightName, String departureAirport, String arrivalAirport, LocalDateTime departureDateTime,
+      LocalDateTime arrivalDateTime, Double flightPrice, Integer numOfSeats) {
+    this.flightName = flightName;
+    this.departureAirport = departureAirport;
+    this.arrivalAirport = arrivalAirport;
+    this.departureDateTime = departureDateTime;
+    this.arrivalDateTime = arrivalDateTime;
+    this.flightPrice = flightPrice;
+    this.numOfSeats = numOfSeats;
   }
 
   public void setFlightName(String flightName) {
@@ -138,5 +152,16 @@ public class Flight {
 
   public void setFlightPrice(Double flightPrice) {
     this.flightPrice = flightPrice;
+  }
+
+  public void updateFlight(String flightName, String departureAirport, String arrivalAirport,
+      LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Double flightPrice, Integer numOfSeats) {
+    this.setArrivalAirport(arrivalAirport);
+    this.setArrivalDateTime(arrivalDateTime);
+    this.setDepartureAirport(departureAirport);
+    this.setDepartureDateTime(departureDateTime);
+    this.setFlightName(flightName);
+    this.setFlightPrice(flightPrice);
+    this.setNumOfSeats(numOfSeats);
   }
 }

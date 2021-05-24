@@ -9,7 +9,8 @@ VALUES
   ('braddy.yeoh@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
   ('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
   ('first@last.com', '$2a$10$bD7XybItjI.bpU0RA6W4ieTJ1MHf.FyRhMvNqrduURNkUQR1sqLq2'),
-  ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
+  ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
+  ('admin@admin.com', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa');
 
 INSERT INTO customers
   (first_name, last_name, email, phone_num, address, type, born_on, joined_on, roles, auth_email)
@@ -22,7 +23,8 @@ VALUES
   ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'braddy.yeoh@ucdconnect.ie'),
   ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com'),
   ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com'),
-  ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com');
+  ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com'),
+  ('Admin', 'Admin', 'admin@admin.com', '1234', 'admin', 'admin', '1998-01-01', NOW(), 'admin', 'admin@admin.com');
 
 INSERT INTO flights
   (id, flight_name, departure_airport, arrival_airport, departure_date_time, arrival_date_time, flight_price, num_of_seats)
@@ -74,10 +76,10 @@ VALUES
   (2, 'Cao Cao', '4319567834532343', '01/24', '345'),
   (3, 'Liu Bei', '5230132245653455', '04/22', '456'),
   (9, 'first last', '23423423442424433', '32/42', '123');
-  -- (1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
-  -- (1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
-  -- (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
-  -- (3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
+-- (1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
+-- (1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
+-- (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),
+-- (3, 'Liu Bei', '5230 1322 4565 3455', '04/22', '456');
 
 
 INSERT INTO reservations
@@ -86,9 +88,9 @@ VALUES
   (3, 40, 1, 33, 0),
   (4, 40, 1, 34, 0),
   (5, 40, 1, 35, 0);
-  -- (3, 40, 1, 33, 0, DATE_ADD(NOW(), INTERVAL 2 MINUTE)),
-  -- (4, 40, 1, 34, 0, DATE_ADD(NOW(), INTERVAL 1 MINUTE)),
-  -- (5, 40, 1, 35, 0, DATE_ADD(NOW(), INTERVAL 3 MINUTE));
+-- (3, 40, 1, 33, 0, DATE_ADD(NOW(), INTERVAL 2 MINUTE)),
+-- (4, 40, 1, 34, 0, DATE_ADD(NOW(), INTERVAL 1 MINUTE)),
+-- (5, 40, 1, 35, 0, DATE_ADD(NOW(), INTERVAL 3 MINUTE));
 
 
 INSERT INTO bookings
