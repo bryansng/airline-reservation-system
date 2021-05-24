@@ -224,7 +224,7 @@ const EditPassword = ({ location, setUser }) => {
               </Link>
             </div>
             <div className="ml1">
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit">Change Password</Button>
             </div>
           </div>
         </Form>

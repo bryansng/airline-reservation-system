@@ -64,7 +64,7 @@ public class BookingController {
       if (request.getCustomers().size() > 0) {
         log.debug(String.format(
             "Failed to create reservation for user with email %s by IP %s due to incorrect/invalid credit card credentials.",
-            request.getCustomers().get(0), ipAddress));
+            request.getCustomers().get(0).getEmail(), ipAddress));
       } else {
         log.debug(String.format(
             "Failed to create reservation for invalid number of users (expected at least 1) by IP %s due to incorrect/invalid credit card credentials.",
