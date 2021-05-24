@@ -1,5 +1,7 @@
 package dreamwok.reservation.model;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -7,7 +9,7 @@ import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 
 @Entity
 @Table(name = "credit_card_details")
-public class CreditCardDetails {
+public class CreditCardDetails implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -96,10 +98,10 @@ public class CreditCardDetails {
   }
 
   // public Customer getCustomer() {
-  //   return customer;
+  // return customer;
   // }
 
   // public void setCustomer(Customer customer) {
-  //   this.customer = customer;
+  // this.customer = customer;
   // }
 }

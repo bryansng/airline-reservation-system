@@ -1,8 +1,15 @@
 package dreamwok.reservation.service;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +45,8 @@ public class ReservationService {
   BookingRepository bookingRepository;
 
   public Reservation createReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetailsDTO) {
+      BookingCreditCardDetailsDTO creditCardDetailsDTO) throws InvalidKeyException, NoSuchAlgorithmException,
+      NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
@@ -58,7 +66,8 @@ public class ReservationService {
 
     // if isSavePaymentDetails
     // and customer.id in creditCardDetails matches paying customer by email.
-    // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
+    // ? can trick endpoint to add creditCardDetails to the wrong customer by
+    // specifying customer id?
     if (creditCardDetailsDTO.getIsSavePaymentDetails()
         && creditCardDetailsDTO.getCustomerId() == updatedCustomers.get(0).getId()) {
       customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(),
@@ -92,7 +101,7 @@ public class ReservationService {
     List<Reservation> reversations = reservationRepository
         .findByCustomerIdOrderByFlightDepartureDateTimeDescReservationStatusAsc(customer.getId());
     // List<Reservation> reversations = reservationRepository
-    //     .findByCustomerIdOrderByCreatedOnDescReservationStatusAsc(customer.getId());
+    // .findByCustomerIdOrderByCreatedOnDescReservationStatusAsc(customer.getId());
     // List<Reservation> reversations = customer.getReservations();
     List<Reservation> updatedReservations = new ArrayList<>();
     for (Reservation reservation : reversations) {

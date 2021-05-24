@@ -3,6 +3,23 @@ package dreamwok.reservation.configuration;
 import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.service.CustomerDetailsService;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SealedObject;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,23 +76,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// http.cors().and().authorizeRequests().antMatchers("/**").permitAll();
 		// http.cors().and().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/").permitAll().and()
-		// 		.httpBasic().and().logout().logoutSuccessUrl("/");
+		// .httpBasic().and().logout().logoutSuccessUrl("/");
 
-		// http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET, "/image/**").permitAll()
-		//     .antMatchers(HttpMethod.PUT, "/image/increment/**").permitAll().antMatchers(HttpMethod.POST, "/image/**")
-		//     .authenticated().antMatchers(HttpMethod.PUT, "/image/**").authenticated()
-		//     .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
+		// http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET,
+		// "/image/**").permitAll()
+		// .antMatchers(HttpMethod.PUT,
+		// "/image/increment/**").permitAll().antMatchers(HttpMethod.POST, "/image/**")
+		// .authenticated().antMatchers(HttpMethod.PUT, "/image/**").authenticated()
+		// .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
 
 		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
 				.hasRole("ADMIN").antMatchers("/member/reserve").permitAll().antMatchers("/member/**")
-				.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll().and()
-				.logout().logoutSuccessUrl("/");
+				.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll()
+				.and().logout().logoutSuccessUrl("/");
 
-		// http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
-		// 		.hasRole("ADMIN").antMatchers("/member/**").hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll()
-		// 		.antMatchers("/h2-console/**").permitAll().and().formLogin().loginPage("/").loginProcessingUrl("/login")
-		// 		.successHandler(authenticationSuccessHandler).usernameParameter("email").passwordParameter("password").and()
-		// 		.logout().logoutSuccessUrl("/");
+		// http.authorizeRequests().antMatchers("/css/**", "/js/**",
+		// "/images/**").permitAll().antMatchers("/admin/**")
+		// .hasRole("ADMIN").antMatchers("/member/**").hasAnyRole("USER",
+		// "ADMIN").antMatchers("/").permitAll()
+		// .antMatchers("/h2-console/**").permitAll().and().formLogin().loginPage("/").loginProcessingUrl("/login")
+		// .successHandler(authenticationSuccessHandler).usernameParameter("email").passwordParameter("password").and()
+		// .logout().logoutSuccessUrl("/");
 
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
