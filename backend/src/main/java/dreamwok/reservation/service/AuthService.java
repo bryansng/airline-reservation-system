@@ -55,7 +55,6 @@ public class AuthService {
   LoginIPAttemptService loginIPAttemptService;
 
   public ResponseEntity<SignInResponse> login(@RequestBody SignInRequest signInRequest, HttpServletRequest request) {
-    // System.out.println("ip: " + loginIPAttemptService.getClientIP(request));
     String ipAddress = loginIPAttemptService.getClientIP(request);
     if (loginIPAttemptService.isBlocked(ipAddress)) {
       log.debug(String.format("Failed to login by IP %s due to exceeded IP authentication attempts.", ipAddress));

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,6 @@ import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.Booking;
-import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Flight;
 import dreamwok.reservation.model.Reservation;
@@ -38,7 +39,7 @@ public class ReservationService {
   BookingRepository bookingRepository;
 
   public Reservation createReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetailsDTO) {
+      BookingCreditCardDetailsDTO creditCardDetailsDTO, HttpServletRequest httpRequest) {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
@@ -62,7 +63,7 @@ public class ReservationService {
     if (creditCardDetailsDTO.getIsSavePaymentDetails()
         && creditCardDetailsDTO.getCustomerId() == updatedCustomers.get(0).getId()) {
       customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(),
-          new CreditCardRequest(creditCardDetailsDTO));
+          new CreditCardRequest(creditCardDetailsDTO), httpRequest);
     }
 
     // create reservation.

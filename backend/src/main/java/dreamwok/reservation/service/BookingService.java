@@ -3,6 +3,8 @@ package dreamwok.reservation.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,12 @@ public class BookingService {
   BookingRepository bookingRepository;
 
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails) {
+      BookingCreditCardDetailsDTO creditCardDetails, HttpServletRequest httpRequest) {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
 
-    return reservationService.createReservation(flightId, customers, creditCardDetails);
+    return reservationService.createReservation(flightId, customers, creditCardDetails, httpRequest);
   }
 
   public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {
