@@ -1,23 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { auth: auth_apis } = rest_endpoints;
 
-function useAuthentication({
-  isAuthenticated,
-  token,
-  user,
-  setAppIsAuthenticated: setIsAuthenticated,
-  setAppToken: setToken,
-  setAppUser: setUser,
-}) {
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [token, setToken] = useState(window.localStorage.getItem("token"));
+// function useAuthentication({
+//   // isAuthenticated,
+//   // token,
+//   // user,
+//   // setAppIsAuthenticated: setIsAuthenticated,
+//   // setAppToken: setToken,
+//   // setAppUser: setUser,
+// }) {
+function useAuthentication() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(window.localStorage.getItem("token"));
   // // const [token, setToken] = useState("");
   const userInitialState = {
     id: "",
     email: "",
   };
-  // const [user, setUser] = useState(userInitialState);
+  const [user, setUser] = useState(userInitialState);
 
   useEffect(() => {
     // open first time.
@@ -32,38 +34,41 @@ function useAuthentication({
     }
 
     // open after previously logged in.
-    // if (token && !user.id) {
-    //   const requestOptions = {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `bearer ${token}`,
-    //     },
-    //     body: JSON.stringify({
-    //       token: `${token}`,
-    //     }),
-    //   };
+    if (!isLoading && token && !user.id) {
+      setIsLoading(true);
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          token: `${token}`,
+        }),
+      };
+      // console.log(`token: ${token}`);
 
-    //   fetch(auth_apis.get_by_token, requestOptions)
-    //     .then((resp) => {
-    //       if (resp.ok) {
-    //         return resp.json();
-    //       }
-    //       throw new Error(
-    //         `${resp.status} Unauthorized: Token expired. Requires another signin by user.`
-    //       );
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       setIsAuthenticated(true);
-    //       setUser({ ...user, ...res.customer });
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //       logOut();
-    //     });
-    // }
-  });
+      fetch(auth_apis.get_user_by_token, requestOptions)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(
+            `${resp.status} Unauthorized: Token expired. Requires another signin by user.`
+          );
+        })
+        .then((res) => {
+          console.log(res);
+          setIsAuthenticated(true);
+          setUser({ ...user, ...res.customer });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          logOut();
+        });
+    }
+  }, [isAuthenticated, isLoading, token, user]);
 
   const logOut = () => {
     setToken("");
@@ -108,10 +113,10 @@ function useAuthentication({
       })
       .then((res) => {
         console.log(res);
+        setUser({ ...user, ...res.customer });
         setToken(res.token);
         window.localStorage.setItem("token", res.token);
         setIsAuthenticated(true);
-        setUser({ ...user, ...res.customer });
         onSuccessCallback();
         console.log("User registered successfully.");
       })
@@ -170,6 +175,7 @@ function useAuthentication({
     isAuthenticated,
     token,
     user,
+    setUser,
     signIn,
     logOut,
     register,

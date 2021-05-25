@@ -27,7 +27,7 @@ const Grid = styled.div.attrs({})`
   grid-template-columns: 1fr 1fr;
 `;
 
-const EditCreditCardDetails = ({ location }) => {
+const EditCreditCardDetails = ({ location, token }) => {
   const user = location.state.user;
   const isAddCard = location.state.isAddCard;
   const [creditCard, setCreditCard] = useState(location.state.card);
@@ -148,7 +148,7 @@ const EditCreditCardDetails = ({ location }) => {
       method: isAddCard ? "POST" : "PUT",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         cardNumber: cardNumber,

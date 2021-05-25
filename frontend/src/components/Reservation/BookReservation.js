@@ -8,7 +8,7 @@ import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
-const BookReservation = ({ location, user, isAuthenticated }) => {
+const BookReservation = ({ location, token, user, isAuthenticated }) => {
   const [flightId] = useState(location.state.flightId);
   const [flight, setFlight] = useState(null);
   const [numPassengers] = useState(location.state.numPassengers);
@@ -63,13 +63,13 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         customers: passengersDetails,
         creditCardDetails: paymentDetails,
       };
-      console.log(requestBody);
+      // console.log(requestBody);
 
       const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(requestBody),
       };
@@ -132,6 +132,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
       {isConfirmedBooking &&
         (!paymentDetails || (paymentDetails && !bookedReservation)) && (
           <HandlePaymentDetails
+            token={token}
             setPaymentDetails={setPaymentDetails}
             loggedInUser={user}
             isAuthenticated={isAuthenticated}

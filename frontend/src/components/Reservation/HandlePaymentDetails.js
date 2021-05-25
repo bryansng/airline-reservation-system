@@ -36,6 +36,7 @@ const Grid = styled.div.attrs({})`
 `;
 
 const HandlePaymentDetails = ({
+  token,
   setPaymentDetails,
   loggedInUser,
   isAuthenticated,
@@ -61,7 +62,7 @@ const HandlePaymentDetails = ({
   useEffect(() => {
     if (isAuthenticated && loggedInUser && loggedInUser.id) {
       // GET customer's credit card details.
-      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`)
+      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`, {method: "GET", "headers": {Authorization: `Bearer ${token}`}})
         .then((resp) => {
           if (resp.ok) {
             return resp.json();

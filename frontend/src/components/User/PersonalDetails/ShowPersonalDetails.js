@@ -21,7 +21,7 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const ShowPersonalDetails = ({ location, logOut }) => {
+const ShowPersonalDetails = ({ location, token, logOut }) => {
   const DELETE_REDIRECT_DELAY = 3000;
   const user = location.state.user;
   const [isDeleted, setIsDeleted] = useState(false);
@@ -34,7 +34,12 @@ const ShowPersonalDetails = ({ location, logOut }) => {
     evt.preventDefault();
 
     // DELETE request using fetch with error handling
-    fetch(`${customerEndpoint}/${user.id}`, { method: "DELETE" })
+    fetch(`${customerEndpoint}/${user.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(async (response) => {
         const data = await response.json();
 

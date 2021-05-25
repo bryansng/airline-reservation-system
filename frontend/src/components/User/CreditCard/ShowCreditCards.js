@@ -59,7 +59,7 @@ const IconTitle = styled.p.attrs({
   className: `f4`,
 })``;
 
-const ShowCreditCards = ({ location }) => {
+const ShowCreditCards = ({ location, token }) => {
   const user = location.state.user;
   const [creditCards, setCreditCards] = useState([]);
 
@@ -70,7 +70,15 @@ const ShowCreditCards = ({ location }) => {
   }
 
   useEffect(() => {
-    fetch(`${creditCardEndpoint}/${user.id}`)
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    // console.log(requestOptions);
+
+    fetch(`${creditCardEndpoint}/${user.id}`, requestOptions)
       .then((resp) => {
         if (resp.ok) {
           return resp.json();

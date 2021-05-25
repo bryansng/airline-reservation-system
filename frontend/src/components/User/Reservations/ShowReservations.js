@@ -23,27 +23,32 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const ShowReservations = ({ location }) => {
+const ShowReservations = ({ location, token }) => {
   const user = location.state.user;
+  const [isFetched, setIsFetched] = useState(false);
   const [reservations, setReservations] = useState([]);
 
-  const url = reservationEndpoint + "/" + user.id;
-
   useEffect(() => {
-    fetch(url)
-      .then((resp) => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        throw new Error(`${resp.status} Error retrieving customer.`);
+    if (!isFetched) {
+      setIsFetched(true);
+      fetch(`${reservationEndpoint}/${user.id}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        setReservations(res.reservations);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [url]);
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`${resp.status} Error retrieving customer.`);
+        })
+        .then((res) => {
+          setReservations(res.reservations);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [isFetched]);
 
   const isReservationCancelled = (reservation) => {
     return reservation.reservationStatus === "CANCELLED";

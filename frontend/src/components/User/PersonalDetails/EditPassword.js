@@ -41,7 +41,7 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const EditPassword = ({ location, setUser }) => {
+const EditPassword = ({ location, token }) => {
   const user =
     location.state && location.state.user ? location.state.user : null;
   const [hasFormError, setHasFormError] = useState(false);
@@ -73,6 +73,7 @@ const EditPassword = ({ location, setUser }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           email: user.email,
@@ -80,7 +81,7 @@ const EditPassword = ({ location, setUser }) => {
           newPassword: e.target.formNewPassword.value,
         }),
       };
-      // console.log(requestOptions);
+      console.log(requestOptions);
 
       fetch(`${customerEndpoint}/${user.id}`, requestOptions)
         .then((resp) => {
