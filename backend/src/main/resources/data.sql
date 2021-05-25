@@ -7,7 +7,8 @@ VALUES
   ('jobs.steve@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
   ('xuan.liew@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
   ('braddy.yeoh@ucdconnect.ie', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
-  ('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
+  ('a@a.com', '$2a$10$9d4mara/LTmT97YLHGLU3.8phlLxcCTTuO5LX2PwqGn22jDOjKIWa'),
+  -- ('a@a.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG'),
   ('first@last.com', '$2a$10$bD7XybItjI.bpU0RA6W4ieTJ1MHf.FyRhMvNqrduURNkUQR1sqLq2'),
   ('u@u.com', '$2a$10$vEnY95B1hUYQFhz5TXYxCeAmSO/ZxDC792kGmID0p8LnYwnjAwJIG');
 
@@ -20,7 +21,7 @@ VALUES
   ('Steve', 'Jobs', 'jobs.steve@ucdconnect.ie', '1234', 'Silicon Valley', 'member', '1998-01-01', NOW(), 'USER', 'jobs.steve@ucdconnect.ie', 0),
   ('Emily', 'Liew Xuan', 'xuan.liew@ucdconnect.ie', '6954', 'Somewhere in the Universe', 'member', '1998-01-01', NOW(), 'USER', 'xuan.liew@ucdconnect.ie', 0),
   ('Braddy', 'Yeoh', 'braddy.yeoh@ucdconnect.ie', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'braddy.yeoh@ucdconnect.ie', 0),
-  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com', 0),
+  ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'ADMIN', 'a@a.com', 0),
   ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com', 0),
   ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com', 0);
 

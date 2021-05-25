@@ -73,6 +73,23 @@ const ShowPersonalDetails = ({ location, token, logOut }) => {
       });
   };
 
+  // const testAdminEndpoint = () => {
+  //   console.log("Calling admin endpoint");
+  //   fetch("http://localhost:8080/admin/test", {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((resp) => resp.json())
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
   return (
     <>
       {!user && (
@@ -127,6 +144,11 @@ const ShowPersonalDetails = ({ location, token, logOut }) => {
             <Button type="button">Back to profile dashboard</Button>
           </Link>
         </div>
+        {/* <div className="mh1">
+          <Button type="button" onClick={() => testAdminEndpoint()}>
+            Test
+          </Button>
+        </div> */}
         <div className="mh1">
           <Link
             to={{

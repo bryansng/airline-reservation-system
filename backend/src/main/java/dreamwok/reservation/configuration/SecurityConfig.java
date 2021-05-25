@@ -84,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//     .authenticated().antMatchers(HttpMethod.PUT, "/image/**").authenticated()
 		//     .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
 
+		// cors needed to allow Authoriztation header.
 		http.cors().and().authorizeRequests()
 				.antMatchers("/login/**", "/register", "/reservation/**", "/reservation/cancel/**", "/flight/**", "/search/**")
 				.permitAll().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/customer/**").authenticated().and()

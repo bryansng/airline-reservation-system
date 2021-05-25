@@ -58,7 +58,7 @@ function useAuthentication() {
           );
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           setIsAuthenticated(true);
           setUser({ ...user, ...res.customer });
           setIsLoading(false);
