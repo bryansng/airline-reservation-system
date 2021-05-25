@@ -28,7 +28,6 @@ public class CreditCardDetails implements Serializable {
   private String cardNumber;
 
   @NotEmpty
-  @FutureOrPresent
   private String expiryDate;
 
   @NotEmpty
