@@ -5,23 +5,23 @@
       "login": "https://localhost:8443/login"
     },
     "user": {
-      "customer": "http://localhost:8443/customer/",
-      "customer_profile": "http://localhost:8443/customer/profile"
+      "customer": "https://localhost:8443/customer/",
+      "customer_profile": "https://localhost:8443/customer/profile"
     },
     "reservation": {
-      "create": "http://localhost:8443/book",
-      "get_by_id": "http://localhost:8443/reservation",
-      "get_all_by_customer_id": "http://localhost:8443/reservations",
-      "get_reservation_by_id_and_customer_lastname": "http://localhost:8443/reservations",
-      "cancel": "http://localhost:8443/reservation/cancel"
+      "create": "https://localhost:8443/book",
+      "get_by_id": "https://localhost:8443/reservation",
+      "get_all_by_customer_id": "https://localhost:8443/reservations",
+      "get_reservation_by_id_and_customer_lastname": "https://localhost:8443/reservations",
+      "cancel": "https://localhost:8443/reservation/cancel"
     },
     "flight": {
-      "get_by_id": "http://localhost:8443/flight",
-      "search": "http://localhost:8443/search"
+      "get_by_id": "https://localhost:8443/flight",
+      "search": "https://localhost:8443/search"
     },
     "credit_card": {
-      "get_all_by_customer_id": "http://localhost:8443/customer/creditcard/all",
-      "get_card_by_card_id": "http://localhost:8443/customer/creditcard"
+      "get_all_by_customer_id": "https://localhost:8443/customer/creditcard/all",
+      "get_card_by_card_id": "https://localhost:8443/customer/creditcard"
     }
   }
 }
