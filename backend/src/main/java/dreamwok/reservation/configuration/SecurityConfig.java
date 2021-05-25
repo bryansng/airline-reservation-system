@@ -9,17 +9,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	AuthenticationSuccessHandler authenticationSuccessHandler;
+
+	@Autowired
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+	@Autowired
+	private CustomerDetailsService customerDetailsService;
+
+	@Autowired
+	private JwtRequestFilter jwtRequestFilter;
 
 	@Autowired
 	public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler) {
@@ -32,7 +45,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	AuthenticationManagerBuilder authBuilder;
 
 	@Autowired
-	CustomerDetailsService customerDetailsService;
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		// configure AuthenticationManager so that it knows from where to load user for matching credentials.
+		// Use BCryptPasswordEncoder.
+		auth.userDetailsService(customerDetailsService).passwordEncoder(getPasswordEncoder());
+	}
 
 	public void configAuth(Auth auth, AuthenticationManagerBuilder authBuilder, String role) {
 		try {
@@ -46,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return authBuilder;
 	}
 
+	@Bean
 	public AuthenticationManager authenticationManager() throws Exception {
 		return super.authenticationManager();
 	}
@@ -66,16 +84,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//     .authenticated().antMatchers(HttpMethod.PUT, "/image/**").authenticated()
 		//     .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
 
-		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
-				.hasRole("ADMIN").antMatchers("/member/reserve").permitAll().antMatchers("/member/**")
-				.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll().and()
-				.logout().logoutSuccessUrl("/");
+		http.cors().and().authorizeRequests()
+				.antMatchers("/login/**", "/register", "/reservations/**", "/reservation/cancel/**", "/flight/**", "/search/**")
+				.permitAll().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/customer/**").authenticated().and()
+				.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		// http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
+		// 		.hasRole("ADMIN").antMatchers("/member/reserve").permitAll().antMatchers("/member/**")
+		// 		.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll().and()
+		// 		.logout().logoutSuccessUrl("/");
 
 		// http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
 		// 		.hasRole("ADMIN").antMatchers("/member/**").hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll()
 		// 		.antMatchers("/h2-console/**").permitAll().and().formLogin().loginPage("/").loginProcessingUrl("/login")
 		// 		.successHandler(authenticationSuccessHandler).usernameParameter("email").passwordParameter("password").and()
 		// 		.logout().logoutSuccessUrl("/");
+
+		// Add a filter to validate the tokens with every request
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		http.csrf().disable();
 		http.headers().frameOptions().disable();

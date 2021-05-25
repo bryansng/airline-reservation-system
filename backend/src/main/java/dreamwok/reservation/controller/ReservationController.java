@@ -37,7 +37,7 @@ public class ReservationController {
    * /reservations GET { customerId: String } returns { reservations:
    * List<Reservation> [{ reservation: Reservation object }] }
    */
-  @RequestMapping(value = "/reservations/{customerId}", method = RequestMethod.GET)
+  @RequestMapping(value = "/customer/reservations/{customerId}", method = RequestMethod.GET)
   public ResponseEntity<GetCustomerReservationsResponse> getCustomerReservations(
       @PathVariable("customerId") Long customerId, HttpServletRequest request) {
     String ipAddress = loginIPAttemptService.getClientIP(request);

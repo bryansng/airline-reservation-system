@@ -1,8 +1,10 @@
 package dreamwok.reservation.controller;
 
+import dreamwok.reservation.configuration.JwtTokenUtil;
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.request.SignInRequest;
+import dreamwok.reservation.core.auth.request.UserByTokenRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
 import dreamwok.reservation.core.auth.response.SignInResponse;
 import dreamwok.reservation.dto.CustomerDTO;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +48,9 @@ public class AuthController {
 
   @Autowired
   SecurityConfig securityConfig;
+
+  @Autowired
+  JwtTokenUtil jwtTokenUtil;
 
   // @GetMapping("/cheat/login")
   // public ResponseEntity<SignInResponse> autoLogin(@RequestParam(defaultValue = "hong.sng@ucdconnect.ie") String email,
@@ -86,8 +92,14 @@ public class AuthController {
     } */
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   public ResponseEntity<SignInResponse> loginCustomer(@RequestBody SignInRequest signInRequest,
-      HttpServletRequest request) {
+      HttpServletRequest request) throws Exception {
     return authService.login(signInRequest, request);
+  }
+
+  @RequestMapping(value = "/login/token", method = RequestMethod.POST)
+  public ResponseEntity<SignInResponse> getCustomerByToken(@RequestBody UserByTokenRequest userByTokenRequest,
+      HttpServletRequest request) throws Exception {
+    return authService.getCustomerByToken(userByTokenRequest, request);
   }
 
   /* /register POST
@@ -101,7 +113,7 @@ public class AuthController {
     } */
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
-      HttpServletRequest request) {
+      HttpServletRequest request) throws Exception {
     return authService.register(registerRequest, request);
   }
 
@@ -123,9 +135,9 @@ public class AuthController {
         status: ...
         message: ...
     } */
-  @RequestMapping(value = "/register", method = RequestMethod.DELETE)
-  public ResponseEntity<RegisterResponse> deleteCustomer(@RequestBody RegisterRequest registerRequest,
-      HttpServletRequest request) {
-    return authService.register(registerRequest, request);
-  }
+  // @RequestMapping(value = "/register", method = RequestMethod.DELETE)
+  // public ResponseEntity<RegisterResponse> deleteCustomer(@RequestBody RegisterRequest registerRequest,
+  //     HttpServletRequest request) throws Exception {
+  //   return authService.register(registerRequest, request);
+  // }
 }
