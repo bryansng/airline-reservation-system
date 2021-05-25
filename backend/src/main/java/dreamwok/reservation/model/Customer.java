@@ -171,6 +171,14 @@ public class Customer {
     // }
   }
 
+  public void update(CustomerDTO customer) {
+    this.setEmail(customer.getEmail());
+    this.setFirstName(customer.getFirstName());
+    this.setLastName(customer.getLastName());
+    this.setAddress(customer.getAddress());
+    this.setPhoneNum(customer.getMobileNumber());
+  }
+
   public List<Reservation> getReservations() {
     return reservations;
   }

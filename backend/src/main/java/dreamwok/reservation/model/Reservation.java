@@ -1,11 +1,15 @@
 package dreamwok.reservation.model;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
 
 import dreamwok.reservation.core.common.ReservationStatus;
+import dreamwok.reservation.dto.BookingDTO;
+import dreamwok.reservation.dto.CustomerDTO;
+import dreamwok.reservation.dto.FlightDTO;
+import dreamwok.reservation.dto.ReservationDTO;
 
 @Entity
 @Table(name = "reservations")
@@ -42,6 +46,12 @@ public class Reservation {
     this.flight = flight;
     this.bookings = bookings;
   }
+
+  // public Reservation(ReservationDTO reservation) {
+  //   this(reservation.getReservationStatus(), reservation.getTotalCost(), new Customer(reservation.getCustomer()),
+  //       new Flight(reservation.getFlight()), new ArrayList<Booking>());
+  //   this.bookings = convertBookingDTOListToBookingList(reservation.getBookings());
+  // }
 
   public Customer getCustomer() {
     return customer;
@@ -90,4 +100,29 @@ public class Reservation {
   public void setTotalCost(Double totalCost) {
     this.totalCost = totalCost;
   }
+
+  public void editReservation(ReservationStatus reservationStatus, Double totalCost, Customer customer, Flight flight,
+      List<Booking> bookings) {
+    this.reservationStatus = reservationStatus;
+    this.totalCost = totalCost;
+    this.customer = customer;
+    this.flight = flight;
+    this.bookings = bookings;
+  }
+
+  // public void editReservation(ReservationStatus reservationStatus, Double totalCost, CustomerDTO customer,
+  //     FlightDTO flight, List<BookingDTO> bookings) {
+  //   this.reservationStatus = reservationStatus;
+  //   this.totalCost = totalCost;
+  //   this.customer = new Customer(customer);
+  //   this.flight = new Flight(flight);
+  //   this.bookings = convertBookingDTOListToBookingList(bookings);
+  // }
+
+  // public List<Booking> convertBookingDTOListToBookingList(List<BookingDTO> bookingDTOs) {
+  //   List<Booking> bookings = new ArrayList<Booking>();
+  //   for (BookingDTO booking : bookingDTOs)
+  //     bookings.add(new Booking(booking, this));
+  //   return bookings;
+  // }
 }

@@ -8,6 +8,13 @@ public class BookingDTO {
   private Boolean isCancelled = false;
   private CustomerDTO customer;
 
+  public BookingDTO(Long id, Boolean isCheckedIn, Boolean isCancelled, CustomerDTO customer) {
+    this.id = id;
+    this.isCheckedIn = isCheckedIn;
+    this.isCancelled = isCancelled;
+    this.customer = customer;
+  }
+
   public BookingDTO(Booking booking) {
     this.id = booking.getId();
     this.isCheckedIn = booking.getIsCheckedIn();

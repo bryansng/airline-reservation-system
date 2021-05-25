@@ -59,4 +59,17 @@ public class BookingController {
     return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
         HttpStatus.CREATED);
   }
+
+  @RequestMapping(value = "/book/admin", method = RequestMethod.POST)
+  public ResponseEntity<BookReservationResponse> adminBookReservation(@RequestBody BookReservationRequest request) {
+    Reservation reservation = bookingService.adminBookReservation(request.getFlightId(), request.getCustomers());
+
+    if (reservation == null) {
+      return new ResponseEntity<>(new BookReservationResponse("Reservation failed.", null), HttpStatus.BAD_REQUEST);
+    }
+
+    ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
+        HttpStatus.CREATED);
+  }
 }

@@ -33,6 +33,11 @@ public class BookingService {
     return reservationService.createReservation(flightId, customers, creditCardDetails);
   }
 
+  public Reservation adminBookReservation(Long flightId, List<CustomerDTO> customers) {
+
+    return reservationService.adminCreateReservation(flightId, customers);
+  }
+
   public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {
     Long creditCardDetailsId = creditCardDetails.getId();
 

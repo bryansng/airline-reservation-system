@@ -7,12 +7,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
+import dreamwok.reservation.core.booking.request.AdminEditReservationRequest;
 import dreamwok.reservation.core.common.ReservationStatus;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
+import dreamwok.reservation.dto.BookingDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.Booking;
-import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Flight;
 import dreamwok.reservation.model.Reservation;
@@ -67,6 +69,41 @@ public class ReservationService {
 
     // create reservation.
     Reservation reservation = new Reservation(ReservationStatus.SCHEDULED,
+        flight.getFlightPrice() * updatedCustomers.size(), updatedCustomers.get(0), flight, null);
+    reservation = reservationRepository.save(reservation);
+
+    // create the response bookings.
+    List<Booking> bookings = new ArrayList<>();
+    for (Customer customer : updatedCustomers) {
+      Booking booking = new Booking(false, false, reservation, customer);
+      booking = bookingRepository.save(booking);
+      bookings.add(booking);
+    }
+
+    reservation.setBookings(bookings);
+    return reservation;
+  }
+
+  public Reservation adminCreateReservation(Long flightId, List<CustomerDTO> customers) {
+    // check if flight exists.
+    Flight flight = flightService.getFlightById(flightId);
+    if (flight == null) {
+      return null;
+    }
+
+    // check if customers exist.
+    // if not, create them in database.
+    List<Customer> updatedCustomers = new ArrayList<>();
+    for (CustomerDTO customerDTO : customers) {
+      if (!customerRepository.existsByEmail(customerDTO.getEmail())) {
+        updatedCustomers.add(customerRepository.save(new Customer(customerDTO)));
+      } else {
+        updatedCustomers.add(customerRepository.findByEmail(customerDTO.getEmail()));
+      }
+    }
+
+    // create reservation.
+    Reservation reservation = new Reservation(ReservationStatus.UNPAID,
         flight.getFlightPrice() * updatedCustomers.size(), updatedCustomers.get(0), flight, null);
     reservation = reservationRepository.save(reservation);
 
@@ -138,6 +175,78 @@ public class ReservationService {
     reservation.setReservationStatus(ReservationStatus.CANCELLED);
     reservationRepository.save(reservation);
     return reservation;
+  }
+
+  // public Reservation adminDeleteReservation(Long reservationId) {
+  //   Reservation reservation = getReservationById(reservationId);
+
+  //   if (reservation == null) {
+  //     return null;
+  //   }
+  //   reservationRepository.deleteById(reservationId);
+  //   return reservation;
+  // }
+
+  public Reservation adminEditReservation(Long reservationId, AdminEditReservationRequest request) {
+    Reservation reservation = getReservationById(reservationId);
+    if (reservation == null) {
+      return null;
+    }
+
+    // update customer
+    Customer payingCustomer = customerRepository.getOne(request.getCustomer().getId());
+    payingCustomer.update(request.getCustomer());
+    customerRepository.save(payingCustomer);
+
+    // List<Customer> updatedCustomers = updateCustomerForBookings(request.getBookings());
+
+    // grab & delete existing bookings for this reservation id
+    List<Booking> oldBookings = bookingRepository.findByReservationId(reservationId);
+    bookingRepository.deleteInBatch(oldBookings);
+
+    // make new bookings
+    List<Booking> updatedBookings = new ArrayList<Booking>();
+    for (BookingDTO bookingDTO : request.getBookings()) {
+      Customer customer = updateCustomerForBookings(bookingDTO);
+      Booking booking = new Booking(bookingDTO.getIsCheckedIn(), bookingDTO.getIsCancelled(), reservation, customer);
+      bookingRepository.save(booking);
+      updatedBookings.add(booking);
+    }
+
+    // update flight
+    Flight newFlight = flightService.getFlightById(request.getFlightId());
+    if (newFlight == null) {
+      return null;
+    }
+
+    // update reservation
+    reservation.editReservation(request.getReservationStatus(), request.getTotalCost(), payingCustomer, newFlight,
+        updatedBookings);
+    reservationRepository.save(reservation);
+
+    return reservation;
+  }
+
+  // private Customer updateCustomerForBooking(BookingDTO bookingDTO) {
+  //   // update customer
+  //   Customer customer;
+  //   if (customerRepository.existsById(bookingDTO.getCustomer().getId())) {
+  //     customer = customerRepository.getOne(bookingDTO.getCustomer().getId());
+  //     customer.update(bookingDTO.getCustomer());
+  //   } else {
+  //     customer = new Customer(bookingDTO.getCustomer());
+  //   }
+  //   return customerRepository.save(customer);
+  // }
+
+  private Customer updateCustomerForBookings(BookingDTO bookingDTO) {
+    Customer customer;
+    if (!customerRepository.existsByEmail(bookingDTO.getCustomer().getEmail())) {
+      customer = customerRepository.save(new Customer(bookingDTO.getCustomer()));
+    } else {
+      customer = customerRepository.findByEmail(bookingDTO.getCustomer().getEmail());
+    }
+    return customer;
   }
 
   public Reservation checkAndSetIfReservationFlightPast(Reservation reservation) {

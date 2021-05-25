@@ -1,5 +1,6 @@
 package dreamwok.reservation.model;
 
+import dreamwok.reservation.dto.FlightDTO;
 import dreamwok.reservation.service.Common;
 
 import java.time.LocalDate;
@@ -58,6 +59,11 @@ public class Flight {
     this.arrivalDateTime = arrivalDateTime;
     this.flightPrice = flightPrice;
     this.numOfSeats = numOfSeats;
+  }
+
+  public Flight(FlightDTO flight) {
+    this(flight.getFlightName(), flight.getDepartureAirport(), flight.getArrivalAirport(),
+        flight.getDepartureDateTime(), flight.getArrivalDateTime(), flight.getFlightPrice(), flight.getNumOfSeats());
   }
 
   public void setFlightName(String flightName) {
