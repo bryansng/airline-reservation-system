@@ -88,8 +88,9 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.DELETE)
-    public ResponseEntity<CustomerResponse> deleteCustomer(@PathVariable("customerId") Long customerId) {
-        return customerService.delete(customerId);
+    public ResponseEntity<CustomerResponse> deleteCustomer(@PathVariable("customerId") Long customerId,
+            HttpServletRequest httpRequest) {
+        return customerService.delete(customerId, httpRequest);
     }
 
     @RequestMapping(value = "/profile/password/{customerId}", method = RequestMethod.PUT)

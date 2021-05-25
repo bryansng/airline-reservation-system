@@ -173,8 +173,8 @@ public class AuthService {
     ResponseEntity<RegisterResponse> registerResponse = customerService.create(registerRequest, ipAddress);
 
     if (registerResponse.getStatusCode() == HttpStatus.CREATED) {
-      Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
-      Auth auth = authRepository.findByEmail(registerRequest.getEmail());
+      // Customer customer = customerRepository.findByEmail(registerRequest.getEmail());
+      // Auth auth = authRepository.findByEmail(registerRequest.getEmail());
       // securityConfig.configAuth(auth, securityConfig.getAuth(), "USER");
       // authenticateUserAndSetSession(customer, request);
 
@@ -189,7 +189,9 @@ public class AuthService {
         throw new Exception("INVALID_CREDENTIALS", e);
       }
 
-      return registerResponse;
+      RegisterResponse response = registerResponse.getBody();
+      response.setToken(token);
+      return new ResponseEntity<>(response, registerResponse.getStatusCode());
     }
     return new ResponseEntity<>(new RegisterResponse("Failed to create new customer.", null),
         HttpStatus.INTERNAL_SERVER_ERROR);
@@ -213,8 +215,15 @@ public class AuthService {
    */
   public Customer getCustomerFromUserObject(Authentication authentication) {
     if (authentication != null && authentication.isAuthenticated()) {
-      User user = (User) authentication.getPrincipal();
-      return customerRepository.findByEmail(user.getUsername());
+      try {
+        User user = (User) authentication.getPrincipal();
+        return customerRepository.findByEmail(user.getUsername());
+      } catch (ClassCastException e) {
+        log.debug(
+            "Failed to cast authentication.getPrincipal() to User. Generally due to getPrincipal being type String with value \"AnonymousUser\". Most likely because token is not valid or has expired.");
+        log.debug(e.getMessage());
+        return null;
+      }
     }
     return null;
   }

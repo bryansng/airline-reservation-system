@@ -85,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//     .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
 
 		http.cors().and().authorizeRequests()
-				.antMatchers("/login/**", "/register", "/reservations/**", "/reservation/cancel/**", "/flight/**", "/search/**")
+				.antMatchers("/login/**", "/register", "/reservation/**", "/reservation/cancel/**", "/flight/**", "/search/**")
 				.permitAll().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/customer/**").authenticated().and()
 				.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

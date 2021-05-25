@@ -71,7 +71,8 @@ public class ReservationController {
     Reservation reservation = reservationService.getReservationById(reservationId);
 
     if (reservation == null) {
-      log.debug(String.format("Failed to retrieve reservation id %s by IP %s.", reservationId, ipAddress));
+      log.debug(String.format("Failed to retrieve reservation id %s by IP %s due to invalid reservation id.",
+          reservationId, ipAddress));
       return new ResponseEntity<>(new GetReservationByIdResponse("Invalid reservation id.", null),
           HttpStatus.NOT_FOUND);
     }
@@ -90,7 +91,8 @@ public class ReservationController {
     Reservation reservation = reservationService.getReservationByIdAndCustomerLastName(customerLastName, reservationId);
 
     if (reservation == null) {
-      log.debug(String.format("Failed to retrieve reservation by id %s and customer last name %s by IP %s.",
+      log.debug(String.format(
+          "Failed to retrieve reservation by id %s and customer last name %s by IP %s due to invalid reservation id or incorrect reservation id with customer last name.",
           reservationId, customerLastName, ipAddress));
       return new ResponseEntity<>(new GetReservationByIdResponse(
           "Invalid reservation id or incorrect reservation id with customer last name.", null), HttpStatus.NOT_FOUND);
@@ -119,7 +121,8 @@ public class ReservationController {
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
     if (reservation == null) {
-      log.debug(String.format("Failed to cancel reservation id %s by IP %s.", reservationId, ipAddress));
+      log.debug(String.format("Failed to cancel reservation id %s by IP %s due to invalid reservation id.",
+          reservationId, ipAddress));
       return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
     }
 

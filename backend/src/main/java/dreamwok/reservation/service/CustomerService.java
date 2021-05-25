@@ -270,7 +270,8 @@ public class CustomerService {
         HttpStatus.BAD_REQUEST);
   }
 
-  public ResponseEntity<CustomerResponse> delete(Long id) {
+  public ResponseEntity<CustomerResponse> delete(Long id, HttpServletRequest httpRequest) {
+    String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     Optional<Customer> customerOptional = customerRepository.findById(id);
 
     if (customerOptional.isPresent()) {
@@ -283,9 +284,12 @@ public class CustomerService {
       authRepository.deleteById(auth.getEmail());
       // authRepository.deleteByEmail(auth.getEmail());
 
+      log.debug(String.format("Successfully deleted customer with id %s by IP %s.", id, ipAddress));
       return new ResponseEntity<>(new CustomerResponse("Deleted successfully.", new CustomerDTO(customer)),
           HttpStatus.OK);
     }
+    log.debug(String.format(
+        "Failed to delete customer with id %s by IP %s due to customer ID not existing in database.", id, ipAddress));
     return new ResponseEntity<>(new CustomerResponse("Failed to delete. Customer ID does not exist.", null),
         HttpStatus.BAD_REQUEST);
   }
