@@ -1,6 +1,7 @@
 package dreamwok.reservation.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Auth {
 	@Id
 	@NotEmpty
+	@Email
 	private String email;
 
 	@NotEmpty

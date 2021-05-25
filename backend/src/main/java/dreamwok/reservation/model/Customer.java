@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,10 +30,19 @@ public class Customer {
   private Long id;
 
   @NotEmpty
+  @Email
   private String email;
+
+  @NotEmpty
   private String firstName;
+
+  @NotEmpty
   private String lastName;
+
+  @NotEmpty
   private String address;
+
+  @NotEmpty
   private String phoneNum;
   private String roles = "USER";
 
@@ -162,12 +172,12 @@ public class Customer {
     // this.setAuth(this.auth);
 
     // switch (type.toLowerCase()) {
-    //   case "member":
-    //     this.setRoles("USER");
-    //     break;
-    //   case "librarian":
-    //     this.setRoles("ADMIN");
-    //     break;
+    // case "member":
+    // this.setRoles("USER");
+    // break;
+    // case "librarian":
+    // this.setRoles("ADMIN");
+    // break;
     // }
   }
 
@@ -188,10 +198,10 @@ public class Customer {
   }
 
   // public List<CreditCardDetails> getCreditCardDetails() {
-  //   return creditCardDetails;
+  // return creditCardDetails;
   // }
 
   // public void setCreditCardDetails(List<CreditCardDetails> creditCardDetails) {
-  //   this.creditCardDetails = creditCardDetails;
+  // this.creditCardDetails = creditCardDetails;
   // }
 }

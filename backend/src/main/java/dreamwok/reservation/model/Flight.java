@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+
 import java.util.List;
 
 @Entity
@@ -27,6 +29,7 @@ public class Flight {
   private String arrivalAirport;
   private LocalDateTime departureDateTime;
   private LocalDateTime arrivalDateTime;
+  @Positive
   private Double flightPrice;
   private Integer numOfSeats;
 
@@ -113,11 +116,11 @@ public class Flight {
   }
 
   // public String getDepartureDateTimeString() {
-  //   return this.departureDateTime.toString();
+  // return this.departureDateTime.toString();
   // }
 
   // public String getArrivalDateTimeString() {
-  //   return this.arrivalDateTime.toString();
+  // return this.arrivalDateTime.toString();
   // }
 
   public LocalDateTime getDepartureDateTime() {

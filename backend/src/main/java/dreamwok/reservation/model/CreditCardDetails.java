@@ -3,7 +3,10 @@ package dreamwok.reservation.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 
@@ -17,9 +20,19 @@ public class CreditCardDetails implements Serializable {
   @NotNull
   private Long customerId;
 
+  @NotEmpty
   private String nameOnCard;
+
+  @NotEmpty
+  @Size(min = 16, max = 16)
   private String cardNumber;
+
+  @NotEmpty
+  @FutureOrPresent
   private String expiryDate;
+
+  @NotEmpty
+  @Size(min = 3, max = 3)
   private String securityCode;
 
   // @ManyToOne(fetch = FetchType.LAZY)
