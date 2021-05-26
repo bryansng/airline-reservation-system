@@ -22,6 +22,18 @@
     "credit_card": {
       "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all",
       "get_card_by_card_id": "http://localhost:8080/customer/creditcard"
+    },
+    "admin": {
+      "flight": {
+        "create": "http://localhost:8080/flight",
+        "update": "http://localhost:8080/flight/",
+        "delete": "http://localhost:8080/flight/"
+      },
+      "reservation": {
+        "create": "http://localhost:8080/book/admin",
+        "update": "http://localhost:8080/reservation/admin/edit/",
+        "delete": "http://localhost:8080/reservation/admin/delete/"
+      }
     }
   }
 }

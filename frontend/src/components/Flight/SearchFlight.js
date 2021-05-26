@@ -135,7 +135,12 @@ const SearchFlight = () => {
           </Card.Body>
         </Card>
         <div className="flex justify-end">
-          <div>
+          <div className="mr1">
+            <Link to={`/flight/create`}>
+              <Button type="button">Create flight</Button>
+            </Link>
+          </div>
+          <div className="ml1">
             <Button type="submit">Search flights</Button>
           </div>
         </div>

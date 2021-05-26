@@ -7,6 +7,8 @@ import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
+import FlightForm from "./components/Flight/FlightForm";
+import ShowAllFlights from "./components/Flight/ShowAllFlights";
 import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
 import ShowCreditCards from "./components/User/CreditCard/ShowCreditCards";
@@ -121,6 +123,13 @@ function App() {
             exact
             component={ShowReservations}
           />
+          <Route path="/flight" exact component={ShowAllFlights} />
+          <Route path="/flight/create" exact component={FlightForm} />
+          {/* <Route
+            path="/admin/reservations"
+            exact
+            component={ShowReservations}
+          /> */}
         </Switch>
       </Container>
     </Router>
