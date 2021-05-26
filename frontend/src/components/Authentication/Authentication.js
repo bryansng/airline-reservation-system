@@ -13,7 +13,7 @@ const { auth: auth_apis } = rest_endpoints;
 function useAuthentication() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [token, setToken] = useState(window.localStorage.getItem("token"));
+  const [token, setToken] = useState(window.sessionStorage.getItem("token"));
   // // const [token, setToken] = useState("");
   const userInitialState = {
     id: "",
@@ -72,7 +72,7 @@ function useAuthentication() {
 
   const logOut = () => {
     setToken("");
-    window.localStorage.removeItem("token");
+    window.sessionStorage.removeItem("token");
     setIsAuthenticated(false);
     setUser(userInitialState);
     console.log("User logged out successfully.");
@@ -115,7 +115,7 @@ function useAuthentication() {
         console.log(res);
         setUser({ ...user, ...res.customer });
         setToken(res.token);
-        window.localStorage.setItem("token", res.token);
+        window.sessionStorage.setItem("token", res.token);
         setIsAuthenticated(true);
         onSuccessCallback();
         console.log("User registered successfully.");
@@ -158,7 +158,7 @@ function useAuthentication() {
           onErrorCallback(res.message);
         } else {
           setToken(res.token);
-          window.localStorage.setItem("token", res.token);
+          window.sessionStorage.setItem("token", res.token);
           setIsAuthenticated(true);
           setUser({ ...user, ...res.customer });
           onSuccessCallback();
