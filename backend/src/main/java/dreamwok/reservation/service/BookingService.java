@@ -1,5 +1,6 @@
 package dreamwok.reservation.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,12 +28,12 @@ public class BookingService {
   BookingRepository bookingRepository;
 
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails, HttpServletRequest httpRequest) {
+      BookingCreditCardDetailsDTO creditCardDetails, Principal principal, HttpServletRequest httpRequest) {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
 
-    return reservationService.createReservation(flightId, customers, creditCardDetails, httpRequest);
+    return reservationService.createReservation(flightId, customers, creditCardDetails, principal, httpRequest);
   }
 
   public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {

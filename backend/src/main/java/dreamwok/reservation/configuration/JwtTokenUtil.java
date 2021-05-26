@@ -13,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+// https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 @Component
 public class JwtTokenUtil {
   public static final long JWT_TOKEN_VALIDITY = 4 * 60 * 60; // 4 hours, in seconds.

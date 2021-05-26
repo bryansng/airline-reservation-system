@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import dreamwok.reservation.service.CustomerDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 
+// https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
   @Autowired

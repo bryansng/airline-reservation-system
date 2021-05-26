@@ -1,5 +1,6 @@
 package dreamwok.reservation.service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class ReservationService {
   BookingRepository bookingRepository;
 
   public Reservation createReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetailsDTO, HttpServletRequest httpRequest) {
+      BookingCreditCardDetailsDTO creditCardDetailsDTO, Principal principal, HttpServletRequest httpRequest) {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
@@ -62,7 +63,7 @@ public class ReservationService {
     // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
     if (creditCardDetailsDTO.getIsSavePaymentDetails()
         && creditCardDetailsDTO.getCustomerId() == updatedCustomers.get(0).getId()) {
-      customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(),
+      customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(), principal,
           new CreditCardRequest(creditCardDetailsDTO), httpRequest);
     }
 
