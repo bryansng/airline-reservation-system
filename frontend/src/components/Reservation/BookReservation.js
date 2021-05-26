@@ -65,15 +65,18 @@ const BookReservation = ({ location, token, user, isAuthenticated }) => {
       };
       // console.log(requestBody);
 
+      const headers =
+        isAuthenticated && user ? { Authorization: `Bearer ${token}` } : {};
+
       const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          ...headers,
         },
         body: JSON.stringify(requestBody),
       };
-      // console.log(requestOptions);
+      console.log(requestOptions);
 
       fetch(reservation_apis.create, requestOptions)
         .then((resp) => {
