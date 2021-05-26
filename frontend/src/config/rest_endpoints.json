@@ -23,7 +23,10 @@
     },
     "credit_card": {
       "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all",
-      "get_card_by_card_id": "http://localhost:8080/customer/creditcard"
+      "get_card_by_card_id": "http://localhost:8080/customer/creditcard",
+      "create": "http://localhost:8080/customer/creditcard",
+      "update": "http://localhost:8080/customer/creditcard",
+      "delete": "http://localhost:8080/customer/creditcard"
     }
   }
 }

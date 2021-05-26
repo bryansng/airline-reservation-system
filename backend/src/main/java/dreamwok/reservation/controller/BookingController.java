@@ -1,5 +1,7 @@
 package dreamwok.reservation.controller;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +57,10 @@ public class BookingController {
   } */
   @RequestMapping(value = "/book", method = RequestMethod.POST)
   public ResponseEntity<BookReservationResponse> bookReservation(@RequestBody BookReservationRequest request,
-      HttpServletRequest httpRequest) {
+      Principal principal, HttpServletRequest httpRequest) {
     String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     Reservation reservation = bookingService.bookReservation(request.getFlightId(), request.getCustomers(),
-        request.getCreditCardDetails(), httpRequest);
+        request.getCreditCardDetails(), principal, httpRequest);
 
     if (reservation == null) {
       if (request.getCustomers().size() > 0) {

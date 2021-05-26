@@ -29,7 +29,7 @@ const CreditCardDetails = ({ location, token }) => {
     evt.preventDefault();
 
     // DELETE request using fetch with error handling
-    fetch(`${credit_card_apis.get_card_by_card_id}/${creditCard.id}`, {
+    fetch(`${credit_card_apis.delete}/${user.id}/${creditCard.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     })

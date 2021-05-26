@@ -81,7 +81,7 @@ const EditPassword = ({ location, token }) => {
           newPassword: e.target.formNewPassword.value,
         }),
       };
-      console.log(requestOptions);
+      // console.log(requestOptions);
 
       fetch(`${customerEndpoint}/${user.id}`, requestOptions)
         .then((resp) => {

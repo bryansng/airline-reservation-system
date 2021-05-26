@@ -84,8 +84,11 @@ const ShowCreditCards = ({ location, token }) => {
           return resp.json();
         }
         throw new Error(
-          `${resp.status} Error retrieving customer's credit cards.`
+          `Error: Error retrieving customer's credit cards.`
         );
+        // throw new Error(
+        //   `${resp.status} Error retrieving customer's credit cards.`
+        // );
       })
       .then((res) => {
         setCreditCards(res.creditCards);

@@ -159,8 +159,10 @@ const EditCreditCardDetails = ({ location, token }) => {
     };
 
     fetch(
-      `${credit_card_apis.get_card_by_card_id}/${
-        isAddCard ? user.id : creditCard.id
+      `${
+        isAddCard
+          ? `${credit_card_apis.create}/${user.id}`
+          : `${credit_card_apis.update}/${user.id}/${creditCard.id}`
       }`,
       requestOptions
     )
