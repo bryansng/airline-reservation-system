@@ -4,12 +4,12 @@ import org.jasypt.util.text.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AESUtil {
+public class CreditCardEncryptor {
 
-    private BasicTextEncryptor textEncryptor;
+    private StrongTextEncryptor textEncryptor;
 
-    public AESUtil() {
-        textEncryptor = new BasicTextEncryptor();
+    public CreditCardEncryptor() {
+        textEncryptor = new StrongTextEncryptor();
         textEncryptor.setPassword("returntomonke1234");
     }
 

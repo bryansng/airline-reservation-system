@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
-import dreamwok.reservation.core.common.AESUtil;
+import dreamwok.reservation.core.common.CreditCardEncryptor;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
@@ -52,7 +52,7 @@ public class CustomerService {
   SecurityConfig securityConfig;
 
   @Autowired
-  AESUtil aesUtil;
+  CreditCardEncryptor creditCardEncryptor;
 
   public void save(Customer customer, Auth auth) {
     auth.setCustomer(customer);
@@ -85,10 +85,10 @@ public class CustomerService {
   }
 
   private CreditCardRequest encryptCard(CreditCardRequest creditCardRequest) {
-    String encryptedNameOnCard = aesUtil.encrypt(creditCardRequest.getNameOnCard());
-    String encryptedCardNum = aesUtil.encrypt(creditCardRequest.getCardNumber());
-    String encryptedExpiryDate = aesUtil.encrypt(creditCardRequest.getExpiryDate());
-    String encryptedSecurityCode = aesUtil.encrypt(creditCardRequest.getSecurityCode());
+    String encryptedNameOnCard = creditCardEncryptor.encrypt(creditCardRequest.getNameOnCard());
+    String encryptedCardNum = creditCardEncryptor.encrypt(creditCardRequest.getCardNumber());
+    String encryptedExpiryDate = creditCardEncryptor.encrypt(creditCardRequest.getExpiryDate());
+    String encryptedSecurityCode = creditCardEncryptor.encrypt(creditCardRequest.getSecurityCode());
 
     CreditCardRequest ccr = new CreditCardRequest(encryptedNameOnCard, encryptedCardNum, encryptedExpiryDate,
         encryptedSecurityCode);
@@ -97,10 +97,10 @@ public class CustomerService {
   }
 
   private CreditCardDetails decryptCard(CreditCardDetails card) {
-    String decryptedNameOnCard = aesUtil.decrypt(card.getNameOnCard());
-    String decryptedCardNum = aesUtil.decrypt(card.getCardNumber());
-    String decryptedExpiryDate = aesUtil.decrypt(card.getExpiryDate());
-    String decryptedSecurityCode = aesUtil.decrypt(card.getSecurityCode());
+    String decryptedNameOnCard = creditCardEncryptor.decrypt(card.getNameOnCard());
+    String decryptedCardNum = creditCardEncryptor.decrypt(card.getCardNumber());
+    String decryptedExpiryDate = creditCardEncryptor.decrypt(card.getExpiryDate());
+    String decryptedSecurityCode = creditCardEncryptor.decrypt(card.getSecurityCode());
 
     card.setNameOnCard(decryptedNameOnCard);
     card.setCardNumber(decryptedCardNum);
