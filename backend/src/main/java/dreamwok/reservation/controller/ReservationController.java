@@ -106,7 +106,7 @@ public class ReservationController {
         HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/reservation/admin/cancel/{reservationId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/adm/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> adminCancelReservation(@PathVariable("reservationId") Long reservationId) {
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
@@ -131,7 +131,7 @@ public class ReservationController {
   //   return new ResponseEntity<>(new CancelResponse("Reservation deleted successfully.", reservationDTO), HttpStatus.OK);
   // }
 
-  @RequestMapping(value = "/reservation/admin/edit/{reservationId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/adm/reservation/edit/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> adminEditReservation(@PathVariable("reservationId") Long reservationId,
       @RequestBody AdminEditReservationRequest request) {
     Reservation reservation = reservationService.adminEditReservation(reservationId, request);
@@ -142,5 +142,18 @@ public class ReservationController {
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
     return new ResponseEntity<>(new CancelResponse("Reservation edited successfully.", reservationDTO), HttpStatus.OK);
+  }
+
+  // GetCustomerReservationsResponse contains a list of reservationDTOs
+  @RequestMapping(value = "/adm/reservation/all", method = RequestMethod.GET)
+  public ResponseEntity<GetCustomerReservationsResponse> getAllReservations() {
+    List<ReservationDTO> reservationDTOs = reservationService.getAllReservationDTOs();
+
+    if (reservationDTOs == null) {
+      return new ResponseEntity<>(new GetCustomerReservationsResponse("Invalid reservations id.", null),
+          HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(
+        new GetCustomerReservationsResponse("Reservation retrieved successfully.", reservationDTOs), HttpStatus.OK);
   }
 }

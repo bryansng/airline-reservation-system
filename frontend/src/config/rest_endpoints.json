@@ -25,18 +25,16 @@
     },
     "admin": {
       "flight": {
-        "view_all": "http://localhost:8080/flight/all",
-        "view_one": "http://localhost:8080/flight/",
-        "create": "http://localhost:8080/flight",
-        "edit": "http://localhost:8080/flight/",
-        "delete": "http://localhost:8080/flight/"
+        "view_all": "http://localhost:8080/adm/flight/all",
+        "create": "http://localhost:8080/adm/flight/create",
+        "edit": "http://localhost:8080/adm/flight/edit/",
+        "delete": "http://localhost:8080/adm/flight/delete/"
       },
       "reservation": {
-        "view_all": "http://localhost:8080/reservation/all",
-        "view_one": "http://localhost:8080/reservation/",
-        "create": "http://localhost:8080/book/admin",
-        "edit": "http://localhost:8080/reservation/admin/edit/",
-        "delete": "http://localhost:8080/reservation/admin/cancel/"
+        "view_all": "http://localhost:8080/adm/reservation/all",
+        "create": "http://localhost:8080/adm/reservation/create",
+        "edit": "http://localhost:8080/adm/reservation/edit/",
+        "delete": "http://localhost:8080/adm/reservation/cancel/"
       }
     }
   }

@@ -100,7 +100,7 @@ public class CustomerService {
   }
 
   public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
-    String cardNumber = creditCardRequest.getCardNumber();
+    // String cardNumber = creditCardRequest.getCardNumber();
 
     // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
     CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);

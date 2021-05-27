@@ -1,7 +1,6 @@
 package dreamwok.reservation.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +103,7 @@ public class FlightController {
 		return new ResponseEntity<>(new GetFlightByIdResponse("Flight retrieved successfully.", flightDTO), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/flight/{flightId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/adm/flight/delete/{flightId}", method = RequestMethod.DELETE)
 	public ResponseEntity<GetFlightByIdResponse> deleteFlightById(@PathVariable("flightId") Long flightId) {
 		return flightService.deleteFlightById(flightId);
 	}
@@ -119,18 +118,18 @@ public class FlightController {
 	// 			arrivalDateTime, flightPrice, numOfSeats);
 	// }
 
-	@RequestMapping(value = "/flight/{flightId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/adm/flight/edit/{flightId}", method = RequestMethod.PUT)
 	public ResponseEntity<GetFlightByIdResponse> editFlightById(@PathVariable("flightId") Long flightId,
 			@RequestBody FlightRequest flightRequest) {
 		return flightService.editFlightById(flightId, flightRequest);
 	}
 
-	@RequestMapping(value = "/flight", method = RequestMethod.POST)
+	@RequestMapping(value = "/adm/flight/create", method = RequestMethod.POST)
 	public ResponseEntity<GetFlightByIdResponse> createFlight(@RequestBody FlightRequest flightRequest) {
 		return flightService.createFlight(flightRequest);
 	}
 
-	@GetMapping("/flight/all")
+	@GetMapping("/adm/flight/all")
 	public ResponseEntity<FlightsResponse> getAllFlights() {
 		Page<Flight> flights = flightService.getAllFlights();
 

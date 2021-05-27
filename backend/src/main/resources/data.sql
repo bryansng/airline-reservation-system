@@ -24,7 +24,7 @@ VALUES
   ('A', 'A', 'a@a.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'a@a.com'),
   ('U', 'U', 'u@u.com', '7749', 'Somewhere in Ireland', 'member', '1998-01-01', NOW(), 'USER', 'u@u.com'),
   ('first', 'last', 'first@last.com', '1234', 'address', 'member', '1998-01-01', NOW(), 'USER', 'first@last.com'),
-  ('Admin', 'Admin', 'admin@admin.com', '1234', 'admin', 'admin', '1998-01-01', NOW(), 'admin', 'admin@admin.com');
+  ('Admin', 'Admin', 'admin@admin.com', '1234', 'admin', 'member', '1998-01-01', NOW(), 'ADMIN', 'admin@admin.com');
 
 INSERT INTO flights
   (id, flight_name, departure_airport, arrival_airport, departure_date_time, arrival_date_time, flight_price, num_of_seats)

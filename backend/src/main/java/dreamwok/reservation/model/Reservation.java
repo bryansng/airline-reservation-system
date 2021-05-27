@@ -1,15 +1,10 @@
 package dreamwok.reservation.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
 
 import dreamwok.reservation.core.common.ReservationStatus;
-import dreamwok.reservation.dto.BookingDTO;
-import dreamwok.reservation.dto.CustomerDTO;
-import dreamwok.reservation.dto.FlightDTO;
-import dreamwok.reservation.dto.ReservationDTO;
 
 @Entity
 @Table(name = "reservations")
