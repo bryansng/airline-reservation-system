@@ -135,8 +135,12 @@ function App() {
             component={EditFlightForm}
           />
           <Route path="/reservation" exact component={ShowAllReservations} />
-          {/* <Route path="/reservation/create" exact component={ReservationForm} />
           <Route
+            path="/reservation/create"
+            exact
+            render={(props) => <SearchFlight />}
+          />
+          {/* <Route
             path="/reservation/edit/:reservationId"
             exact
             component={EditReservationForm}

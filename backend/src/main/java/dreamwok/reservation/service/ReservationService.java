@@ -5,15 +5,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
 import dreamwok.reservation.core.booking.request.AdminEditReservationRequest;
 import dreamwok.reservation.core.common.ReservationStatus;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.BookingDTO;
 import dreamwok.reservation.dto.CustomerDTO;
+import dreamwok.reservation.dto.ReservationDTO;
 import dreamwok.reservation.model.Booking;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Flight;
@@ -247,6 +249,15 @@ public class ReservationService {
       customer = customerRepository.findByEmail(bookingDTO.getCustomer().getEmail());
     }
     return customer;
+  }
+
+  public List<ReservationDTO> getAllReservationDTOs() {
+    Page<Reservation> reservations = reservationRepository
+        .findAll(PageRequest.of(0, (int) reservationRepository.count()));
+    List<ReservationDTO> reservationDTOs = new ArrayList<ReservationDTO>();
+    for (Reservation reservation : reservations.getContent())
+      reservationDTOs.add(new ReservationDTO(reservation));
+    return reservationDTOs;
   }
 
   public Reservation checkAndSetIfReservationFlightPast(Reservation reservation) {

@@ -6,7 +6,11 @@ import Itinerary from "./Itinerary";
 import { Redirect } from "react-router";
 import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
-const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
+const {
+  reservation: reservation_apis,
+  flight: flight_apis,
+  admin: admin_apis,
+} = rest_endpoints;
 
 const BookReservation = ({ location, user, isAuthenticated }) => {
   const [flightId] = useState(location.state.flightId);
@@ -55,24 +59,50 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   }, [flight, numPassengers, passengersDetails]);
 
   useEffect(() => {
-    if (flightId && passengersDetails && paymentDetails) {
+    if (
+      flightId &&
+      passengersDetails &&
+      isConfirmedBooking &&
+      ((user && user.roles === "ADMIN") || paymentDetails)
+    ) {
       // POST to get actual booking with booking number.
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `bearer ${token}`,
-        },
-        body: JSON.stringify({
-          // token: `${token}`,
-          flightId: flightId,
-          customers: passengersDetails,
-          creditCardDetails: paymentDetails,
-        }),
-      };
-      // console.log(requestOptions);
+      const requestOptions =
+        user && user.roles === "ADMIN"
+          ? {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `bearer ${token}`,
+              },
+              body: JSON.stringify({
+                // token: `${token}`,
+                flightId: flightId,
+                customers: passengersDetails,
+              }),
+            }
+          : {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `bearer ${token}`,
+              },
+              body: JSON.stringify({
+                // token: `${token}`,
+                flightId: flightId,
+                customers: passengersDetails,
+                creditCardDetails: paymentDetails,
+              }),
+            };
+      console.log(requestOptions);
 
-      fetch(reservation_apis.create, requestOptions)
+      fetch(
+        `${
+          user && user.roles === "ADMIN"
+            ? admin_apis.reservation.create
+            : reservation_apis.create
+        }`,
+        requestOptions
+      )
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -82,7 +112,8 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         .then((res) => {
           const reservation = res.reservation;
           setBookedReservation(reservation);
-          // setHasFormError(false);
+          setHasFormError(false);
+          console.log(reservation);
         })
         .catch((error) => {
           error.json().then((body) => {
@@ -92,7 +123,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           });
         });
     }
-  }, [flightId, passengersDetails, paymentDetails]);
+  }, [flightId, isConfirmedBooking, passengersDetails, paymentDetails]);
 
   /*
   on click from select flight in search flight, brings user to reserve
@@ -124,22 +155,25 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         />
       )}
       {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
-      {isConfirmedBooking && !paymentDetails && (
-        <HandlePaymentDetails
-          setPaymentDetails={setPaymentDetails}
-          loggedInUser={user}
-          isAuthenticated={isAuthenticated}
-        />
-      )}
-      {paymentDetails && bookedReservation && (
-        <Redirect
-          push
-          to={{
-            pathname: `/show/reservation/${bookedReservation.id}`,
-            state: { reservation: bookedReservation },
-          }}
-        />
-      )}
+      {(!user || user.roles !== "ADMIN") &&
+        isConfirmedBooking &&
+        !paymentDetails && (
+          <HandlePaymentDetails
+            setPaymentDetails={setPaymentDetails}
+            loggedInUser={user}
+            isAuthenticated={isAuthenticated}
+          />
+        )}
+      {((user && user.roles === "ADMIN") || paymentDetails) &&
+        bookedReservation && (
+          <Redirect
+            push
+            to={{
+              pathname: `/show/reservation/${bookedReservation.id}`,
+              state: { reservation: bookedReservation },
+            }}
+          />
+        )}
     </div>
   );
 };

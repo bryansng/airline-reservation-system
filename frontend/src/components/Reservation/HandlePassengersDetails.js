@@ -95,11 +95,12 @@ const HandlePassengersDetails = ({
 
 const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
   const isFirstUserAndIsAuthenticatedAndIsLoggedInUser = () => {
-    return !!(
+    return (
       index === 0 &&
       isAuthenticated &&
       loggedInUser &&
-      loggedInUser.id
+      loggedInUser.id &&
+      loggedInUser.roles !== "ADMIN"
     );
   };
 
