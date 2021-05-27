@@ -25,6 +25,7 @@
     },
     "admin": {
       "flight": {
+        "view_all": "http://localhost:8080/flight/all",
         "create": "http://localhost:8080/flight",
         "update": "http://localhost:8080/flight/",
         "delete": "http://localhost:8080/flight/"
