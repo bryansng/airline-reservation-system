@@ -10,6 +10,9 @@ import SearchFlight from "./components/Flight/SearchFlight";
 import FlightForm from "./components/Flight/FlightForm";
 import EditFlightForm from "./components/Flight/EditFlightForm";
 import ShowAllFlights from "./components/Flight/ShowAllFlights";
+// import ReservationForm from "./components/Reservation/ReservationForm";
+// import EditReservationForm from "./components/Reservation/EditReservationForm";
+import ShowAllReservations from "./components/Reservation/ShowAllReservations";
 import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
 import ShowCreditCards from "./components/User/CreditCard/ShowCreditCards";
@@ -131,10 +134,12 @@ function App() {
             exact
             component={EditFlightForm}
           />
-          {/* <Route
-            path="/admin/reservations"
+          <Route path="/reservation" exact component={ShowAllReservations} />
+          {/* <Route path="/reservation/create" exact component={ReservationForm} />
+          <Route
+            path="/reservation/edit/:reservationId"
             exact
-            component={ShowReservations}
+            component={EditReservationForm}
           /> */}
         </Switch>
       </Container>

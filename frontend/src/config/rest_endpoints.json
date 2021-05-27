@@ -32,6 +32,8 @@
         "delete": "http://localhost:8080/flight/"
       },
       "reservation": {
+        "view_all": "http://localhost:8080/reservation/all",
+        "view_one": "http://localhost:8080/reservation/",
         "create": "http://localhost:8080/book/admin",
         "edit": "http://localhost:8080/reservation/admin/edit/",
         "delete": "http://localhost:8080/reservation/admin/delete/"
