@@ -1,12 +1,5 @@
 package dreamwok.reservation.service;
 
-import dreamwok.reservation.repository.AuthRepository;
-import dreamwok.reservation.repository.CreditCardDetailsRepository;
-import dreamwok.reservation.repository.CustomerRepository;
-import dreamwok.reservation.model.Auth;
-import dreamwok.reservation.model.CreditCardDetails;
-import dreamwok.reservation.model.Customer;
-
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -16,16 +9,12 @@ import java.util.Optional;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SealedObject;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -40,6 +29,12 @@ import dreamwok.reservation.core.customer.request.CustomerRequest;
 import dreamwok.reservation.core.customer.response.CustomerResponse;
 import dreamwok.reservation.dto.CreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
+import dreamwok.reservation.model.Auth;
+import dreamwok.reservation.model.CreditCardDetails;
+import dreamwok.reservation.model.Customer;
+import dreamwok.reservation.repository.AuthRepository;
+import dreamwok.reservation.repository.CreditCardDetailsRepository;
+import dreamwok.reservation.repository.CustomerRepository;
 
 @Service
 @CrossOrigin
@@ -56,13 +51,8 @@ public class CustomerService {
   @Autowired
   SecurityConfig securityConfig;
 
-  private IvParameterSpec iv;
-  private SecretKey key;
-
-  CustomerService() throws NoSuchAlgorithmException {
-    iv = AESUtil.generateIv();
-    key = AESUtil.generateKey(128);
-  }
+  @Autowired
+  AESUtil aesUtil;
 
   public void save(Customer customer, Auth auth) {
     auth.setCustomer(customer);
@@ -94,6 +84,32 @@ public class CustomerService {
     return customer.get();
   }
 
+  private CreditCardRequest encryptCard(CreditCardRequest creditCardRequest) {
+    String encryptedNameOnCard = aesUtil.encrypt(creditCardRequest.getNameOnCard());
+    String encryptedCardNum = aesUtil.encrypt(creditCardRequest.getCardNumber());
+    String encryptedExpiryDate = aesUtil.encrypt(creditCardRequest.getExpiryDate());
+    String encryptedSecurityCode = aesUtil.encrypt(creditCardRequest.getSecurityCode());
+
+    CreditCardRequest ccr = new CreditCardRequest(encryptedNameOnCard, encryptedCardNum, encryptedExpiryDate,
+        encryptedSecurityCode);
+
+    return ccr;
+  }
+
+  private CreditCardDetails decryptCard(CreditCardDetails card) {
+    String decryptedNameOnCard = aesUtil.decrypt(card.getNameOnCard());
+    String decryptedCardNum = aesUtil.decrypt(card.getCardNumber());
+    String decryptedExpiryDate = aesUtil.decrypt(card.getExpiryDate());
+    String decryptedSecurityCode = aesUtil.decrypt(card.getSecurityCode());
+
+    card.setNameOnCard(decryptedNameOnCard);
+    card.setCardNumber(decryptedCardNum);
+    card.setExpiryDate(decryptedExpiryDate);
+    card.setSecurityCode(decryptedSecurityCode);
+
+    return card;
+  }
+
   /**
    * Card
    *
@@ -108,46 +124,21 @@ public class CustomerService {
    * @throws InvalidKeyException
    */
 
-  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId)
-      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-      BadPaddingException, IllegalBlockSizeException {
+  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
     List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
 
-    String algorithm = "AES/CBC/PKCS5Padding";
-
     for (CreditCardDetails card : cards) {
-      String decryptedNameOnCard = AESUtil.decrypt(algorithm, card.getNameOnCard(), key, iv);
-      String decryptedCardNum = AESUtil.decrypt(algorithm, card.getCardNumber(), key, iv);
-      String decryptedExpiryDate = AESUtil.decrypt(algorithm, card.getExpiryDate(), key, iv);
-      String decryptedSecurityCode = AESUtil.decrypt(algorithm, card.getSecurityCode(), key, iv);
-
-      card.setNameOnCard(decryptedNameOnCard);
-      card.setCardNumber(decryptedCardNum);
-      card.setExpiryDate(decryptedExpiryDate);
-      card.setSecurityCode(decryptedSecurityCode);
-
+      decryptCard(card);
     }
 
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
   }
 
-  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId)
-      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-      BadPaddingException, IllegalBlockSizeException {
+  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId) {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      String algorithm = "AES/CBC/PKCS5Padding";
-
-      String decryptedNameOnCard = AESUtil.decrypt(algorithm, card.get().getNameOnCard(), key, iv);
-      String decryptedCardNum = AESUtil.decrypt(algorithm, card.get().getCardNumber(), key, iv);
-      String decryptedExpiryDate = AESUtil.decrypt(algorithm, card.get().getExpiryDate(), key, iv);
-      String decryptedSecurityCode = AESUtil.decrypt(algorithm, card.get().getSecurityCode(), key, iv);
-
-      card.get().setNameOnCard(decryptedNameOnCard);
-      card.get().setCardNumber(decryptedCardNum);
-      card.get().setExpiryDate(decryptedExpiryDate);
-      card.get().setSecurityCode(decryptedSecurityCode);
+      decryptCard(card.get());
 
       return new ResponseEntity<>(
           new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(card.get())), HttpStatus.OK);
@@ -156,33 +147,15 @@ public class CustomerService {
     return new ResponseEntity<>(new GetCreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
   }
 
-  public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest)
-      throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-      BadPaddingException, IllegalBlockSizeException {
+  public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
 
-    String algorithm = "AES/CBC/PKCS5Padding";
-
-    String encryptedNameOnCard = AESUtil.encrypt(algorithm, creditCardRequest.getNameOnCard(), key, iv);
-    String encryptedCardNum = AESUtil.encrypt(algorithm, creditCardRequest.getCardNumber(), key, iv);
-    String encryptedExpiryDate = AESUtil.encrypt(algorithm, creditCardRequest.getExpiryDate(), key, iv);
-    String encryptedSecurityCode = AESUtil.encrypt(algorithm, creditCardRequest.getSecurityCode(), key, iv);
-
-    CreditCardRequest ccr = new CreditCardRequest(encryptedNameOnCard, encryptedCardNum, encryptedExpiryDate,
-        encryptedSecurityCode);
+    CreditCardRequest ccr = encryptCard(creditCardRequest);
 
     // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
     CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
     creditCard = creditCardDetailsRepository.save(creditCard);
 
-    String decryptedNameOnCard = AESUtil.decrypt(algorithm, creditCard.getNameOnCard(), key, iv);
-    String decryptedCardNum = AESUtil.decrypt(algorithm, creditCard.getCardNumber(), key, iv);
-    String decryptedExpiryDate = AESUtil.decrypt(algorithm, creditCard.getExpiryDate(), key, iv);
-    String decryptedSecurityCode = AESUtil.decrypt(algorithm, creditCard.getSecurityCode(), key, iv);
-
-    creditCard.setNameOnCard(decryptedNameOnCard);
-    creditCard.setCardNumber(decryptedCardNum);
-    creditCard.setExpiryDate(decryptedExpiryDate);
-    creditCard.setSecurityCode(decryptedSecurityCode);
+    decryptCard(creditCard);
 
     return new ResponseEntity<>(
         new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)), HttpStatus.CREATED);

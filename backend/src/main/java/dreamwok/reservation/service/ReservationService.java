@@ -1,15 +1,8 @@
 package dreamwok.reservation.service;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +12,6 @@ import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.Booking;
-import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Flight;
 import dreamwok.reservation.model.Reservation;
@@ -45,8 +37,7 @@ public class ReservationService {
   BookingRepository bookingRepository;
 
   public Reservation createReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetailsDTO) throws InvalidKeyException, NoSuchAlgorithmException,
-      NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+      BookingCreditCardDetailsDTO creditCardDetailsDTO) {
     // check if flight exists.
     Flight flight = flightService.getFlightById(flightId);
     if (flight == null) {
