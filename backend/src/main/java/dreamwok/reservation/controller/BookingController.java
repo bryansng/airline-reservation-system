@@ -60,7 +60,7 @@ public class BookingController {
         HttpStatus.CREATED);
   }
 
-  @RequestMapping(value = "/book/admin", method = RequestMethod.POST)
+  @RequestMapping(value = "/adm/reservation/create", method = RequestMethod.POST)
   public ResponseEntity<BookReservationResponse> adminBookReservation(@RequestBody BookReservationRequest request) {
     Reservation reservation = bookingService.adminBookReservation(request.getFlightId(), request.getCustomers());
 
