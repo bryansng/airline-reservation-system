@@ -41,13 +41,6 @@ const ShowAllReservations = ({ location }) => {
     }
   }, [reservationsRetrieved]);
 
-  const isAllPassengerCheckedIn = (reservation) => {
-    reservation.bookings.forEach((booking, index) => {
-      if (booking.isCheckedIn === false) return false;
-    });
-    return true;
-  };
-
   const numOfCheckedInPassengers = (reservation) => {
     var number = 0;
     reservation.bookings.forEach((booking, index) => {
@@ -139,13 +132,16 @@ const ShowAllReservations = ({ location }) => {
         ),
       },
       {
-        Header: "Delete",
-        accessor: "delete",
-        Cell: ({ row }) => (
-          <Link onClick={handleDelete(reservationsRetrieved[row.id].id)}>
-            <Emoji symbol="🗑" label="Delete" />
-          </Link>
-        ),
+        Header: "Cancel",
+        accessor: "cancel",
+        Cell: ({ row }) =>
+          reservationsRetrieved[row.id].reservationStatus === "CANCELLED" ? (
+            ""
+          ) : (
+            <Link onClick={handleDelete(reservationsRetrieved[row.id].id)}>
+              <Emoji symbol="🗑" label="Cancel flight" />
+            </Link>
+          ),
       },
     ];
   }, [reservationsRetrieved]);
@@ -170,7 +166,7 @@ const ShowAllReservations = ({ location }) => {
     console.log(reservationId);
     console.log(reservation_apis.delete + `${reservationId}`);
 
-    fetch(reservation_apis.delete + `${reservationId}`, { method: "DELETE" })
+    fetch(reservation_apis.delete + `${reservationId}`, { method: "PUT" })
       .then((resp) => {
         console.log(resp);
         if (resp.ok) {
@@ -181,15 +177,19 @@ const ShowAllReservations = ({ location }) => {
       .then((resp) => {
         if (resp.reservation.id === reservationId) {
           setErrorMessage(
-            `Deleted reservation ${resp.reservation.id} successfully.`
+            `Cancelled reservation ${resp.reservation.id} successfully.`
           );
           setIsErrorMessage(false);
-          setReservationsRetrieved(
-            reservationsRetrieved.filter(
-              (reservation) => reservation.id !== reservationId
+
+          let updatedReservations = [...reservationsRetrieved];
+          updatedReservations[
+            updatedReservations.findIndex(
+              (reservation) => reservation.id === reservationId
             )
-          );
-        } else throw new Error(`Delete reservation response incorrect.`);
+          ].reservationStatus = "CANCELLED";
+
+          setReservationsRetrieved(updatedReservations);
+        } else throw new Error(`Cancel reservation response incorrect.`);
       })
       .catch((error) => {
         console.log(error);
