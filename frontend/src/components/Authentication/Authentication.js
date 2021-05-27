@@ -54,7 +54,7 @@ function useAuthentication() {
             return resp.json();
           }
           throw new Error(
-            `${resp.status} Unauthorized: Token expired. Requires another signin by user.`
+            `Error: Token expired. Requires another signin by user.`
           );
         })
         .then((res) => {
@@ -148,14 +148,14 @@ function useAuthentication() {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`Unexpected error during request.`);
+        throw new Error(`Error: Unexpected error during request.`);
         // throw new Error(`${resp.status}: User Credentials incorrect.`);
       })
       .then((res) => {
         console.log(res);
         console.log(res.customer);
         if (res.statusCode !== "200" || res.customer == null) {
-          onErrorCallback(res.message);
+          onErrorCallback(`Error: ${res.message}`);
         } else {
           setToken(res.token);
           window.sessionStorage.setItem("token", res.token);

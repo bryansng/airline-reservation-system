@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 // https://www.baeldung.com/spring-security-block-brute-force-authentication-attempts
 @Service
 public class LoginIPAttemptService {
-  private final int MAX_ATTEMPT = 3;
+  private final int MAX_ATTEMPT = 5;
   private LoadingCache<String, Integer> attemptsCache; // ip:numAttempts key:value pair.
 
   public LoginIPAttemptService() {

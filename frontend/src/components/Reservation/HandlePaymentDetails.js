@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
+import dayjs from "dayjs";
+import objectSupport from "dayjs/plugin/objectSupport";
+dayjs.extend(objectSupport);
 const { credit_card: credit_card_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
@@ -62,7 +65,10 @@ const HandlePaymentDetails = ({
   useEffect(() => {
     if (isAuthenticated && loggedInUser && loggedInUser.id) {
       // GET customer's credit card details.
-      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`, {method: "GET", "headers": {Authorization: `Bearer ${token}`}})
+      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -129,6 +135,28 @@ const HandlePaymentDetails = ({
     if (expiryDate.length !== 5) {
       setErrorMessage(
         "Error: Expected expiry date to be exactly 4 digits long."
+      );
+      setHasFormError(true);
+      return;
+    }
+    const [month, year] = expiryDate.split("/").map((val) => parseInt(val));
+    if (!(month >= 1 && month <= 12)) {
+      setErrorMessage(
+        "Error: Invalid expiry date. Expected months between 01 and 12."
+      );
+      setHasFormError(true);
+      return;
+    }
+    const expiryDateDayjsObj = dayjs({ year: year + 2000, months: month - 1 });
+    const latestExpiryDate = dayjs({
+      year: dayjs().year(),
+      months: dayjs().month(),
+    });
+    // console.log(expiryDateDayjsObj);
+    // console.log(latestExpiryDate);
+    if (expiryDateDayjsObj.isBefore(latestExpiryDate)) {
+      setErrorMessage(
+        "Error: Credit card has expired. Please use another card."
       );
       setHasFormError(true);
       return;
