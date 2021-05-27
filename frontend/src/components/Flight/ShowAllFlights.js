@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "../Common/ErrorMessage";
 import Emoji from "../Common/Emoji";
 import Button from "../Common/Button";
+import { Redirect } from "react-router";
 import * as dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
@@ -112,10 +113,11 @@ const ShowAllFlights = ({ location }) => {
         accessor: "delete",
         Cell: ({ row }) => (
           <Link
-            to={{
-              pathname: `/flight/delete/${flightsRetrieved[row.id].id}`,
-              state: { flightId: flightsRetrieved[row.id].id },
-            }}
+            // to={{
+            //   pathname: `/flight/delete/${flightsRetrieved[row.id].id}`,
+            //   state: { flightId: flightsRetrieved[row.id].id },
+            // }}
+            onClick={handleDelete(flightsRetrieved[row.id].id)}
           >
             <Emoji symbol="🗑" label="Delete" />
           </Link>
@@ -138,6 +140,35 @@ const ShowAllFlights = ({ location }) => {
     },
     useGlobalFilter
   );
+
+  const handleDelete = (flightId) => (e) => {
+    e.preventDefault();
+    console.log(flightId);
+    console.log(flight_apis.delete + `${flightId}`);
+
+    fetch(flight_apis.delete + `${flightId}`, { method: "DELETE" })
+      .then((resp) => {
+        console.log(resp);
+        if (resp.ok) {
+          return resp.json();
+        }
+        throw new Error(`Error deleting flight.`);
+      })
+      .then((resp) => {
+        if (resp.flight.id === flightId) {
+          setErrorMessage(`Deleted flight ${resp.flight.id} successfully.`);
+          setIsErrorMessage(false);
+          setFlightsRetrieved(
+            flightsRetrieved.filter((flight) => flight.id !== flightId)
+          );
+        } else throw new Error(`Delete flight response incorrect.`);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(`Error: ${error.message}`);
+        setIsErrorMessage(true);
+      });
+  };
 
   return (
     <>
