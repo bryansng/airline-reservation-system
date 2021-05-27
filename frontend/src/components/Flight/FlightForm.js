@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import isNewFlightResponseCorrect from "./isNewFlightResponseCorrect";
 import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -7,6 +8,7 @@ import isBetween from "dayjs/plugin/isBetween";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../Common/ErrorMessage";
+import Button from "../Common/Button";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { flight: flight_apis } = rest_endpoints.admin;
@@ -17,43 +19,35 @@ const Grid = styled.div.attrs({})`
   grid-template-columns: 1fr 1fr;
 `;
 
-const Button = styled.button.attrs({
-  className: `relative w-100 b--gray mh0 mb2 br2 ba hover-bg-light-gray tc`,
-})`
-  padding: 6px 20px;
-  transition: 0.15s ease-out;
-  background-color: transparent;
-  min-width: 100px;
-  &:hover {
-    border-color: #505050;
-    transition: 0.15s ease-in;
-  }
-  ${(props) => props.disabled && `pointer-events: none;`}
-`;
-
-const FlightForm = () => {
+const FlightForm = ({
+  handleSubmit,
+  isEditMode,
+  originalFlight,
+  hasEditFormError = false,
+  editErrorMessage = "",
+}) => {
   const [hasFormError, setHasFormError] = useState(false);
+  const [isErrorResponse, setIsErrorResponse] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [newFlightId, setNewFlightId] = useState("");
 
-  function isNewFlightResponseCorrect(requestBody, responseBody) {
-    requestBody = JSON.parse(requestBody);
-    if (
-      requestBody.flightName === responseBody.flightName &&
-      requestBody.flightPrice.toString() ===
-        responseBody.flightPrice.toString() &&
-      requestBody.departureAirport === responseBody.departureAirport &&
-      requestBody.arrivalAirport === responseBody.arrivalAirport &&
-      dayjs(requestBody.departureDateTime, "YYYY-MM-DDThh:mm").isSame(
-        dayjs(responseBody.departureDateTime, "YYYY-MM-DDThh:mm:ss")
-      ) &&
-      dayjs(requestBody.arrivalDateTime, "YYYY-MM-DDThh:mm").isSame(
-        dayjs(responseBody.arrivalDateTime, "YYYY-MM-DDThh:mm:ss")
-      )
-    )
-      return true;
-    return false;
-  }
+  const defaultNewFlight = {
+    flightName: "TST 0000",
+    flightPrice: 66,
+    departureAirport: "KUL",
+    arrivalAirport: "KCH",
+    departureDateTime: dayjs()
+      .add(1, "day")
+      .add(1, "hour")
+      .startOf("hour")
+      .format("YYYY-MM-DDTHH:mm"),
+    arrivalDateTime: dayjs()
+      .add(1, "day")
+      .add(3, "hour")
+      .startOf("hour")
+      .format("YYYY-MM-DDTHH:mm"),
+  };
 
   const handleCreateSubmit = (e) => {
     e.preventDefault();
@@ -91,9 +85,11 @@ const FlightForm = () => {
         throw new Error(`Error creating flight.`);
       })
       .then((resp) => {
-        if (isNewFlightResponseCorrect(request.body, resp.flight))
+        if (isNewFlightResponseCorrect(request.body, resp.flight)) {
+          setResponseMessage(`Created flight ${resp.flight.id} successfully.`);
+          setIsErrorResponse(false);
           setNewFlightId(resp.flight.id);
-        else throw new Error(`Flight response incorrect.`);
+        } else throw new Error(`Flight response incorrect.`);
       })
       .catch((error) => {
         console.log(error);
@@ -101,12 +97,23 @@ const FlightForm = () => {
         setHasFormError(true);
       });
   };
+
   return (
     <>
       {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
-      <Form onSubmit={(e) => handleCreateSubmit(e)}>
+      {hasEditFormError && (
+        <ErrorMessage error>{editErrorMessage}</ErrorMessage>
+      )}
+
+      <Form
+        onSubmit={(e) => {
+          isEditMode ? handleSubmit(e) : handleCreateSubmit(e);
+        }}
+      >
         <Card className="mv2">
-          <Card.Header>Create flight</Card.Header>
+          <Card.Header>
+            {isEditMode ? "Edit flight" : "Create flight"}
+          </Card.Header>
 
           <Card.Body>
             <Grid>
@@ -115,7 +122,11 @@ const FlightForm = () => {
                 <Form.Control
                   type="text"
                   placeholder="Flight Name"
-                  defaultValue="TST 0000"
+                  defaultValue={
+                    isEditMode
+                      ? originalFlight.flightName
+                      : defaultNewFlight.flightName
+                  }
                   required
                 />
               </Form.Group>
@@ -131,7 +142,11 @@ const FlightForm = () => {
                     type="number"
                     placeholder="0.00"
                     step=".01"
-                    defaultValue="66"
+                    defaultValue={
+                      isEditMode
+                        ? originalFlight.flightPrice
+                        : defaultNewFlight.flightPrice
+                    }
                     required
                   />
                 </InputGroup>
@@ -141,7 +156,11 @@ const FlightForm = () => {
                 <Form.Control
                   type="text"
                   placeholder="Type a city or airport"
-                  defaultValue="KUL"
+                  defaultValue={
+                    isEditMode
+                      ? originalFlight.departureAirport
+                      : defaultNewFlight.departureAirport
+                  }
                   required
                 />
               </Form.Group>
@@ -150,7 +169,11 @@ const FlightForm = () => {
                 <Form.Control
                   type="text"
                   placeholder="Type a city or airport"
-                  defaultValue="KCH"
+                  defaultValue={
+                    isEditMode
+                      ? originalFlight.arrivalAirport
+                      : defaultNewFlight.arrivalAirport
+                  }
                   required
                 />
               </Form.Group>
@@ -161,11 +184,11 @@ const FlightForm = () => {
                 <Form.Control
                   type="datetime-local"
                   placeholder="Datetime"
-                  defaultValue={dayjs()
-                    .add(1, "day")
-                    .add(1, "hour")
-                    .startOf("hour")
-                    .format("YYYY-MM-DDTHH:mm")}
+                  defaultValue={
+                    isEditMode
+                      ? originalFlight.departureDateTime
+                      : defaultNewFlight.departureDateTime
+                  }
                   required
                 />
               </Form.Group>
@@ -176,11 +199,11 @@ const FlightForm = () => {
                 <Form.Control
                   type="datetime-local"
                   placeholder="Datetime"
-                  defaultValue={dayjs()
-                    .add(1, "day")
-                    .add(3, "hour")
-                    .startOf("hour")
-                    .format("YYYY-MM-DDTHH:mm")}
+                  defaultValue={
+                    isEditMode
+                      ? originalFlight.arrivalDateTime
+                      : defaultNewFlight.arrivalDateTime
+                  }
                   required
                 />
               </Form.Group>
@@ -194,7 +217,9 @@ const FlightForm = () => {
             </Link>
           </div>
           <div className="ml1">
-            <Button type="submit">Create flight</Button>
+            <Button type="submit">
+              {isEditMode ? "Edit flight" : "Create flight"}
+            </Button>
           </div>
         </div>
       </Form>
@@ -203,10 +228,15 @@ const FlightForm = () => {
           push
           to={{
             pathname: `/flight`,
+            state: {
+              responseMessage: responseMessage,
+              isErrorResponse: isErrorResponse,
+            },
           }}
         />
       )}
     </>
   );
 };
+
 export default FlightForm;

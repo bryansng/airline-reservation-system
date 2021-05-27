@@ -26,13 +26,14 @@
     "admin": {
       "flight": {
         "view_all": "http://localhost:8080/flight/all",
+        "view_one": "http://localhost:8080/flight/",
         "create": "http://localhost:8080/flight",
-        "update": "http://localhost:8080/flight/",
+        "edit": "http://localhost:8080/flight/",
         "delete": "http://localhost:8080/flight/"
       },
       "reservation": {
         "create": "http://localhost:8080/book/admin",
-        "update": "http://localhost:8080/reservation/admin/edit/",
+        "edit": "http://localhost:8080/reservation/admin/edit/",
         "delete": "http://localhost:8080/reservation/admin/delete/"
       }
     }

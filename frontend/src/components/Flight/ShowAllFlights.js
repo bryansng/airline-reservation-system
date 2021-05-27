@@ -12,8 +12,15 @@ import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { flight: flight_apis } = rest_endpoints.admin;
 dayjs.extend(isBetween);
 
-const ShowAllFlights = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+const ShowAllFlights = ({ location }) => {
+  const [isErrorMessage, setIsErrorMessage] = useState(
+    location.state && location.state.isErrorResponse ? true : false
+  );
+  const [errorMessage, setErrorMessage] = useState(
+    location.state && location.state.responseMessage
+      ? location.state.responseMessage
+      : ""
+  );
   const [flightsRetrieved, setFlightsRetrieved] = useState(null);
 
   useEffect(() => {
@@ -24,11 +31,11 @@ const ShowAllFlights = () => {
           else throw new Error(`Error retrieving flight.`);
         })
         .then((resp) => {
-          console.log(resp);
           setFlightsRetrieved(resp.flight);
         })
         .catch((error) => {
           console.log(error);
+          setIsErrorMessage(true);
           setErrorMessage(`Error: ${error.message}`);
         });
     }
@@ -90,7 +97,12 @@ const ShowAllFlights = () => {
         Header: "Edit",
         accessor: "edit",
         Cell: ({ row }) => (
-          <Link to={`/flight/edit/${flightsRetrieved[row.id].id}`}>
+          <Link
+            to={{
+              pathname: `/flight/edit/${flightsRetrieved[row.id].id}`,
+              state: { flight: flightsRetrieved[row.id] },
+            }}
+          >
             <Emoji symbol="✏️" label="Edit" />
           </Link>
         ),
@@ -99,7 +111,12 @@ const ShowAllFlights = () => {
         Header: "Delete",
         accessor: "delete",
         Cell: ({ row }) => (
-          <Link to={`/flight/delete/${flightsRetrieved[row.id].id}`}>
+          <Link
+            to={{
+              pathname: `/flight/delete/${flightsRetrieved[row.id].id}`,
+              state: { flightId: flightsRetrieved[row.id].id },
+            }}
+          >
             <Emoji symbol="🗑" label="Delete" />
           </Link>
         ),
@@ -131,7 +148,11 @@ const ShowAllFlights = () => {
           textAlign: "center",
         }}
       >
-        {errorMessage && <ErrorMessage error>{errorMessage}</ErrorMessage>}
+        {errorMessage && (
+          <ErrorMessage error={isErrorMessage} success={!isErrorMessage}>
+            {errorMessage}
+          </ErrorMessage>
+        )}
 
         <div className="ma0 flex flex-wrap justify-center">
           <Search
