@@ -78,7 +78,27 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
       });
 
       const requestOptions =
-        isEditMode && user && user.roles === "ADMIN"
+        flightId &&
+        numPassengers &&
+        isEditMode &&
+        reservation &&
+        user &&
+        user.roles === "ADMIN"
+          ? {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `bearer ${token}`,
+              },
+              body: JSON.stringify({
+                reservationStatus: reservation.reservationStatus,
+                totalCost: reservation.totalCost,
+                bookings: bookings,
+                customer: passengersDetails[0],
+                flightId: flightId,
+              }),
+            }
+          : isEditMode && user && user.roles === "ADMIN"
           ? {
               method: "PUT",
               headers: {

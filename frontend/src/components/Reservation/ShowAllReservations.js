@@ -124,7 +124,10 @@ const ShowAllReservations = ({ location }) => {
           <Link
             to={{
               pathname: `/reservation/edit/${reservationsRetrieved[row.id].id}`,
-              state: { reservation: reservationsRetrieved[row.id] },
+              state: {
+                isEditMode: true,
+                reservation: reservationsRetrieved[row.id],
+              },
             }}
           >
             <Emoji symbol="✈" label="Edit flights" />
@@ -137,7 +140,9 @@ const ShowAllReservations = ({ location }) => {
         Cell: ({ row }) => (
           <Link
             to={{
-              pathname: `/reservation/edit/${reservationsRetrieved[row.id].id}`,
+              pathname: `/reservation/edit/${
+                reservationsRetrieved[row.id].id
+              }/passenger`,
               state: {
                 isEditMode: true,
                 reservation: reservationsRetrieved[row.id],

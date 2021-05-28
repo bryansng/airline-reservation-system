@@ -78,13 +78,24 @@ function App() {
             )}
           />
           <Route
-            path="/reservation/edit/:reservationId"
+            path="/reservation/edit/:reservationId/passenger"
             exact
             render={(props) => (
               <BookReservation
                 {...props}
                 user={user}
                 isAuthenticated={isAuthenticated}
+              />
+            )}
+          />
+          <Route
+            path="/reservation/edit/:reservationId"
+            exact
+            render={(props) => (
+              <SearchFlight
+                {...props}
+                // user={user}
+                // isAuthenticated={isAuthenticated}
               />
             )}
           />

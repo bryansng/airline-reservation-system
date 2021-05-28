@@ -44,7 +44,11 @@ const HandlePassengersDetails = ({
           loggedInUser={loggedInUser}
           isAuthenticated={isAuthenticated}
           passengerDetails={
-            passengersDetails ? passengersDetails[ind].customer : null
+            passengersDetails
+              ? passengersDetails[ind]
+                ? passengersDetails[ind].customer
+                : null
+              : null
           }
         />
       );
