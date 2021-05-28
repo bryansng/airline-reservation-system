@@ -7,7 +7,7 @@ A COMP47660 Secure Software Engineering web app project built using React, Sprin
 ### Running the project
 
 1. [Download](https://github.com/bryansng/airline-reservation-system) or run `git clone https://github.com/bryansng/airline-reservation-system.git` for this project
-2. The browser must be configured to use the newly created local certificate. The certificate will need to be added to your computer’s Trusted Root Certification Authorities. Google and follow the browser’s instructions to add the local certificate. The local certificate is found in /backend/src/main/resources/keystore. It is called ars.p12.
+2. In order to enfrorce the use of HTTPs for localhost in the browser, the browser must be configured to use the newly created local certificate. The certificate will need to be added to your computer’s Trusted Root Certification Authorities. Google and follow the browser’s instructions to add the local certificate. The local certificate is called ars.p12, and can found in /backend/src/main/resources/keystore. Further details on generating and the use of this certificate can be found in "3. Enforce the use of HTTPs" in the attached report."
 3. Go to the root of this project and open two (2) terminals
 4. On the first terminal run
    ```
@@ -34,11 +34,15 @@ We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to f
    Email address: hong.sng@ucdconnect.ie
    Password: root
    ```
+5. You can also login as admin to test admin features, e.g. modifying flights and reservations. The admin's login credentials are:
+   ```
+   Email address: admin@admin.com
+   Password: root
+   ```
 
 ### Frontend usage notes
 
-- Session/token based authentication is not implemented, so try not to refresh the page while logged in, as that will require you to log in again.
-- Clicking cancel when booking a flight cancels the entire booking process, thefore users will have to restart the booking process from scratch.
+- Clicking cancel when booking a flight cancels the entire booking process, therefore users will have to restart the booking process from scratch.
 
 ## Built With
 
@@ -48,66 +52,6 @@ We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to f
 - [npm](https://www.npmjs.com/) - A package manager for JavaScript
 - [MySQL](https://www.mysql.com/) - Relational Database
 
-## Diary
-
----
-
-### **Braddy**
-
-#### Tasks
-
-- Designed Executive Club Member and credit card frontend wireframe
-- Implemented Executive Club Member and credit card related entities
-- Implemented Executive Club Member and credit card endpoints
-- Implemented frontend for Executive Club Member profile
-
-#### Percentage of Contribution
-
-- Bryan - 35.83
-- Emily - 35.83
-- Braddy - 28.33
-
----
-
-### **Bryan**
-
-#### Tasks
-
-- Designed API and endpoints
-- Implemented booking and reservation related entities
-- Implemented booking and reservation endpoints
-- Implemented frontend for booking and reservation
-- Implemented authentication
-- Implemented login and register endpoints
-- Reworked add/edit credit cards from Executive Club Member portal
-  - existsByCardNumber returns a credit card object or null, causing add/edit credit card details endpoint to show internal server error
-  - add/edit credit card details forms on Executive Member club portal do not show appropriate error messages and wipes the form on submit
-
-#### Percentage of Contribution
-
-- Bryan - 35.83
-- Emily - 35.83
-- Braddy - 28.33
-
----
-
-### **Emily**
-
-#### Tasks
-
-- Designed flights, booking, and reservation frontend wireframes
-- Implemented flight and search related entities
-- Implemented search and flight endpoints
-- Implemented flight and search frontend
-- Reworked Executive Club Member profile frontend
-  - edit personal details form unable does not show appropriate error messages and wipes the form on submit
-
-#### Percentage of Contribution
-
-- Bryan - 35.83
-- Emily - 35.83
-- Braddy - 28.33
-
 ---
 
 ## Acknowledgments
@@ -115,4 +59,4 @@ We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to f
 - Professor Liliana Pasquale
 - TA Déaglán Connolly Bree
 
-Built by @bryansng, @lxemily, and @yeohbraddy in Feb 2021 - Mar 2021
+Built by @bryansng, @lxemily, and @yeohbraddy in Feb 2021 - May 2021
