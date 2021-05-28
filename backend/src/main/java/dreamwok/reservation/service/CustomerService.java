@@ -99,7 +99,7 @@ public class CustomerService {
     Authentication authentication = (Authentication) principal;
     User user = (User) authentication.getPrincipal();
 
-    if (user.getUsername().equals(customer.getEmail())) {
+    if (user.getUsername().equals(customer.getId().toString())) {
       // System.out.println("has proper access");
       return true;
     }
@@ -286,15 +286,25 @@ public class CustomerService {
     if (customerRepository.existsById(id)) {
       Customer customer = customerRepository.findById(id).get();
       if (isAuthUserChangingOwnData(customer, principal)) {
+        String email = customerRequest.getEmail();
+        if (customerRepository.existsByEmail(email)) {
+          return new ResponseEntity<>(
+              new CustomerResponse("400", "Failed to update. Customer email already used.", null), HttpStatus.OK);
+        }
+
+        // update email and new personal details.
         customer.update(customerRequest);
+        Auth updatedAuth = customer.getAuth();
+        updatedAuth.setEmail(email);
+        customer.setAuth(updatedAuth);
         Customer updatedCustomer = customerRepository.save(customer);
-        return new ResponseEntity<>(new CustomerResponse("Customer updated", new CustomerDTO(updatedCustomer)),
+        return new ResponseEntity<>(new CustomerResponse("200", "Customer updated", new CustomerDTO(updatedCustomer)),
             HttpStatus.OK);
       }
-      return new ResponseEntity<>(new CustomerResponse("Improper access.", null), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new CustomerResponse("400", "Improper access.", null), HttpStatus.OK);
     }
-    return new ResponseEntity<>(new CustomerResponse("Failed to update. Customer ID does not exist.", null),
-        HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new CustomerResponse("400", "Failed to update. Customer ID does not exist.", null),
+        HttpStatus.OK);
   }
 
   public ResponseEntity<CustomerResponse> updatePassword(Long id, Principal principal, ChangePasswordRequest request,
@@ -396,7 +406,7 @@ public class CustomerService {
       // remove auth from customer.
       Auth auth = customer.getAuth();
       customer.setAuth(null);
-      authRepository.deleteById(auth.getEmail());
+      authRepository.deleteById(auth.getId());
       // authRepository.deleteByEmail(auth.getEmail());
 
       log.debug(String.format("Successfully deleted customer with id %s by IP %s.", id, ipAddress));
