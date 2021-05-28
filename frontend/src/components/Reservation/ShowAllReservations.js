@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "../Common/ErrorMessage";
 import Emoji from "../Common/Emoji";
 import Button from "../Common/Button";
+import Dropdown from "react-bootstrap/Dropdown";
 import * as dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
@@ -47,6 +48,84 @@ const ShowAllReservations = ({ location }) => {
       if (booking.isCheckedIn === true) number += 1;
     });
     return number;
+  };
+
+  const StatusDropdown = ({ currReservation, currStatus }) => {
+    const STATUS_LIST = useMemo(
+      () => ["SCHEDULED", "CANCELLED", "PAST", "UNPAID"],
+      []
+    );
+
+    const handleEditStatus = (newStatus) => (e) => {
+      e.preventDefault();
+
+      const request = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reservationStatus: newStatus,
+          totalCost: currReservation.totalCost,
+          bookings: currReservation.bookings,
+          customer: currReservation.customer,
+          flightId: currReservation.flight.id,
+        }),
+      };
+
+      fetch(reservation_apis.edit + `${currReservation.id}`, request)
+        .then((resp) => {
+          console.log(resp);
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(`Error editing reservation status.`);
+        })
+        .then((resp) => {
+          if (resp.reservation.id === currReservation.id) {
+            setErrorMessage(
+              `Edited status of reservation ${resp.reservation.id} successfully.`
+            );
+            setIsErrorMessage(false);
+
+            let updatedReservations = [...reservationsRetrieved];
+            updatedReservations[
+              updatedReservations.findIndex(
+                (reservation) => reservation.id === currReservation.id
+              )
+            ].reservationStatus = newStatus;
+
+            setReservationsRetrieved(updatedReservations);
+          } else throw new Error(`Edit reservation status response incorrect.`);
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage(`Error: ${error.message}`);
+          setIsErrorMessage(true);
+        });
+    };
+
+    return (
+      <>
+        <Dropdown>
+          <Dropdown.Toggle as={Button}>{currStatus}</Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            {STATUS_LIST.map((status, index) => (
+              <Dropdown.Item
+                key={index}
+                eventKey={index}
+                active={status === currStatus}
+                onClick={handleEditStatus(status)}
+              >
+                {status}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </>
+    );
   };
 
   const reservationData = useMemo(() => {
@@ -96,6 +175,12 @@ const ShowAllReservations = ({ location }) => {
       {
         Header: "Booking Status",
         accessor: "status",
+        Cell: ({ row }) => (
+          <StatusDropdown
+            currReservation={reservationsRetrieved[row.id]}
+            currStatus={reservationsRetrieved[row.id].reservationStatus}
+          />
+        ),
       },
       {
         Header: "Check Ins / Passengers",
@@ -187,8 +272,8 @@ const ShowAllReservations = ({ location }) => {
 
   const handleDelete = (reservationId) => (e) => {
     e.preventDefault();
-    console.log(reservationId);
-    console.log(reservation_apis.delete + `${reservationId}`);
+    // console.log(reservationId);
+    // console.log(reservation_apis.delete + `${reservationId}`);
 
     fetch(reservation_apis.delete + `${reservationId}`, { method: "PUT" })
       .then((resp) => {
@@ -230,6 +315,7 @@ const ShowAllReservations = ({ location }) => {
           marginRight: "-10vw",
           textAlign: "center",
         }}
+        className="mb5"
       >
         {errorMessage && (
           <ErrorMessage error={isErrorMessage} success={!isErrorMessage}>
