@@ -88,6 +88,7 @@ const BookReservation = ({ location, token, user, isAuthenticated }) => {
         user &&
         user.roles === "ADMIN"
           ? {
+              // change flights, add/delete passengers
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -95,7 +96,7 @@ const BookReservation = ({ location, token, user, isAuthenticated }) => {
               },
               body: JSON.stringify({
                 reservationStatus: reservation.reservationStatus,
-                totalCost: reservation.totalCost,
+                totalCost: flight.flightPrice * bookings.length,
                 bookings: bookings,
                 customer: passengersDetails[0],
                 flightId: flightId,
@@ -103,6 +104,7 @@ const BookReservation = ({ location, token, user, isAuthenticated }) => {
             }
           : isEditMode && user && user.roles === "ADMIN"
           ? {
+              // only edit passenger details
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
