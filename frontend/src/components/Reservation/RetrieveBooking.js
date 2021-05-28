@@ -40,7 +40,9 @@ const RetrieveBooking = () => {
     const reservationId = e.target.formBookingNumber.value;
 
     // GET reservation by customer last name and reservation id.
-    fetch(`${reservation_apis.get_by_id}/${customerLastName}/${reservationId}`)
+    fetch(
+      `${reservation_apis.get_reservation_by_id_and_customer_lastname}/${customerLastName}/${reservationId}`
+    )
       .then((resp) => {
         if (resp.ok) {
           return resp.json();
@@ -53,14 +55,32 @@ const RetrieveBooking = () => {
         setHasFormError(false);
       })
       .catch((error) => {
-        error.json().then((body) => {
-          setErrorMessage(
-            `Error ${error.status}: Invalid booking name (surname) and booking number.`
-          );
-          // setErrorMessage(`Error ${error.status}: ${body.message}`);
-          setHasFormError(true);
-        });
+        console.log(error);
+        setErrorMessage(
+          `Error: Incorrect/Invalid booking name (surname / family name / last name) and booking number.`
+        );
+        // setErrorMessage(`Error ${error.status}: ${body.message}`);
+        setHasFormError(true);
+        // error.json().then((body) => {
+        //   setErrorMessage(
+        //     `Error: Invalid booking name (surname) and booking number.`
+        //   );
+        //   // setErrorMessage(`Error ${error.status}: ${body.message}`);
+        //   setHasFormError(true);
+        // });
       });
+  };
+
+  const onChangeBookingNumber = (e) => {
+    e.preventDefault();
+
+    // sanitize user input.
+    e.target.value = sanitiseNumbersOnlyInput(e.target.value);
+  };
+
+  const sanitiseNumbersOnlyInput = (input) => {
+    // replace all whitespace and alphabets with "".
+    return input.replace(/[^0-9.]/g, "");
   };
 
   return (
@@ -94,18 +114,19 @@ const RetrieveBooking = () => {
                     type="text"
                     placeholder="1"
                     // defaultValue="12345678"
+                    onChange={(evt) => onChangeBookingNumber(evt)}
                     required
                   />
                 </Form.Group>
               </div>
             </Card.Body>
           </Card>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
           <div className="flex justify-end">
             <div className="mt2">
               <Button type="submit">Retrieve</Button>
             </div>
           </div>
-          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
         </Form>
       )}
 

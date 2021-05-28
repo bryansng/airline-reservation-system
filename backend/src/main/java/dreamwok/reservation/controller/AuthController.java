@@ -1,5 +1,17 @@
 package dreamwok.reservation.controller;
 
+import dreamwok.reservation.configuration.JwtTokenUtil;
+import dreamwok.reservation.configuration.SecurityConfig;
+import dreamwok.reservation.core.auth.request.RegisterRequest;
+import dreamwok.reservation.core.auth.request.SignInRequest;
+import dreamwok.reservation.core.auth.request.UserByTokenRequest;
+import dreamwok.reservation.core.auth.response.RegisterResponse;
+import dreamwok.reservation.core.auth.response.SignInResponse;
+import dreamwok.reservation.repository.CustomerRepository;
+import dreamwok.reservation.repository.AuthRepository;
+import dreamwok.reservation.service.AuthService;
+import dreamwok.reservation.service.CustomerService;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import dreamwok.reservation.configuration.SecurityConfig;
-import dreamwok.reservation.core.auth.request.RegisterRequest;
-import dreamwok.reservation.core.auth.request.SignInRequest;
-import dreamwok.reservation.core.auth.response.RegisterResponse;
-import dreamwok.reservation.core.auth.response.SignInResponse;
-import dreamwok.reservation.repository.AuthRepository;
-import dreamwok.reservation.repository.CustomerRepository;
-import dreamwok.reservation.service.AuthService;
-import dreamwok.reservation.service.CustomerService;
 
 @RestController
 @CrossOrigin
@@ -37,6 +39,9 @@ public class AuthController {
 
   @Autowired
   SecurityConfig securityConfig;
+
+  @Autowired
+  JwtTokenUtil jwtTokenUtil;
 
   // @GetMapping("/cheat/login")
   // public ResponseEntity<SignInResponse> autoLogin(@RequestParam(defaultValue =
@@ -79,32 +84,43 @@ public class AuthController {
    */
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   public ResponseEntity<SignInResponse> loginCustomer(@RequestBody SignInRequest signInRequest,
-      HttpServletRequest request) {
+      HttpServletRequest request) throws Exception {
     return authService.login(signInRequest, request);
   }
 
-  /*
-   * /register POST { email: String password: String } returns { customer:
-   * Customer object }
-   */
+  @RequestMapping(value = "/login/token", method = RequestMethod.POST)
+  public ResponseEntity<SignInResponse> getCustomerByToken(@RequestBody UserByTokenRequest userByTokenRequest,
+      HttpServletRequest request) throws Exception {
+    return authService.getCustomerByToken(userByTokenRequest, request);
+  }
+
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
-      HttpServletRequest request) {
+      HttpServletRequest request) throws Exception {
     return authService.register(registerRequest, request);
   }
 
-  /*
-   * When creating user, requests needs this customer object: customer: { email:
-   * String firstName: String lastName: String address: String phoneNumber: String
-   * }
-   */
+  /* When creating user, requests needs this customer object:
+        customer: {
+            email: String
+            firstName: String
+            lastName: String
+            address: String
+            phoneNumber: String
+        } */
 
-  /*
-   * /register DELETE { customerId: String } returns { status: ... message: ... }
-   */
-  @RequestMapping(value = "/register", method = RequestMethod.DELETE)
-  public ResponseEntity<RegisterResponse> deleteCustomer(@RequestBody RegisterRequest registerRequest,
-      HttpServletRequest request) {
-    return authService.register(registerRequest, request);
-  }
+  /* /register DELETE
+    {
+        customerId: String
+    }
+    returns
+    {
+        status: ...
+        message: ...
+    } */
+  // @RequestMapping(value = "/register", method = RequestMethod.DELETE)
+  // public ResponseEntity<RegisterResponse> deleteCustomer(@RequestBody RegisterRequest registerRequest,
+  //     HttpServletRequest request) throws Exception {
+  //   return authService.register(registerRequest, request);
+  // }
 }

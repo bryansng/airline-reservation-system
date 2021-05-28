@@ -21,7 +21,7 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const ShowPersonalDetails = ({ location, logOut }) => {
+const ShowPersonalDetails = ({ location, token, logOut }) => {
   const DELETE_REDIRECT_DELAY = 3000;
   const user = location.state.user;
   const [isDeleted, setIsDeleted] = useState(false);
@@ -34,7 +34,12 @@ const ShowPersonalDetails = ({ location, logOut }) => {
     evt.preventDefault();
 
     // DELETE request using fetch with error handling
-    fetch(`${customerEndpoint}/${user.id}`, { method: "DELETE" })
+    fetch(`${customerEndpoint}/${user.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(async (response) => {
         const data = await response.json();
 
@@ -67,6 +72,23 @@ const ShowPersonalDetails = ({ location, logOut }) => {
         console.error(error);
       });
   };
+
+  // const testAdminEndpoint = () => {
+  //   console.log("Calling admin endpoint");
+  //   fetch("http://localhost:8080/admin/test", {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((resp) => resp.json())
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
   return (
     <>
@@ -120,6 +142,23 @@ const ShowPersonalDetails = ({ location, logOut }) => {
             }}
           >
             <Button type="button">Back to profile dashboard</Button>
+          </Link>
+        </div>
+        {/* <div className="mh1">
+          <Button type="button" onClick={() => testAdminEndpoint()}>
+            Test
+          </Button>
+        </div> */}
+        <div className="mh1">
+          <Link
+            to={{
+              pathname: "/user/profile/personaldetails/password/edit",
+              state: {
+                user: location.state.user,
+              },
+            }}
+          >
+            <Button type="button">Change Password</Button>
           </Link>
         </div>
         <div className="mh1">

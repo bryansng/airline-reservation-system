@@ -8,7 +8,7 @@ import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis, flight: flight_apis } = rest_endpoints;
 
-const BookReservation = ({ location, user, isAuthenticated }) => {
+const BookReservation = ({ location, token, user, isAuthenticated }) => {
   const [flightId] = useState(location.state.flightId);
   const [flight, setFlight] = useState(null);
   const [numPassengers] = useState(location.state.numPassengers);
@@ -57,36 +57,44 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   useEffect(() => {
     if (flightId && passengersDetails && paymentDetails) {
       // POST to get actual booking with booking number.
+      const requestBody = {
+        // token: `${token}`,
+        flightId: flightId,
+        customers: passengersDetails,
+        creditCardDetails: paymentDetails,
+      };
+      // console.log(requestBody);
+
+      const headers =
+        isAuthenticated && user ? { Authorization: `Bearer ${token}` } : {};
+
       const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `bearer ${token}`,
+          ...headers,
         },
-        body: JSON.stringify({
-          // token: `${token}`,
-          flightId: flightId,
-          customers: passengersDetails,
-          creditCardDetails: paymentDetails,
-        }),
+        body: JSON.stringify(requestBody),
       };
-      // console.log(requestOptions);
+      console.log(requestOptions);
 
       fetch(reservation_apis.create, requestOptions)
         .then((resp) => {
+          console.log(resp);
           if (resp.ok) {
             return resp.json();
           }
           throw resp;
         })
         .then((res) => {
+          console.log(res);
           const reservation = res.reservation;
           setBookedReservation(reservation);
-          // setHasFormError(false);
+          setHasFormError(false);
         })
         .catch((error) => {
           error.json().then((body) => {
-            setErrorMessage(`Error ${error.status}: ${body.message}`);
+            setErrorMessage(`Error: ${body.message}`);
             setPaymentDetails(null);
             setHasFormError(true);
           });
@@ -124,13 +132,15 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         />
       )}
       {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
-      {isConfirmedBooking && !paymentDetails && (
-        <HandlePaymentDetails
-          setPaymentDetails={setPaymentDetails}
-          loggedInUser={user}
-          isAuthenticated={isAuthenticated}
-        />
-      )}
+      {isConfirmedBooking &&
+        (!paymentDetails || (paymentDetails && !bookedReservation)) && (
+          <HandlePaymentDetails
+            token={token}
+            setPaymentDetails={setPaymentDetails}
+            loggedInUser={user}
+            isAuthenticated={isAuthenticated}
+          />
+        )}
       {paymentDetails && bookedReservation && (
         <Redirect
           push

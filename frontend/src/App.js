@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import useAuthentication from "./components/Authentication/Authentication";
 import Navigation from "./components/Navigation/Navigation";
@@ -9,6 +9,7 @@ import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
 import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
+import EditPassword from "./components/User/PersonalDetails/EditPassword";
 import ShowCreditCards from "./components/User/CreditCard/ShowCreditCards";
 import CreditCardDetails from "./components/User/CreditCard/ShowCreditCardDetails";
 import EditCreditCardDetails from "./components/User/CreditCard/EditCreditCardDetails";
@@ -20,7 +21,7 @@ const Container = styled.div.attrs({
 })``;
 
 function App() {
-  const [user, setAppUser] = useState(null);
+  // const [user, setAppUser] = useState(null);
   // const [user, setAppUser] = useState({
   //   id: 9,
   //   email: "pog@pog.com",
@@ -29,17 +30,19 @@ function App() {
   //   mobileNumber: "42069",
   //   address: "pog address",
   // });
-  const [token, setAppToken] = useState(null);
-  const [isAuthenticated, setAppIsAuthenticated] = useState(null);
+  // const [token, setAppToken] = useState(null);
+  // const [isAuthenticated, setAppIsAuthenticated] = useState(null);
 
-  const { signIn, logOut, register, authComponent } = useAuthentication({
+  const {
     isAuthenticated,
     token,
     user,
-    setAppIsAuthenticated,
-    setAppToken,
-    setAppUser,
-  });
+    setUser,
+    signIn,
+    logOut,
+    register,
+    // authComponent,
+  } = useAuthentication();
 
   return (
     <Router>
@@ -66,6 +69,7 @@ function App() {
             render={(props) => (
               <BookReservation
                 {...props}
+                token={token}
                 user={user}
                 isAuthenticated={isAuthenticated}
               />
@@ -86,40 +90,56 @@ function App() {
             path="/user/profile/personaldetails"
             exact
             render={(props) => (
-              <ShowPersonalDetails {...props} logOut={logOut} />
+              <ShowPersonalDetails {...props} token={token} logOut={logOut} />
             )}
           />
           <Route
             path="/user/profile/personaldetails/edit"
             exact
             render={(props) => (
-              <EditPersonalDetails {...props} setUser={setAppUser} />
+              <EditPersonalDetails {...props} token={token} setUser={setUser} />
+            )}
+          />
+          <Route
+            path="/user/profile/personaldetails/password/edit"
+            exact
+            render={(props) => (
+              <EditPassword {...props} token={token} setUser={setUser} />
             )}
           />
           <Route
             path="/user/profile/creditcards"
             exact
-            component={ShowCreditCards}
+            // component={ShowCreditCards}
+            render={(props) => <ShowCreditCards {...props} token={token} />}
           />
           <Route
             path="/user/profile/creditcards/add"
             exact
-            component={EditCreditCardDetails}
+            // component={EditCreditCardDetails}
+            render={(props) => (
+              <EditCreditCardDetails {...props} token={token} />
+            )}
           />
           <Route
             path="/user/profile/creditcards/:creditcardid"
             exact
-            component={CreditCardDetails}
+            // component={CreditCardDetails}
+            render={(props) => <CreditCardDetails {...props} token={token} />}
           />
           <Route
             path="/user/profile/creditcards/:creditcardid/creditcardsdetails/edit"
             exact
-            component={EditCreditCardDetails}
+            // component={EditCreditCardDetails}
+            render={(props) => (
+              <EditCreditCardDetails {...props} token={token} />
+            )}
           />
           <Route
             path="/user/profile/reservations"
             exact
-            component={ShowReservations}
+            // component={ShowReservations}
+            render={(props) => <ShowReservations {...props} token={token} />}
           />
         </Switch>
       </Container>

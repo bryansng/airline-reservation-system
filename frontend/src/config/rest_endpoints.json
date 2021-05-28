@@ -2,17 +2,19 @@
   "rest_endpoints": {
     "auth": {
       "register": "https://localhost:8443/register",
-      "login": "https://localhost:8443/login"
+      "login": "https://localhost:8443/login",
+      "get_user_by_token": "https://localhost:8443/login/token"
     },
     "user": {
       "customer": "https://localhost:8443/customer/",
-      "customer_profile": "https://localhost:8443/customer/profile"
+      "customer_profile": "https://localhost:8443/customer/profile",
+      "change_password": "https://localhost:8443/customer/profile/password"
     },
     "reservation": {
       "create": "https://localhost:8443/book",
       "get_by_id": "https://localhost:8443/reservation",
-      "get_all_by_customer_id": "https://localhost:8443/reservations",
-      "get_reservation_by_id_and_customer_lastname": "https://localhost:8443/reservations",
+      "get_all_by_customer_id": "https://localhost:8443/customer/reservations",
+      "get_reservation_by_id_and_customer_lastname": "https://localhost:8443/reservation",
       "cancel": "https://localhost:8443/reservation/cancel"
     },
     "flight": {
@@ -21,7 +23,10 @@
     },
     "credit_card": {
       "get_all_by_customer_id": "https://localhost:8443/customer/creditcard/all",
-      "get_card_by_card_id": "https://localhost:8443/customer/creditcard"
+      "get_card_by_card_id": "https://localhost:8443/customer/creditcard",
+      "create": "https://localhost:8443/customer/creditcard",
+      "update": "https://localhost:8443/customer/creditcard",
+      "delete": "https://localhost:8443/customer/creditcard"
     }
   }
 }

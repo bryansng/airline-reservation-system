@@ -3,8 +3,12 @@ import styled from "styled-components";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
+import ErrorMessage from "../../Common/ErrorMessage";
 import { Redirect } from "react-router";
 import { rest_endpoints } from "../../../config/rest_endpoints.json";
+import dayjs from "dayjs";
+import objectSupport from "dayjs/plugin/objectSupport";
+dayjs.extend(objectSupport);
 const { credit_card: credit_card_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
@@ -26,11 +30,14 @@ const Grid = styled.div.attrs({})`
   grid-template-columns: 1fr 1fr;
 `;
 
-const EditCreditCardDetails = ({ location }) => {
+const EditCreditCardDetails = ({ location, token }) => {
   const user = location.state.user;
   const isAddCard = location.state.isAddCard;
   const [creditCard, setCreditCard] = useState(location.state.card);
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
+
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const limitInputSize = (input, size) => {
     return input.slice(0, size);
@@ -49,7 +56,7 @@ const EditCreditCardDetails = ({ location }) => {
   const getSanitisedCardNumber = (cardNumber) => {
     const currCardNumber = limitInputSize(
       sanitiseNumbersOnlyInput(cardNumber),
-      19
+      16
     );
 
     // format card number to add space after every 4 digits.
@@ -117,11 +124,56 @@ const EditCreditCardDetails = ({ location }) => {
       securityCode = creditCard.securityCode;
     }
 
+    // validate credit card details.
+    if (cardNumber.length !== 16) {
+      // if (!(cardNumber.length >= 13 && cardNumber.length <= 19)) {
+      setErrorMessage(
+        "Error: Expected credit card number to be exactly 16 digits long."
+      );
+      setHasFormError(true);
+      return;
+    }
+    if (expiryDate.length !== 5) {
+      setErrorMessage(
+        "Error: Expected expiry date to be exactly 4 digits long."
+      );
+      setHasFormError(true);
+      return;
+    }
+    const [month, year] = expiryDate.split("/").map((val) => parseInt(val));
+    if (!(month >= 1 && month <= 12)) {
+      setErrorMessage(
+        "Error: Invalid expiry date. Expected months between 01 and 12."
+      );
+      setHasFormError(true);
+      return;
+    }
+    const expiryDateDayjsObj = dayjs({ year: year + 2000, months: month - 1 });
+    const latestExpiryDate = dayjs({
+      year: dayjs().year(),
+      months: dayjs().month(),
+    });
+    // console.log(expiryDateDayjsObj);
+    // console.log(latestExpiryDate);
+    if (expiryDateDayjsObj.isBefore(latestExpiryDate)) {
+      setErrorMessage(
+        "Error: Credit card has expired. Please use another card."
+      );
+      setHasFormError(true);
+      return;
+    }
+    if (securityCode.length !== 3) {
+      setErrorMessage("Error: Expected security code to be 3 digits long.");
+      setHasFormError(true);
+      return;
+    }
+    setHasFormError(false);
+
     const requestOptions = {
       method: isAddCard ? "POST" : "PUT",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         cardNumber: cardNumber,
@@ -132,8 +184,10 @@ const EditCreditCardDetails = ({ location }) => {
     };
 
     fetch(
-      `${credit_card_apis.get_card_by_card_id}/${
-        isAddCard ? user.id : creditCard.id
+      `${
+        isAddCard
+          ? `${credit_card_apis.create}/${user.id}`
+          : `${credit_card_apis.update}/${user.id}/${creditCard.id}`
       }`,
       requestOptions
     )
@@ -152,11 +206,14 @@ const EditCreditCardDetails = ({ location }) => {
       })
       .then((res) => {
         // redirect to show updated credit card.
+        setHasFormError(false);
         setCreditCard(res.creditCard);
         setIsRequestSuccess(true);
       })
       .catch((error) => {
         console.error(error);
+        setErrorMessage(error.message);
+        setHasFormError(true);
       });
   };
 
@@ -267,6 +324,7 @@ const EditCreditCardDetails = ({ location }) => {
             </Grid>
           </Card.Body>
         </Card>
+        {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
         <div className="flex justify-end">
           <div className="mr1">
             <Link
@@ -286,7 +344,7 @@ const EditCreditCardDetails = ({ location }) => {
             </Link>
           </div>
           <div className="ml1">
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit">{isAddCard ? "Add" : "Save Changes"}</Button>
           </div>
         </div>
       </Form>
