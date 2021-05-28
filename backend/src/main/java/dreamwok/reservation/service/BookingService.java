@@ -1,18 +1,12 @@
 package dreamwok.reservation.service;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.common.CreditCardEncryptor;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
@@ -31,9 +25,11 @@ public class BookingService {
   @Autowired
   BookingRepository bookingRepository;
 
+  @Autowired
+  CreditCardEncryptor creditCardEncryptor;
+
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails) throws InvalidKeyException, NoSuchAlgorithmException,
-      NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+      BookingCreditCardDetailsDTO creditCardDetails) {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
@@ -59,8 +55,9 @@ public class BookingService {
     }
 
     CreditCardDetails realCreditCardDetails = realCreditCardDetailsOptional.get();
-    if (isValidCreditCardDetailsInDatabase(creditCardDetails, realCreditCardDetails)
-        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, realCreditCardDetails)) {
+    CreditCardDetails decrypted = creditCardEncryptor.decryptCard(realCreditCardDetails);
+    if (isValidCreditCardDetailsInDatabase(creditCardDetails, decrypted)
+        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, decrypted)) {
       return true;
     }
     return false;
