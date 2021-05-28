@@ -38,8 +38,10 @@ const SearchFlight = ({ location }) => {
   2. display flights */
   const [flights, setFlights] = useState(null);
   const [numberOfPassengers, setNumberOfPassengers] = useState(0);
-  const isEditMode = location ? location.state.isEditMode : false;
-  const reservation = location ? location.state.reservation : false;
+  const isEditMode =
+    location && location.state ? location.state.isEditMode : false;
+  const reservation =
+    location && location.state ? location.state.reservation : false;
   // const reservationId = location ? location.state.reservation.id : false;
 
   const handleSubmit = (e) => {
