@@ -148,6 +148,7 @@ public class CustomerService {
       CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
       currCreditCard.updateCard(creditCardEncryptor.encryptCard(creditCardRequest));
       currCreditCard = creditCardDetailsRepository.save(currCreditCard);
+      currCreditCard = creditCardEncryptor.decryptCard(currCreditCard);
 
       return new ResponseEntity<>(
           new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
