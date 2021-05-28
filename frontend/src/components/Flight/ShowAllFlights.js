@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "../Common/ErrorMessage";
 import Emoji from "../Common/Emoji";
 import Button from "../Common/Button";
-import { Redirect } from "react-router";
 import * as dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
@@ -104,7 +103,7 @@ const ShowAllFlights = ({ location }) => {
               state: { flight: flightsRetrieved[row.id] },
             }}
           >
-            <Emoji symbol="✏️" label="Edit" />
+            <Emoji symbol="✏️" label="Edit flight" />
           </Link>
         ),
       },
@@ -112,14 +111,8 @@ const ShowAllFlights = ({ location }) => {
         Header: "Delete",
         accessor: "delete",
         Cell: ({ row }) => (
-          <Link
-            // to={{
-            //   pathname: `/flight/delete/${flightsRetrieved[row.id].id}`,
-            //   state: { flightId: flightsRetrieved[row.id].id },
-            // }}
-            onClick={handleDelete(flightsRetrieved[row.id].id)}
-          >
-            <Emoji symbol="🗑" label="Delete" />
+          <Link onClick={handleDelete(flightsRetrieved[row.id].id)}>
+            <Emoji symbol="🗑" label="Delete flight" />
           </Link>
         ),
       },
