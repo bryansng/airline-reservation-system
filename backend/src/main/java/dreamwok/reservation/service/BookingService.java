@@ -55,9 +55,9 @@ public class BookingService {
     }
 
     CreditCardDetails realCreditCardDetails = realCreditCardDetailsOptional.get();
-    realCreditCardDetails = creditCardEncryptor.decryptCard(realCreditCardDetails);
-    if (isValidCreditCardDetailsInDatabase(creditCardDetails, realCreditCardDetails)
-        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, realCreditCardDetails)) {
+    CreditCardDetails decrypted = creditCardEncryptor.decryptCard(realCreditCardDetails);
+    if (isValidCreditCardDetailsInDatabase(creditCardDetails, decrypted)
+        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, decrypted)) {
       return true;
     }
     return false;

@@ -3,12 +3,14 @@ package dreamwok.reservation.service;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,7 @@ import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 
 @Service
+@Transactional
 @CrossOrigin
 public class CustomerService {
   @Autowired
@@ -100,41 +103,42 @@ public class CustomerService {
 
   public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
     List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
-
+    List<CreditCardDetails> decryptedCards = new ArrayList<>();
     if (cards.size() > 0) {
       for (CreditCardDetails card : cards) {
-        creditCardEncryptor.decryptCard(card);
+        CreditCardDetails decrypted = creditCardEncryptor.decryptCard(card);
+        decryptedCards.add(decrypted);
       }
     }
 
-    return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
+    return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", decryptedCards), HttpStatus.OK);
   }
 
   public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId) {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      creditCardEncryptor.decryptCard(card.get());
+      CreditCardDetails decrypted = creditCardEncryptor.decryptCard(card.get());
 
       return new ResponseEntity<>(
-          new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(card.get())), HttpStatus.OK);
+          new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(decrypted)), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new GetCreditCardResponse("No cards found", null), HttpStatus.NOT_FOUND);
   }
 
   public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
-
     CreditCardRequest ccr = creditCardEncryptor.encryptCard(creditCardRequest);
 
     // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
-    CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
-    creditCard = creditCardDetailsRepository.save(creditCard);
 
-    creditCardEncryptor.decryptCard(creditCard);
+    CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
+
+    creditCard = creditCardDetailsRepository.save(creditCard);
+    CreditCardDetails decrypted = creditCardEncryptor.decryptCard(creditCard);
 
     return new ResponseEntity<>(
-        new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)), HttpStatus.CREATED);
+        new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(decrypted)), HttpStatus.CREATED);
     // }
 
     // return new ResponseEntity<>(new GetCreditCardResponse("Card number already
@@ -148,10 +152,10 @@ public class CustomerService {
       CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
       currCreditCard.updateCard(creditCardEncryptor.encryptCard(creditCardRequest));
       currCreditCard = creditCardDetailsRepository.save(currCreditCard);
-      currCreditCard = creditCardEncryptor.decryptCard(currCreditCard);
+      CreditCardDetails decrypted = creditCardEncryptor.decryptCard(currCreditCard);
 
-      return new ResponseEntity<>(
-          new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
+      return new ResponseEntity<>(new GetCreditCardResponse("Details updated", new CreditCardDetailsDTO(decrypted)),
+          HttpStatus.OK);
       // }
 
       // return new ResponseEntity<>(new GetCreditCardResponse("Card number already

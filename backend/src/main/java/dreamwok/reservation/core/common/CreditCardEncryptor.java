@@ -9,10 +9,10 @@ import dreamwok.reservation.model.CreditCardDetails;
 @Service
 public class CreditCardEncryptor {
 
-    private StrongTextEncryptor textEncryptor;
+    private BasicTextEncryptor textEncryptor;
 
     public CreditCardEncryptor() {
-        textEncryptor = new StrongTextEncryptor();
+        textEncryptor = new BasicTextEncryptor();
         textEncryptor.setPassword("dreamwok");
     }
 
@@ -42,11 +42,13 @@ public class CreditCardEncryptor {
         String decryptedExpiryDate = this.decrypt(card.getExpiryDate());
         String decryptedSecurityCode = this.decrypt(card.getSecurityCode());
 
-        card.setNameOnCard(decryptedNameOnCard);
-        card.setCardNumber(decryptedCardNum);
-        card.setExpiryDate(decryptedExpiryDate);
-        card.setSecurityCode(decryptedSecurityCode);
+        CreditCardDetails decrypted = new CreditCardDetails();
+        decrypted.setId(card.getId());
+        decrypted.setNameOnCard(decryptedNameOnCard);
+        decrypted.setCardNumber(decryptedCardNum);
+        decrypted.setExpiryDate(decryptedExpiryDate);
+        decrypted.setSecurityCode(decryptedSecurityCode);
 
-        return card;
+        return decrypted;
     }
 }
