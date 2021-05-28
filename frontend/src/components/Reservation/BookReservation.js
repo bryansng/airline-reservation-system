@@ -177,6 +177,9 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           numPassengers={numPassengers}
           loggedInUser={user}
           isAuthenticated={isAuthenticated}
+          passengersDetails={
+            isEditMode && reservation ? reservation.bookings : null
+          }
         />
       )}
       {passengersDetails && !isConfirmedBooking && confirmationBooking && (
