@@ -7,19 +7,21 @@ A COMP47660 Secure Software Engineering web app project built using React, Sprin
 ### Running the project
 
 1. [Download](https://github.com/bryansng/airline-reservation-system) or run `git clone https://github.com/bryansng/airline-reservation-system.git` for this project
-2. Go to the root of this project and open two (2) terminals
-3. On the first terminal run
+2. The browser must be configured to use the newly created local certificate. The certificate will need to be added to your computer’s Trusted Root Certification Authorities. Google and follow the browser’s instructions to add the local certificate. The local certificate is found in /backend/src/main/resources/keystore. It is called ars.p12.
+3. Go to the root of this project and open two (2) terminals
+4. On the first terminal run
    ```
    cd backend &&
    mvn install &&
    mvn spring-boot:run
    ```
-4. On the second terminal run
+5. On the second terminal run
    ```
    cd frontend &&
    npm install &&
    npm start
    ```
+
 ### Testing the project
 
 We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to facilitate testing.
