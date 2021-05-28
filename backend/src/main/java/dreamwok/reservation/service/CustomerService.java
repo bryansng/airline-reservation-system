@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,6 @@ import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
 
 @Service
-@Transactional
 @CrossOrigin
 public class CustomerService {
   @Autowired
