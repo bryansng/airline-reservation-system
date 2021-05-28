@@ -138,11 +138,11 @@ const SearchFlight = ({ location }) => {
           </Card.Body>
         </Card>
         <div className="flex justify-end">
-          <div className="mr1">
+          {/* <div className="mr1">
             <Link to={`/flight/create`}>
               <Button type="button">Create flight</Button>
             </Link>
-          </div>
+          </div> */}
           <div className="ml1">
             <Button type="submit">Search flights</Button>
           </div>
