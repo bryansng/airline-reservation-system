@@ -62,7 +62,6 @@ public class CustomerService {
   @Autowired
   CreditCardEncryptor creditCardEncryptor;
 
-
   public void save(Customer customer, Auth auth) {
     auth.setCustomer(customer);
     customer.setAuth(auth);
@@ -107,9 +106,7 @@ public class CustomerService {
    * @throws InvalidKeyException
    */
 
-  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId)
-      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-      BadPaddingException, IllegalBlockSizeException {
+  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
     List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
     List<CreditCardDetails> decryptedCards = new ArrayList<>();
     if (cards.size() > 0) {
@@ -121,9 +118,7 @@ public class CustomerService {
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", decryptedCards), HttpStatus.OK);
   }
 
-  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId)
-      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-      BadPaddingException, IllegalBlockSizeException {
+  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId) {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
@@ -144,16 +139,6 @@ public class CustomerService {
     CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
     creditCard = creditCardDetailsRepository.save(creditCard);
     CreditCardDetails decrypted = creditCardEncryptor.decryptCard(creditCard);
-
-    String decryptedNameOnCard = AESUtil.decrypt(algorithm, creditCard.getNameOnCard(), key, iv);
-    String decryptedCardNum = AESUtil.decrypt(algorithm, creditCard.getCardNumber(), key, iv);
-    String decryptedExpiryDate = AESUtil.decrypt(algorithm, creditCard.getExpiryDate(), key, iv);
-    String decryptedSecurityCode = AESUtil.decrypt(algorithm, creditCard.getSecurityCode(), key, iv);
-
-    creditCard.setNameOnCard(decryptedNameOnCard);
-    creditCard.setCardNumber(decryptedCardNum);
-    creditCard.setExpiryDate(decryptedExpiryDate);
-    creditCard.setSecurityCode(decryptedSecurityCode);
 
     return new ResponseEntity<>(
         new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(decrypted)), HttpStatus.CREATED);
