@@ -37,6 +37,12 @@ public class CustomerController {
      *
      * @param customerId
      * @return
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
      */
     @RequestMapping(value = "/creditcard/all/{customerId}", method = RequestMethod.GET)
     public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId,
@@ -82,8 +88,9 @@ public class CustomerController {
     }
 
     // @RequestMapping(value = "/profile", method = RequestMethod.POST)
-    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
-    //     return customerService.create(customerRequest);
+    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody
+    // CustomerRequest customerRequest) {
+    // return customerService.create(customerRequest);
     // }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.PUT)

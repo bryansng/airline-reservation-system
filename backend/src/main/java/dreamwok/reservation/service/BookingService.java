@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.common.CreditCardEncryptor;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
@@ -26,6 +27,9 @@ public class BookingService {
 
   @Autowired
   BookingRepository bookingRepository;
+
+  @Autowired
+  CreditCardEncryptor creditCardEncryptor;
 
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
       BookingCreditCardDetailsDTO creditCardDetails, Principal principal, HttpServletRequest httpRequest) {
@@ -55,9 +59,10 @@ public class BookingService {
     // System.out.println("credit card details not from database");
 
     CreditCardDetails realCreditCardDetails = realCreditCardDetailsOptional.get();
+    CreditCardDetails decryptedRealCreditCardDetails = creditCardEncryptor.decryptCard(realCreditCardDetails);
     if (isValidLengthCreditCardDetails(creditCardDetails)
-        && isValidCreditCardDetailsInDatabase(creditCardDetails, realCreditCardDetails)
-        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, realCreditCardDetails)) {
+        && isValidCreditCardDetailsInDatabase(creditCardDetails, decryptedRealCreditCardDetails)
+        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, decryptedRealCreditCardDetails)) {
       return true;
     }
     return false;

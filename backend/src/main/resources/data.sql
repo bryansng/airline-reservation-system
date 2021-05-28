@@ -67,14 +67,14 @@ VALUES
   (34, 'TST 0001', 'KUL', 'KCH', NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 40, 23),
   (35, 'TST 0001', 'KUL', 'KCH', DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), 40, 23);
 
-INSERT INTO credit_card_details
-  (customer_id, name_on_card, card_number, expiry_date, security_code)
-VALUES
-  (1, 'Braddy Yeoh', '4319123412341234', '04/20', '123'),
-  (1, 'Braddy Yeoh', '4319432143214321', '05/23', '321'),
-  (2, 'Cao Cao', '4319567834532343', '01/24', '345'),
-  (3, 'Liu Bei', '5230132245653455', '04/22', '456'),
-  (9, 'first last', '23423423442424433', '32/42', '123');
+-- INSERT INTO credit_card_details
+--   (customer_id, name_on_card, card_number, expiry_date, security_code)
+-- VALUES
+--   (1, 'Braddy Yeoh', '4319123412341234', '04/20', '123'),
+--   (1, 'Braddy Yeoh', '4319432143214321', '05/23', '321'),
+--   (2, 'Cao Cao', '4319567834532343', '01/24', '345'),
+--   (3, 'Liu Bei', '5230132245653455', '04/22', '456'),
+--   (9, 'first last', '23423423442424433', '32/42', '123');
   -- (1, 'Braddy Yeoh', '4319 1234 1234 1234', '04/20', '123'),
   -- (1, 'Braddy Yeoh', '4319 4321 4321 4321', '05/23', '321'),
   -- (2, 'Cao Cao', '4319 5678 3453 2343', '01/24', '345'),

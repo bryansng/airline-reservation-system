@@ -60,7 +60,8 @@ public class ReservationService {
 
     // if isSavePaymentDetails
     // and customer.id in creditCardDetails matches paying customer by email.
-    // ? can trick endpoint to add creditCardDetails to the wrong customer by specifying customer id?
+    // ? can trick endpoint to add creditCardDetails to the wrong customer by
+    // specifying customer id?
     if (creditCardDetailsDTO.getIsSavePaymentDetails()
         && creditCardDetailsDTO.getCustomerId() == updatedCustomers.get(0).getId()) {
       customerService.insertCardDetails(creditCardDetailsDTO.getCustomerId(), principal,
@@ -94,7 +95,7 @@ public class ReservationService {
     List<Reservation> reversations = reservationRepository
         .findByCustomerIdOrderByFlightDepartureDateTimeDescReservationStatusAsc(customer.getId());
     // List<Reservation> reversations = reservationRepository
-    //     .findByCustomerIdOrderByCreatedOnDescReservationStatusAsc(customer.getId());
+    // .findByCustomerIdOrderByCreatedOnDescReservationStatusAsc(customer.getId());
     // List<Reservation> reversations = customer.getReservations();
     List<Reservation> updatedReservations = new ArrayList<>();
     for (Reservation reservation : reversations) {

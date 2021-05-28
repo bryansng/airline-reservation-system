@@ -1,5 +1,6 @@
 package dreamwok.reservation.service;
 
+import java.util.ArrayList;
 import dreamwok.reservation.repository.AuthRepository;
 import dreamwok.reservation.repository.CreditCardDetailsRepository;
 import dreamwok.reservation.repository.CustomerRepository;
@@ -7,13 +8,15 @@ import lombok.extern.log4j.Log4j2;
 import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.model.CreditCardDetails;
 import dreamwok.reservation.model.Customer;
-import dreamwok.reservation.model.CustomerDetails;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
+
+import dreamwok.reservation.core.common.CreditCardEncryptor;
+
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
@@ -55,6 +61,9 @@ public class CustomerService {
 
   @Autowired
   SecurityConfig securityConfig;
+
+  @Autowired
+  CreditCardEncryptor creditCardEncryptor;
 
   public void save(Customer customer, Auth auth) {
     auth.setCustomer(customer);
@@ -104,6 +113,12 @@ public class CustomerService {
    * @param customerId
    * @param creditCard
    * @return
+   * @throws IllegalBlockSizeException
+   * @throws BadPaddingException
+   * @throws InvalidAlgorithmParameterException
+   * @throws NoSuchAlgorithmException
+   * @throws NoSuchPaddingException
+   * @throws InvalidKeyException
    */
   public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId, Principal principal) {
     Customer customer = getCustomerById(customerId);
@@ -112,7 +127,16 @@ public class CustomerService {
       if (isAuthUserChangingOwnData(customer, principal)) {
         List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
 
-        return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer.", cards), HttpStatus.OK);
+        List<CreditCardDetails> decryptedCards = new ArrayList<>();
+        if (cards.size() > 0) {
+          for (CreditCardDetails card : cards) {
+            CreditCardDetails decrypted = creditCardEncryptor.decryptCard(card);
+            decryptedCards.add(decrypted);
+          }
+        }
+
+        return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", decryptedCards),
+            HttpStatus.OK);
       }
       return new ResponseEntity<>(new CreditCardResponse("Improper access.", null), HttpStatus.BAD_REQUEST);
     }
@@ -132,9 +156,12 @@ public class CustomerService {
       Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
       if (card.isPresent()) {
+        CreditCardDetails decryptedCard = creditCardEncryptor.decryptCard(card.get());
+
         log.debug(String.format("Successfully retrieved card id %s by IP %s.", cardId, ipAddress));
         return new ResponseEntity<>(
-            new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(card.get())), HttpStatus.OK);
+            new GetCreditCardResponse("Found card for customer.", new CreditCardDetailsDTO(decryptedCard)),
+            HttpStatus.OK);
       }
 
       log.debug(String.format("Failed to retrieve card id %s by IP %s due to invalid card id.", cardId, ipAddress));
@@ -150,24 +177,22 @@ public class CustomerService {
     Customer customer = getCustomerById(customerId);
     String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     if (customer != null) {
-      // String cardNumber = creditCardRequest.getCardNumber();
 
       if (!isAuthUserChangingOwnData(customer, principal)) {
         log.debug(String.format("Failed to add card by IP %s due to improper access.", ipAddress));
         return new ResponseEntity<>(new GetCreditCardResponse("Improper access.", null), HttpStatus.BAD_REQUEST);
       }
 
-      // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
-      CreditCardDetails creditCard = new CreditCardDetails(customerId, creditCardRequest);
+      CreditCardRequest ccr = creditCardEncryptor.encryptCard(creditCardRequest);
+
+      CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
       creditCard = creditCardDetailsRepository.save(creditCard);
+      CreditCardDetails decryptedCard = creditCardEncryptor.decryptCard(creditCard);
 
-      log.debug(String.format("Successfully added card id %s by IP %s.", creditCard.getCardNumber(), ipAddress));
+      log.debug(String.format("Successfully added card id %s by IP %s.", creditCard.getId(), ipAddress));
       return new ResponseEntity<>(
-          new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)),
+          new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(decryptedCard)),
           HttpStatus.CREATED);
-      // }
-
-      // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
     }
     log.debug(String.format("Failed to add card by IP %s due to invalid customer id.", ipAddress));
     return new ResponseEntity<>(new GetCreditCardResponse("No customer with this id found.", null),
@@ -188,12 +213,13 @@ public class CustomerService {
         // String cardNumber = creditCardRequest.getCardNumber();
         // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
         CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
-        currCreditCard.updateCard(creditCardRequest);
+        currCreditCard.updateCard(creditCardEncryptor.encryptCard(creditCardRequest));
         currCreditCard = creditCardDetailsRepository.save(currCreditCard);
+        CreditCardDetails decryptedCard = creditCardEncryptor.decryptCard(currCreditCard);
 
         log.debug(String.format("Successfully updated card details with id %s by IP %s.", id, ipAddress));
         return new ResponseEntity<>(
-            new GetCreditCardResponse("Card details updated", new CreditCardDetailsDTO(currCreditCard)), HttpStatus.OK);
+            new GetCreditCardResponse("Card details updated", new CreditCardDetailsDTO(decryptedCard)), HttpStatus.OK);
         // }
 
         // return new ResponseEntity<>(new GetCreditCardResponse("Card number already exists.", null), HttpStatus.CONFLICT);
@@ -249,7 +275,8 @@ public class CustomerService {
 
       return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", new CustomerDTO(customer)),
           HttpStatus.OK);
-      // return new ResponseEntity<>(new CustomerResponse("Customer retrieved.", customer), HttpStatus.OK);
+      // return new ResponseEntity<>(new CustomerResponse("Customer retrieved.",
+      // customer), HttpStatus.OK);
     }
 
     return new ResponseEntity<>(new CustomerResponse("Customer not found.", null), HttpStatus.NOT_FOUND);
@@ -327,7 +354,8 @@ public class CustomerService {
     }
 
     // if exists by email, check if it has an auth object.
-    // if not, then this customer has never registered but has booked flights directly/indirectly.
+    // if not, then this customer has never registered but has booked flights
+    // directly/indirectly.
     Customer customer = customerRepository.findByEmail(email);
     if (customer.getAuth() == null) {
       customer.setFirstName(registerRequest.getFirstName());

@@ -3,10 +3,11 @@ package dreamwok.reservation.configuration;
 import dreamwok.reservation.model.Auth;
 import dreamwok.reservation.service.CustomerDetailsService;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableEncryptableProperties
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -75,15 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// http.cors().and().authorizeRequests().antMatchers("/**").permitAll();
-		// http.cors().and().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/").permitAll().and()
-		// 		.httpBasic().and().logout().logoutSuccessUrl("/");
-
-		// http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET, "/image/**").permitAll()
-		//     .antMatchers(HttpMethod.PUT, "/image/increment/**").permitAll().antMatchers(HttpMethod.POST, "/image/**")
-		//     .authenticated().antMatchers(HttpMethod.PUT, "/image/**").authenticated()
-		//     .antMatchers(HttpMethod.DELETE, "/image/**").authenticated();
-
 		// cors needed to allow Authorization header.
 		http.cors().and().authorizeRequests()
 				.antMatchers("/login/**", "/register", "/reservation/**", "/reservation/cancel/**", "/flight/**", "/search/**",
@@ -92,16 +85,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.denyAll().and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		// http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
-		// 		.hasRole("ADMIN").antMatchers("/member/reserve").permitAll().antMatchers("/member/**")
-		// 		.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll().and()
-		// 		.logout().logoutSuccessUrl("/");
-
-		// http.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**").permitAll().antMatchers("/admin/**")
-		// 		.hasRole("ADMIN").antMatchers("/member/**").hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll()
-		// 		.antMatchers("/h2-console/**").permitAll().and().formLogin().loginPage("/").loginProcessingUrl("/login")
-		// 		.successHandler(authenticationSuccessHandler).usernameParameter("email").passwordParameter("password").and()
-		// 		.logout().logoutSuccessUrl("/");
+		http.requiresChannel()
+				.antMatchers("/login/**", "/register", "/reservation/**", "/reservation/cancel/**", "/flight/**", "/search/**",
+						"/book/**")
+				.requiresSecure().antMatchers("/admin/**").requiresSecure().antMatchers("/customer/**").requiresSecure()
+				.anyRequest().requiresSecure().and().logout().logoutSuccessUrl("/");
 
 		// Add a filter to validate the tokens with every request
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
