@@ -84,32 +84,6 @@ public class CustomerService {
     return customer.get();
   }
 
-  private CreditCardRequest encryptCard(CreditCardRequest creditCardRequest) {
-    String encryptedNameOnCard = creditCardEncryptor.encrypt(creditCardRequest.getNameOnCard());
-    String encryptedCardNum = creditCardEncryptor.encrypt(creditCardRequest.getCardNumber());
-    String encryptedExpiryDate = creditCardEncryptor.encrypt(creditCardRequest.getExpiryDate());
-    String encryptedSecurityCode = creditCardEncryptor.encrypt(creditCardRequest.getSecurityCode());
-
-    CreditCardRequest ccr = new CreditCardRequest(encryptedNameOnCard, encryptedCardNum, encryptedExpiryDate,
-        encryptedSecurityCode);
-
-    return ccr;
-  }
-
-  private CreditCardDetails decryptCard(CreditCardDetails card) {
-    String decryptedNameOnCard = creditCardEncryptor.decrypt(card.getNameOnCard());
-    String decryptedCardNum = creditCardEncryptor.decrypt(card.getCardNumber());
-    String decryptedExpiryDate = creditCardEncryptor.decrypt(card.getExpiryDate());
-    String decryptedSecurityCode = creditCardEncryptor.decrypt(card.getSecurityCode());
-
-    card.setNameOnCard(decryptedNameOnCard);
-    card.setCardNumber(decryptedCardNum);
-    card.setExpiryDate(decryptedExpiryDate);
-    card.setSecurityCode(decryptedSecurityCode);
-
-    return card;
-  }
-
   /**
    * Card
    *
@@ -127,8 +101,10 @@ public class CustomerService {
   public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
     List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
 
-    for (CreditCardDetails card : cards) {
-      decryptCard(card);
+    if (cards.size() > 0) {
+      for (CreditCardDetails card : cards) {
+        creditCardEncryptor.decryptCard(card);
+      }
     }
 
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", cards), HttpStatus.OK);
@@ -138,7 +114,7 @@ public class CustomerService {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
-      decryptCard(card.get());
+      creditCardEncryptor.decryptCard(card.get());
 
       return new ResponseEntity<>(
           new GetCreditCardResponse("Found card for customer", new CreditCardDetailsDTO(card.get())), HttpStatus.OK);
@@ -149,13 +125,13 @@ public class CustomerService {
 
   public ResponseEntity<GetCreditCardResponse> insertCardDetails(Long customerId, CreditCardRequest creditCardRequest) {
 
-    CreditCardRequest ccr = encryptCard(creditCardRequest);
+    CreditCardRequest ccr = creditCardEncryptor.encryptCard(creditCardRequest);
 
     // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
     CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
     creditCard = creditCardDetailsRepository.save(creditCard);
 
-    decryptCard(creditCard);
+    creditCardEncryptor.decryptCard(creditCard);
 
     return new ResponseEntity<>(
         new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(creditCard)), HttpStatus.CREATED);
@@ -170,7 +146,7 @@ public class CustomerService {
       // String cardNumber = creditCardRequest.getCardNumber();
       // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
       CreditCardDetails currCreditCard = creditCardDetailsRepository.getOne(id);
-      currCreditCard.updateCard(creditCardRequest);
+      currCreditCard.updateCard(creditCardEncryptor.encryptCard(creditCardRequest));
       currCreditCard = creditCardDetailsRepository.save(currCreditCard);
 
       return new ResponseEntity<>(
