@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
 import dreamwok.reservation.core.booking.request.AdminEditReservationRequest;
 import dreamwok.reservation.core.common.ReservationStatus;
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
@@ -86,9 +87,9 @@ public class ReservationService {
     return reservation;
   }
 
-  public Reservation adminCreateReservation(Long flightId, List<CustomerDTO> customers) {
+  public Reservation adminCreateReservation(AdminBookReservationRequest request) {
     // check if flight exists.
-    Flight flight = flightService.getFlightById(flightId);
+    Flight flight = flightService.getFlightById(request.getFlightId());
     if (flight == null) {
       return null;
     }
@@ -96,7 +97,7 @@ public class ReservationService {
     // check if customers exist.
     // if not, create them in database.
     List<Customer> updatedCustomers = new ArrayList<>();
-    for (CustomerDTO customerDTO : customers) {
+    for (CustomerDTO customerDTO : request.getCustomers()) {
       if (!customerRepository.existsByEmail(customerDTO.getEmail())) {
         updatedCustomers.add(customerRepository.save(new Customer(customerDTO)));
       } else {
@@ -105,9 +106,15 @@ public class ReservationService {
     }
 
     // create reservation.
-    Reservation reservation = new Reservation(ReservationStatus.UNPAID,
-        flight.getFlightPrice() * updatedCustomers.size(), updatedCustomers.get(0), flight, null);
-    reservation = reservationRepository.save(reservation);
+    Reservation reservation = null;
+    if (request.getIsPaid()) {
+      reservation = new Reservation(ReservationStatus.SCHEDULED, 0.00, updatedCustomers.get(0), flight, null);
+      reservation = reservationRepository.save(reservation);
+    } else {
+      reservation = new Reservation(ReservationStatus.UNPAID, flight.getFlightPrice() * updatedCustomers.size(),
+          updatedCustomers.get(0), flight, null);
+      reservation = reservationRepository.save(reservation);
+    }
 
     // create the response bookings.
     List<Booking> bookings = new ArrayList<>();
@@ -222,9 +229,14 @@ public class ReservationService {
     }
 
     // update reservation
-    reservation.editReservation(request.getReservationStatus(), request.getTotalCost(), payingCustomer, newFlight,
-        updatedBookings);
-    reservationRepository.save(reservation);
+    if (request.getIsPaid()) {
+      reservation.editReservation(request.getReservationStatus(), reservation.getTotalCost(), payingCustomer, newFlight,
+          updatedBookings);
+    } else {
+      reservation.editReservation(request.getReservationStatus(), request.getTotalCost(), payingCustomer, newFlight,
+          updatedBookings);
+      reservationRepository.save(reservation);
+    }
 
     return reservation;
   }

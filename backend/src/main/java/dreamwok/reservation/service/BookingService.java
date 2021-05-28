@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
@@ -33,9 +34,9 @@ public class BookingService {
     return reservationService.createReservation(flightId, customers, creditCardDetails);
   }
 
-  public Reservation adminBookReservation(Long flightId, List<CustomerDTO> customers) {
+  public Reservation adminBookReservation(AdminBookReservationRequest request) {
 
-    return reservationService.adminCreateReservation(flightId, customers);
+    return reservationService.adminCreateReservation(request);
   }
 
   public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {

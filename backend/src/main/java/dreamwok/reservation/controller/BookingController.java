@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
 import dreamwok.reservation.core.booking.request.BookReservationRequest;
 import dreamwok.reservation.core.booking.response.BookReservationResponse;
 import dreamwok.reservation.dto.ReservationDTO;
@@ -61,8 +62,9 @@ public class BookingController {
   }
 
   @RequestMapping(value = "/adm/reservation/create", method = RequestMethod.POST)
-  public ResponseEntity<BookReservationResponse> adminBookReservation(@RequestBody BookReservationRequest request) {
-    Reservation reservation = bookingService.adminBookReservation(request.getFlightId(), request.getCustomers());
+  public ResponseEntity<BookReservationResponse> adminBookReservation(
+      @RequestBody AdminBookReservationRequest request) {
+    Reservation reservation = bookingService.adminBookReservation(request);
 
     if (reservation == null) {
       return new ResponseEntity<>(new BookReservationResponse("Reservation failed.", null), HttpStatus.BAD_REQUEST);

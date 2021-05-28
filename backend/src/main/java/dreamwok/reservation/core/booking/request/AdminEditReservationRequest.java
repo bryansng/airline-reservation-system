@@ -14,6 +14,29 @@ public class AdminEditReservationRequest {
   private CustomerDTO customer;
   // private FlightDTO flight;
   private Long flightId;
+  private Boolean isPaid = false;
+
+  public AdminEditReservationRequest() {
+  }
+
+  public AdminEditReservationRequest(ReservationStatus reservationStatus, Double totalCost, List<BookingDTO> bookings,
+      CustomerDTO customer, Long flightId) {
+    this.reservationStatus = reservationStatus;
+    this.totalCost = totalCost;
+    this.bookings = bookings;
+    this.customer = customer;
+    this.flightId = flightId;
+  }
+
+  public AdminEditReservationRequest(ReservationStatus reservationStatus, Double totalCost, List<BookingDTO> bookings,
+      CustomerDTO customer, Long flightId, Boolean isPaid) {
+    this.reservationStatus = reservationStatus;
+    this.totalCost = totalCost;
+    this.bookings = bookings;
+    this.customer = customer;
+    this.flightId = flightId;
+    this.isPaid = isPaid;
+  }
 
   public ReservationStatus getReservationStatus() {
     return reservationStatus;
@@ -61,6 +84,14 @@ public class AdminEditReservationRequest {
 
   public void setBookings(List<BookingDTO> bookings) {
     this.bookings = bookings;
+  }
+
+  public Boolean getIsPaid() {
+    return this.isPaid;
+  }
+
+  public void setIsPaid(Boolean isPaid) {
+    this.isPaid = isPaid;
   }
 
 }
