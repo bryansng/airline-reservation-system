@@ -1,40 +1,45 @@
 {
   "rest_endpoints": {
     "auth": {
-      "register": "http://localhost:8080/register",
-      "login": "http://localhost:8080/login"
+      "register": "https://localhost:8443/register",
+      "login": "https://localhost:8443/login",
+      "get_user_by_token": "https://localhost:8443/login/token"
     },
     "user": {
-      "customer": "http://localhost:8080/customer/",
-      "customer_profile": "http://localhost:8080/customer/profile"
+      "customer": "https://localhost:8443/customer/",
+      "customer_profile": "https://localhost:8443/customer/profile",
+      "change_password": "https://localhost:8443/customer/profile/password"
     },
     "reservation": {
-      "create": "http://localhost:8080/book",
-      "get_by_id": "http://localhost:8080/reservation",
-      "get_all_by_customer_id": "http://localhost:8080/reservations",
-      "get_reservation_by_id_and_customer_lastname": "http://localhost:8080/reservations",
-      "cancel": "http://localhost:8080/reservation/cancel"
+      "create": "https://localhost:8443/book",
+      "get_by_id": "https://localhost:8443/reservation",
+      "get_all_by_customer_id": "https://localhost:8443/customer/reservations",
+      "get_reservation_by_id_and_customer_lastname": "https://localhost:8443/reservation",
+      "cancel": "https://localhost:8443/reservation/cancel"
     },
     "flight": {
-      "get_by_id": "http://localhost:8080/flight",
-      "search": "http://localhost:8080/search"
+      "get_by_id": "https://localhost:8443/flight",
+      "search": "https://localhost:8443/search"
     },
     "credit_card": {
-      "get_all_by_customer_id": "http://localhost:8080/customer/creditcard/all",
-      "get_card_by_card_id": "http://localhost:8080/customer/creditcard"
+      "get_all_by_customer_id": "https://localhost:8443/customer/creditcard/all",
+      "get_card_by_card_id": "https://localhost:8443/customer/creditcard",
+      "create": "https://localhost:8443/customer/creditcard",
+      "update": "https://localhost:8443/customer/creditcard",
+      "delete": "https://localhost:8443/customer/creditcard"
     },
     "admin": {
       "flight": {
-        "view_all": "http://localhost:8080/adm/flight/all",
-        "create": "http://localhost:8080/adm/flight/create",
-        "edit": "http://localhost:8080/adm/flight/edit/",
-        "delete": "http://localhost:8080/adm/flight/delete/"
+        "view_all": "https://localhost:8443/admin/flight/all",
+        "create": "https://localhost:8443/admin/flight/create",
+        "edit": "https://localhost:8443/admin/flight/edit/",
+        "delete": "https://localhost:8443/admin/flight/delete/"
       },
       "reservation": {
-        "view_all": "http://localhost:8080/adm/reservation/all",
-        "create": "http://localhost:8080/adm/reservation/create",
-        "edit": "http://localhost:8080/adm/reservation/edit/",
-        "delete": "http://localhost:8080/adm/reservation/cancel/"
+        "view_all": "https://localhost:8443/admin/reservation/all",
+        "create": "https://localhost:8443/admin/reservation/create",
+        "edit": "https://localhost:8443/admin/reservation/edit/",
+        "delete": "https://localhost:8443/admin/reservation/cancel/"
       }
     }
   }

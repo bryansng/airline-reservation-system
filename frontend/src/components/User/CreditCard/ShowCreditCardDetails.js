@@ -20,7 +20,7 @@ const Button = styled.button.attrs({
   ${(props) => props.disabled && `pointer-events: none;`}
 `;
 
-const CreditCardDetails = ({ location }) => {
+const CreditCardDetails = ({ location, token }) => {
   const user = location.state.user;
   const creditCard = location.state.card;
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
@@ -29,8 +29,9 @@ const CreditCardDetails = ({ location }) => {
     evt.preventDefault();
 
     // DELETE request using fetch with error handling
-    fetch(`${credit_card_apis.get_card_by_card_id}/${creditCard.id}`, {
+    fetch(`${credit_card_apis.delete}/${user.id}/${creditCard.id}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((resp) => {
         if (resp.ok) {

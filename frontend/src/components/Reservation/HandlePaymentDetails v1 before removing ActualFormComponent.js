@@ -5,9 +5,6 @@ import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import ErrorMessage from "../Common/ErrorMessage";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
-import dayjs from "dayjs";
-import objectSupport from "dayjs/plugin/objectSupport";
-dayjs.extend(objectSupport);
 const { credit_card: credit_card_apis } = rest_endpoints;
 
 const Button = styled.button.attrs({
@@ -39,7 +36,6 @@ const Grid = styled.div.attrs({})`
 `;
 
 const HandlePaymentDetails = ({
-  token,
   setPaymentDetails,
   loggedInUser,
   isAuthenticated,
@@ -65,10 +61,7 @@ const HandlePaymentDetails = ({
   useEffect(() => {
     if (isAuthenticated && loggedInUser && loggedInUser.id) {
       // GET customer's credit card details.
-      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      fetch(`${credit_card_apis.get_all_by_customer_id}/${loggedInUser.id}`)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -124,45 +117,20 @@ const HandlePaymentDetails = ({
     }
 
     // validate credit card details.
-    if (cardNumber.length !== 16) {
-      // if (!(cardNumber.length >= 13 && cardNumber.length <= 19)) {
+    if (!(cardNumber.length >= 13 && cardNumber.length <= 19)) {
       setErrorMessage(
-        "Error: Expected credit card number to be exactly 16 digits long."
+        "Error: Expected credit card number to be 13 to 19 digits long inclusive."
       );
       setHasFormError(true);
       return;
     }
     if (expiryDate.length !== 5) {
-      setErrorMessage(
-        "Error: Expected expiry date to be exactly 4 digits long."
-      );
-      setHasFormError(true);
-      return;
-    }
-    const [month, year] = expiryDate.split("/").map((val) => parseInt(val));
-    if (!(month >= 1 && month <= 12)) {
-      setErrorMessage(
-        "Error: Invalid expiry date. Expected months between 01 and 12."
-      );
-      setHasFormError(true);
-      return;
-    }
-    const expiryDateDayjsObj = dayjs({ year: year + 2000, months: month - 1 });
-    const latestExpiryDate = dayjs({
-      year: dayjs().year(),
-      months: dayjs().month(),
-    });
-    // console.log(expiryDateDayjsObj);
-    // console.log(latestExpiryDate);
-    if (expiryDateDayjsObj.isBefore(latestExpiryDate)) {
-      setErrorMessage(
-        "Error: Credit card has expired. Please use another card."
-      );
+      setErrorMessage("Error: Expected expiry date to be exactly 4 digits.");
       setHasFormError(true);
       return;
     }
     if (securityCode.length !== 3) {
-      setErrorMessage("Error: Expected security code to be 3 digits long.");
+      setErrorMessage("Error: Expected security code to be 3 digits.");
       setHasFormError(true);
       return;
     }
@@ -197,7 +165,7 @@ const HandlePaymentDetails = ({
   const getSanitisedCardNumber = (cardNumber) => {
     const currCardNumber = limitInputSize(
       sanitiseNumbersOnlyInput(cardNumber),
-      16
+      19
     );
 
     // format card number to add space after every 4 digits.
@@ -265,105 +233,101 @@ const HandlePaymentDetails = ({
     );
   };
 
-  return (
-    <>
-      {/* <h3 className="mb2">Please input</h3> */}
-      {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
-      <Form onSubmit={(e) => handleSubmit(e)}>
-        <Card className="mv">
-          <Card.Header>
-            {isAuthenticated
-              ? "Please choose and enter your credit card details"
-              : "Please enter your credit card details"}
-          </Card.Header>
-          <Card.Body>
-            {isAuthenticated && (
-              <div className="mb2">
-                {savedCreditCards.map((currCreditCard, currIndex) => (
-                  <SavedCreditCard
-                    key={currIndex}
-                    creditCard={currCreditCard}
-                    onClickPaymentMethod={onClickPaymentMethod}
-                    index={currIndex}
-                    maskCreditCardNumber={maskCreditCardNumber}
-                  />
-                ))}
-              </div>
-            )}
-            <Grid>
-              <Form.Group className="mh1" controlId="formNameOnCard">
-                <Form.Label className="dark-gray f5">Name on Card</Form.Label>
-                <Form.Control
-                  type="text"
-                  // placeholder="John Doe"
-                  defaultValue={creditCardFormDefaultInput.nameOnCard}
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mh1" controlId="formCardNumber">
-                <Form.Label className="dark-gray f5">Card Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  // placeholder="1234 5678 8765 4321"
-                  defaultValue={creditCardFormDefaultInput.cardNumber}
-                  onChange={(evt) => onChangeCardNumber(evt)}
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mh1" controlId="formExpiryDate">
-                <Form.Label className="dark-gray f5">Expiry Date</Form.Label>
-                <Form.Control
-                  type="text"
-                  // placeholder="04/25"
-                  defaultValue={creditCardFormDefaultInput.expiryDate}
-                  onChange={(evt) => onChangeExpiryDate(evt)}
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mh1" controlId="formSecurityCode">
-                <Form.Label className="dark-gray f5">
-                  CVV or Security Code
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  // placeholder="412"
-                  defaultValue={creditCardFormDefaultInput.securityCode}
-                  onChange={(evt) => onChangeSecurityCode(evt)}
-                  required
-                />
-              </Form.Group>
+  const ActualFormComponent = () => {
+    return (
+      <>
+        {/* <h3 className="mb2">Please input</h3> */}
+        <Form onSubmit={(e) => handleSubmit(e)}>
+          <Card className="mv">
+            <Card.Header>
+              {isAuthenticated
+                ? "Please choose and enter your credit card details"
+                : "Please enter your credit card details"}
+            </Card.Header>
+            <Card.Body>
               {isAuthenticated && (
-                <Form.Group
-                  className="mh1"
-                  controlId="formIsSavePaymentDetails"
-                >
-                  <Form.Check type="checkbox" label="Save payment details" />
-                </Form.Group>
+                <div className="mb2">
+                  {savedCreditCards.map((currCreditCard, currIndex) => (
+                    <SavedCreditCard
+                      key={currIndex}
+                      creditCard={currCreditCard}
+                      onClickPaymentMethod={onClickPaymentMethod}
+                      index={currIndex}
+                      maskCreditCardNumber={maskCreditCardNumber}
+                    />
+                  ))}
+                </div>
               )}
-              {loggedInUser && loggedInUser.roles === "ADMIN" && (
-                <Form.Group className="mh1" controlId="formIsPaid">
-                  <Form.Check
-                    type="checkbox"
-                    label="Mark reservation as paid"
+              <Grid>
+                <Form.Group className="mh1" controlId="formNameOnCard">
+                  <Form.Label className="dark-gray f5">Name on Card</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="John Doe"
+                    defaultValue={creditCardFormDefaultInput.nameOnCard}
+                    required
                   />
                 </Form.Group>
-              )}
-            </Grid>
-          </Card.Body>
-        </Card>
-        <div className="flex justify-end">
-          <div className="mr1">
-            <Link to="/">
-              <Button type="button">Cancel</Button>
-            </Link>{" "}
+                <Form.Group className="mh1" controlId="formCardNumber">
+                  <Form.Label className="dark-gray f5">Card Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="1234 5678 8765 4321"
+                    defaultValue={creditCardFormDefaultInput.cardNumber}
+                    onChange={(evt) => onChangeCardNumber(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formExpiryDate">
+                  <Form.Label className="dark-gray f5">Expiry Date</Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="04/25"
+                    defaultValue={creditCardFormDefaultInput.expiryDate}
+                    onChange={(evt) => onChangeExpiryDate(evt)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mh1" controlId="formSecurityCode">
+                  <Form.Label className="dark-gray f5">
+                    CVV or Security Code
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    // placeholder="412"
+                    defaultValue={creditCardFormDefaultInput.securityCode}
+                    onChange={(evt) => onChangeSecurityCode(evt)}
+                    required
+                  />
+                </Form.Group>
+                {isAuthenticated && (
+                  <Form.Group
+                    className="mh1"
+                    controlId="formIsSavePaymentDetails"
+                  >
+                    <Form.Check type="checkbox" label="Save payment details" />
+                  </Form.Group>
+                )}
+              </Grid>
+            </Card.Body>
+          </Card>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
+          <div className="flex justify-end">
+            <div className="mr1">
+              <Link to="/">
+                <Button type="button">Cancel</Button>
+              </Link>{" "}
+            </div>
+            <div className="ml1">
+              <Button type="submit">Pay</Button>
+            </div>
           </div>
-          <div className="ml1">
-            <Button type="submit">Pay</Button>
-          </div>
-        </div>
-      </Form>
-    </>
-  );
+        </Form>
+      </>
+    );
+  };
+
+  return <ActualFormComponent />;
 };
 
 const SavedCreditCard = ({

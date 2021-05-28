@@ -103,7 +103,7 @@ public class FlightController {
 		return new ResponseEntity<>(new GetFlightByIdResponse("Flight retrieved successfully.", flightDTO), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/adm/flight/delete/{flightId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/admin/flight/delete/{flightId}", method = RequestMethod.DELETE)
 	public ResponseEntity<GetFlightByIdResponse> deleteFlightById(@PathVariable("flightId") Long flightId) {
 		return flightService.deleteFlightById(flightId);
 	}
@@ -118,18 +118,18 @@ public class FlightController {
 	// 			arrivalDateTime, flightPrice, numOfSeats);
 	// }
 
-	@RequestMapping(value = "/adm/flight/edit/{flightId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/admin/flight/edit/{flightId}", method = RequestMethod.PUT)
 	public ResponseEntity<GetFlightByIdResponse> editFlightById(@PathVariable("flightId") Long flightId,
 			@RequestBody FlightRequest flightRequest) {
 		return flightService.editFlightById(flightId, flightRequest);
 	}
 
-	@RequestMapping(value = "/adm/flight/create", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/flight/create", method = RequestMethod.POST)
 	public ResponseEntity<GetFlightByIdResponse> createFlight(@RequestBody FlightRequest flightRequest) {
 		return flightService.createFlight(flightRequest);
 	}
 
-	@GetMapping("/adm/flight/all")
+	@GetMapping("/admin/flight/all")
 	public ResponseEntity<FlightsResponse> getAllFlights() {
 		Page<Flight> flights = flightService.getAllFlights();
 

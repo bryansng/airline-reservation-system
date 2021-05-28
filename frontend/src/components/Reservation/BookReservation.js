@@ -12,7 +12,7 @@ const {
   admin: admin_apis,
 } = rest_endpoints;
 
-const BookReservation = ({ location, user, isAuthenticated }) => {
+const BookReservation = ({ location, token, user, isAuthenticated }) => {
   const [isEditMode] = useState(location.state.isEditMode);
   const [flightId] = useState(location.state.flightId);
   const [flight, setFlight] = useState(null);
@@ -77,6 +77,9 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         });
       });
 
+      const authHeaders =
+        isAuthenticated && user ? { Authorization: `Bearer ${token}` } : {};
+
       const requestOptions =
         flightId &&
         numPassengers &&
@@ -88,7 +91,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `bearer ${token}`,
+                ...authHeaders,
               },
               body: JSON.stringify({
                 reservationStatus: reservation.reservationStatus,
@@ -103,7 +106,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `bearer ${token}`,
+                ...authHeaders,
               },
               body: JSON.stringify({
                 reservationStatus: reservation.reservationStatus,
@@ -118,10 +121,9 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `bearer ${token}`,
+                ...authHeaders,
               },
               body: JSON.stringify({
-                // token: `${token}`,
                 flightId: flightId,
                 customers: passengersDetails,
               }),
@@ -130,10 +132,9 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `bearer ${token}`,
+                ...authHeaders,
               },
               body: JSON.stringify({
-                // token: `${token}`,
                 flightId: flightId,
                 customers: passengersDetails,
                 creditCardDetails: paymentDetails,
@@ -152,12 +153,14 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         requestOptions
       )
         .then((resp) => {
+          console.log(resp);
           if (resp.ok) {
             return resp.json();
           }
           throw resp;
         })
         .then((res) => {
+          console.log(res);
           const reservation = res.reservation;
           setBookedReservation(reservation);
           setHasFormError(false);
@@ -165,7 +168,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
         })
         .catch((error) => {
           error.json().then((body) => {
-            setErrorMessage(`Error ${error.status}: ${body.message}`);
+            setErrorMessage(`Error: ${body.message}`);
             setPaymentDetails(null);
             setHasFormError(true);
           });
@@ -212,8 +215,9 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
       {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
       {(!user || user.roles !== "ADMIN") &&
         isConfirmedBooking &&
-        !paymentDetails && (
+        (!paymentDetails || (paymentDetails && !bookedReservation)) && (
           <HandlePaymentDetails
+            token={token}
             setPaymentDetails={setPaymentDetails}
             loggedInUser={user}
             isAuthenticated={isAuthenticated}

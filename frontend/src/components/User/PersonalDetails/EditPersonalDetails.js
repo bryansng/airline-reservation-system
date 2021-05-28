@@ -26,7 +26,7 @@ const Grid = styled.div.attrs({})`
   grid-template-columns: 1fr 1fr;
 `;
 
-const EditPersonalDetails = ({ location, setUser }) => {
+const EditPersonalDetails = ({ location, token, setUser }) => {
   const user =
     location.state && location.state.user ? location.state.user : null;
   const [updatedUser, setUpdatedUser] = useState(null);
@@ -41,6 +41,7 @@ const EditPersonalDetails = ({ location, setUser }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         email: e.target.formEmail.value,

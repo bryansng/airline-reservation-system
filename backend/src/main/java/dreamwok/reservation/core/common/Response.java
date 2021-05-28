@@ -5,7 +5,7 @@ public class Response {
   private String statusCode;
 
   public Response(String message) {
-    this(message, null);
+    this(null, message);
   }
 
   public Response(String statusCode, String message) {

@@ -31,7 +31,7 @@ const HandlePassengersDetails = ({
   passengersDetails,
 }) => {
   const [passengerForms, setPassengerForms] = useState(null);
-  console.log(passengersDetails);
+  // console.log(passengersDetails);
 
   useEffect(() => {
     const forms = [];
@@ -131,7 +131,7 @@ const APassengerDetailsForm = ({
   };
 
   const ActualFormComponent = () => {
-    console.log(passengerDetails);
+    // console.log(passengerDetails);
     return (
       <Card className="mv3">
         <Card.Header>

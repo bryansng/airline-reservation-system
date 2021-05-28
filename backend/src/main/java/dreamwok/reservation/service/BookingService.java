@@ -1,12 +1,16 @@
 package dreamwok.reservation.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
+import dreamwok.reservation.core.common.CreditCardEncryptor;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
 import dreamwok.reservation.model.CreditCardDetails;
@@ -25,17 +29,19 @@ public class BookingService {
   @Autowired
   BookingRepository bookingRepository;
 
+  @Autowired
+  CreditCardEncryptor creditCardEncryptor;
+
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails) {
+      BookingCreditCardDetailsDTO creditCardDetails, Principal principal, HttpServletRequest httpRequest) {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
 
-    return reservationService.createReservation(flightId, customers, creditCardDetails);
+    return reservationService.createReservation(flightId, customers, creditCardDetails, principal, httpRequest);
   }
 
   public Reservation adminBookReservation(AdminBookReservationRequest request) {
-
     return reservationService.adminCreateReservation(request);
   }
 
@@ -44,23 +50,56 @@ public class BookingService {
 
     if (creditCardDetailsId == null) {
       // if null, then credit card details not masked.
-      return isValidCreditCardDetailsAgainstAPI(creditCardDetails);
+      return isValidLengthCreditCardDetails(creditCardDetails) && isValidCreditCardDetailsAgainstAPI(creditCardDetails);
     }
+    // System.out.println("id not null");
 
     Optional<CreditCardDetails> realCreditCardDetailsOptional = creditCardDetailsRepository
         .findById(creditCardDetailsId);
 
     if (!realCreditCardDetailsOptional.isPresent()) {
       // if not present, then credit card details not masked since not in database, therefore not retrieved from database to begin with.
-      return isValidCreditCardDetailsAgainstAPI(creditCardDetails);
+      return isValidLengthCreditCardDetails(creditCardDetails) && isValidCreditCardDetailsAgainstAPI(creditCardDetails);
     }
+    // System.out.println("credit card details not from database");
 
     CreditCardDetails realCreditCardDetails = realCreditCardDetailsOptional.get();
-    if (isValidCreditCardDetailsInDatabase(creditCardDetails, realCreditCardDetails)
-        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, realCreditCardDetails)) {
+    CreditCardDetails decryptedRealCreditCardDetails = creditCardEncryptor.decryptCard(realCreditCardDetails);
+    if (isValidLengthCreditCardDetails(creditCardDetails)
+        && isValidCreditCardDetailsInDatabase(creditCardDetails, decryptedRealCreditCardDetails)
+        && isValidCreditCardDetailsAgainstAPI(creditCardDetails, decryptedRealCreditCardDetails)) {
       return true;
     }
     return false;
+  }
+
+  public Boolean isValidLengthCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {
+    String cardNum = creditCardDetails.getCardNumber();
+    // if (!(cardNum.length() >= 13 && cardNum.length() <= 19
+    //     && cardNum.substring(cardNum.length() - 4).equals(realCardNum.substring(cardNum.length() - 4)))) {
+    //   return false;
+    // }
+    if (!(cardNum.length() == 16)) {
+      return false;
+    }
+
+    String expiryDate = creditCardDetails.getExpiryDate();
+    if (!(expiryDate.length() == 5)) {
+      return false;
+    }
+
+    String nameOnCard = creditCardDetails.getNameOnCard();
+    if (!(nameOnCard.length() >= 1)) {
+      return false;
+    }
+
+    String securityCode = creditCardDetails.getSecurityCode();
+    if (!(securityCode.length() == 3)) {
+      return false;
+    }
+
+    // System.out.println("valid credit card details length");
+    return true;
   }
 
   public Boolean isValidCreditCardDetailsAgainstAPI(BookingCreditCardDetailsDTO creditCardDetails) {
@@ -83,31 +122,40 @@ public class BookingService {
         return false;
       }
     }
+    // System.out.println("credit card belongs to correct customer");
 
     String cardNum = creditCardDetails.getCardNumber();
     String realCardNum = realCreditCardDetails.getCardNumber();
-    if (!(cardNum.length() >= 13 && cardNum.length() <= 19
+    // if (!(cardNum.length() >= 13 && cardNum.length() <= 19
+    //     && cardNum.substring(cardNum.length() - 4).equals(realCardNum.substring(cardNum.length() - 4)))) {
+    //   return false;
+    // }
+    if (!(cardNum.length() == 16
         && cardNum.substring(cardNum.length() - 4).equals(realCardNum.substring(cardNum.length() - 4)))) {
       return false;
     }
+    // System.out.println("match credit card num");
 
     String expiryDate = creditCardDetails.getExpiryDate();
     String realExpiryDate = realCreditCardDetails.getExpiryDate();
     if (!(expiryDate.length() == 5 && expiryDate.equals(realExpiryDate))) {
       return false;
     }
+    // System.out.println("match expiry date");
 
     String nameOnCard = creditCardDetails.getNameOnCard();
     String realNameOnCard = realCreditCardDetails.getNameOnCard();
     if (!(nameOnCard.length() >= 1 && nameOnCard.equals(realNameOnCard))) {
       return false;
     }
+    // System.out.println("match name on card");
 
     String securityCode = creditCardDetails.getSecurityCode();
     String realSecurityCode = realCreditCardDetails.getSecurityCode();
     if (!(securityCode.length() == 3 && securityCode.equals(realSecurityCode))) {
       return false;
     }
+    // System.out.println("match security code");
 
     return true;
   }

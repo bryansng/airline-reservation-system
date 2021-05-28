@@ -41,8 +41,10 @@ public class Customer {
   private LocalDateTime joinedOn = LocalDateTime.now();
   private String type = "member";
 
+  private Integer numFailedAuthAttempts = 0;
+  private LocalDateTime authTimeoutUntil = null;
+
   @OneToOne(cascade = CascadeType.ALL)
-  // @OneToOne()
   private Auth auth;
 
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
@@ -150,6 +152,26 @@ public class Customer {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Integer getNumFailedAuthAttempts() {
+    return numFailedAuthAttempts;
+  }
+
+  public void setNumFailedAuthAttempts(Integer numFailedAuthAttempts) {
+    this.numFailedAuthAttempts = numFailedAuthAttempts;
+  }
+
+  public void incrementFailedAuthAttempts() {
+    setNumFailedAuthAttempts(this.numFailedAuthAttempts + 1);
+  }
+
+  public LocalDateTime getAuthTimeoutUntil() {
+    return authTimeoutUntil;
+  }
+
+  public void setAuthTimeoutUntil(LocalDateTime authTimeoutUntil) {
+    this.authTimeoutUntil = authTimeoutUntil;
   }
 
   public void update(CustomerRequest customerRequest) {

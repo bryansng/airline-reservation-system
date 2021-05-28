@@ -12,7 +12,7 @@ import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { flight: flight_apis } = rest_endpoints.admin;
 dayjs.extend(isBetween);
 
-const ShowAllFlights = ({ location }) => {
+const ShowAllFlights = ({ location, token }) => {
   const [isErrorMessage, setIsErrorMessage] = useState(
     location.state && location.state.isErrorResponse ? true : false
   );
@@ -25,7 +25,9 @@ const ShowAllFlights = ({ location }) => {
 
   useEffect(() => {
     if (!flightsRetrieved) {
-      fetch(flight_apis.view_all)
+      fetch(flight_apis.view_all, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then((resp) => {
           if (resp.ok) return resp.json();
           else throw new Error(`Error retrieving flight.`);
@@ -139,7 +141,10 @@ const ShowAllFlights = ({ location }) => {
     // console.log(flightId);
     // console.log(flight_apis.delete + `${flightId}`);
 
-    fetch(flight_apis.delete + `${flightId}`, { method: "DELETE" })
+    fetch(flight_apis.delete + `${flightId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((resp) => {
         console.log(resp);
         if (resp.ok) {

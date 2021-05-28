@@ -8,7 +8,7 @@ import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { flight: flight_apis } = rest_endpoints.admin;
 dayjs.extend(isBetween);
 
-const EditFlightForm = ({ location }) => {
+const EditFlightForm = ({ location, token }) => {
   const [hasFormError, setHasFormError] = useState(false);
   const [isErrorResponse, setIsErrorResponse] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
@@ -30,7 +30,7 @@ const EditFlightForm = ({ location }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         // token: `${token}`,

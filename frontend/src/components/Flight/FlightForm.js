@@ -20,6 +20,7 @@ const Grid = styled.div.attrs({})`
 `;
 
 const FlightForm = ({
+  token,
   handleSubmit,
   isEditMode,
   originalFlight,
@@ -63,7 +64,7 @@ const FlightForm = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         // token: `${token}`,

@@ -158,3 +158,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# log4j2 logs.
+logs/*
+

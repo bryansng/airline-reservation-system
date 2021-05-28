@@ -13,7 +13,7 @@ import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { reservation: reservation_apis } = rest_endpoints.admin;
 dayjs.extend(isBetween);
 
-const ShowAllReservations = ({ location }) => {
+const ShowAllReservations = ({ location, token }) => {
   const [isErrorMessage, setIsErrorMessage] = useState(
     location.state && location.state.isErrorResponse ? true : false
   );
@@ -26,7 +26,9 @@ const ShowAllReservations = ({ location }) => {
 
   useEffect(() => {
     if (!reservationsRetrieved) {
-      fetch(reservation_apis.view_all)
+      fetch(reservation_apis.view_all, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then((resp) => {
           if (resp.ok) return resp.json();
           else throw new Error(`Error retrieving reservation.`);
@@ -63,7 +65,7 @@ const ShowAllReservations = ({ location }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           reservationStatus: newStatus,
@@ -275,7 +277,10 @@ const ShowAllReservations = ({ location }) => {
     // console.log(reservationId);
     // console.log(reservation_apis.delete + `${reservationId}`);
 
-    fetch(reservation_apis.delete + `${reservationId}`, { method: "PUT" })
+    fetch(reservation_apis.delete + `${reservationId}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((resp) => {
         console.log(resp);
         if (resp.ok) {

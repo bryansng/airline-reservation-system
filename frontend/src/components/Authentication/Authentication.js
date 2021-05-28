@@ -1,23 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { rest_endpoints } from "../../config/rest_endpoints.json";
 const { auth: auth_apis } = rest_endpoints;
 
-function useAuthentication({
-  isAuthenticated,
-  token,
-  user,
-  setAppIsAuthenticated: setIsAuthenticated,
-  setAppToken: setToken,
-  setAppUser: setUser,
-}) {
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [token, setToken] = useState(window.localStorage.getItem("token"));
+// function useAuthentication({
+//   // isAuthenticated,
+//   // token,
+//   // user,
+//   // setAppIsAuthenticated: setIsAuthenticated,
+//   // setAppToken: setToken,
+//   // setAppUser: setUser,
+// }) {
+function useAuthentication() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(window.sessionStorage.getItem("token"));
   // // const [token, setToken] = useState("");
   const userInitialState = {
     id: "",
     email: "",
   };
-  // const [user, setUser] = useState(userInitialState);
+  const [user, setUser] = useState(userInitialState);
 
   useEffect(() => {
     // open first time.
@@ -32,42 +34,45 @@ function useAuthentication({
     }
 
     // open after previously logged in.
-    // if (token && !user.id) {
-    //   const requestOptions = {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `bearer ${token}`,
-    //     },
-    //     body: JSON.stringify({
-    //       token: `${token}`,
-    //     }),
-    //   };
+    if (!isLoading && token && !user.id) {
+      setIsLoading(true);
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          token: `${token}`,
+        }),
+      };
+      // console.log(`token: ${token}`);
 
-    //   fetch(auth_apis.get_by_token, requestOptions)
-    //     .then((resp) => {
-    //       if (resp.ok) {
-    //         return resp.json();
-    //       }
-    //       throw new Error(
-    //         `${resp.status} Unauthorized: Token expired. Requires another signin by user.`
-    //       );
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       setIsAuthenticated(true);
-    //       setUser({ ...user, ...res.customer });
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //       logOut();
-    //     });
-    // }
-  });
+      fetch(auth_apis.get_user_by_token, requestOptions)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          throw new Error(
+            `Error: Token expired. Requires another signin by user.`
+          );
+        })
+        .then((res) => {
+          // console.log(res);
+          setIsAuthenticated(true);
+          setUser({ ...user, ...res.customer });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          logOut();
+        });
+    }
+  }, [isAuthenticated, isLoading, token, user]);
 
   const logOut = () => {
     setToken("");
-    window.localStorage.removeItem("token");
+    window.sessionStorage.removeItem("token");
     setIsAuthenticated(false);
     setUser(userInitialState);
     console.log("User logged out successfully.");
@@ -103,14 +108,15 @@ function useAuthentication({
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status}: Username or email already exists.`);
+        throw new Error(`Error: Username or email already exists.`);
+        // throw new Error(`${resp.status}: Username or email already exists.`);
       })
       .then((res) => {
         console.log(res);
-        setToken(res.token);
-        window.localStorage.setItem("token", res.token);
-        setIsAuthenticated(true);
         setUser({ ...user, ...res.customer });
+        setToken(res.token);
+        window.sessionStorage.setItem("token", res.token);
+        setIsAuthenticated(true);
         onSuccessCallback();
         console.log("User registered successfully.");
       })
@@ -142,17 +148,22 @@ function useAuthentication({
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status}: User Credentials incorrect.`);
+        throw new Error(`Error: Unexpected error during request.`);
+        // throw new Error(`${resp.status}: User Credentials incorrect.`);
       })
       .then((res) => {
         console.log(res);
         console.log(res.customer);
-        setToken(res.token);
-        window.localStorage.setItem("token", res.token);
-        setIsAuthenticated(true);
-        setUser({ ...user, ...res.customer });
-        onSuccessCallback();
-        console.log("User signed in successfully.");
+        if (res.statusCode !== "200" || res.customer == null) {
+          onErrorCallback(`Error: ${res.message}`);
+        } else {
+          setToken(res.token);
+          window.sessionStorage.setItem("token", res.token);
+          setIsAuthenticated(true);
+          setUser({ ...user, ...res.customer });
+          onSuccessCallback();
+          console.log("User signed in successfully.");
+        }
       })
       .catch((error) => {
         onErrorCallback(error.message);
@@ -164,6 +175,7 @@ function useAuthentication({
     isAuthenticated,
     token,
     user,
+    setUser,
     signIn,
     logOut,
     register,

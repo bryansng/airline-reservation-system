@@ -1,7 +1,10 @@
 package dreamwok.reservation.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,25 +21,47 @@ import dreamwok.reservation.core.reservation.response.CancelResponse;
 import dreamwok.reservation.core.reservation.response.GetCustomerReservationsResponse;
 import dreamwok.reservation.core.reservation.response.GetReservationByIdResponse;
 import dreamwok.reservation.dto.ReservationDTO;
+import dreamwok.reservation.model.Customer;
 import dreamwok.reservation.model.Reservation;
+import dreamwok.reservation.service.CustomerService;
+import dreamwok.reservation.service.LoginIPAttemptService;
 import dreamwok.reservation.service.ReservationService;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @CrossOrigin
+@Log4j2
 public class ReservationController {
   @Autowired
+  private CustomerService customerService;
+
+  @Autowired
   private ReservationService reservationService;
+
+  @Autowired
+  private LoginIPAttemptService loginIPAttemptService;
 
   /*
    * /reservations GET { customerId: String } returns { reservations:
    * List<Reservation> [{ reservation: Reservation object }] }
    */
-  @RequestMapping(value = "/reservations/{customerId}", method = RequestMethod.GET)
+  @RequestMapping(value = "/customer/reservations/{customerId}", method = RequestMethod.GET)
   public ResponseEntity<GetCustomerReservationsResponse> getCustomerReservations(
-      @PathVariable("customerId") Long customerId) {
+      @PathVariable("customerId") Long customerId, Principal principal, HttpServletRequest request) {
+    Customer customer = customerService.getCustomerById(customerId);
+    String ipAddress = loginIPAttemptService.getClientIP(request);
     List<Reservation> reservations = reservationService.getCustomerReservations(customerId);
 
+    if (!customerService.isAuthUserChangingOwnData(customer, principal)) {
+      log.debug(String.format("Failed to retrieve reservations for customer id %s by IP %s due to improper access.",
+          customerId, ipAddress));
+      return new ResponseEntity<>(new GetCustomerReservationsResponse("Improper access.", null),
+          HttpStatus.BAD_REQUEST);
+    }
+
     if (reservations == null) {
+      log.debug(String.format("Failed to retrieve reservations for customer id %s by IP %s due to invalid customer id.",
+          customerId, ipAddress));
       return new ResponseEntity<>(new GetCustomerReservationsResponse("Invalid customer id.", null),
           HttpStatus.NOT_FOUND);
     }
@@ -45,6 +70,7 @@ public class ReservationController {
     for (Reservation reservation : reservations) {
       reservationsDTO.add(new ReservationDTO(reservation));
     }
+    log.debug(String.format("Successfully retrieved reservations for customer id %s by IP %s.", customerId, ipAddress));
     return new ResponseEntity<>(
         new GetCustomerReservationsResponse("Customer reservations retrieved successfully.", reservationsDTO),
         HttpStatus.OK);
@@ -56,30 +82,41 @@ public class ReservationController {
    */
   @RequestMapping(value = "/reservation/{reservationId}", method = RequestMethod.GET)
   public ResponseEntity<GetReservationByIdResponse> getReservationById(
-      @PathVariable("reservationId") Long reservationId) {
+      @PathVariable("reservationId") Long reservationId, HttpServletRequest request) {
+    String ipAddress = loginIPAttemptService.getClientIP(request);
     Reservation reservation = reservationService.getReservationById(reservationId);
 
     if (reservation == null) {
+      log.debug(String.format("Failed to retrieve reservation id %s by IP %s due to invalid reservation id.",
+          reservationId, ipAddress));
       return new ResponseEntity<>(new GetReservationByIdResponse("Invalid reservation id.", null),
           HttpStatus.NOT_FOUND);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(String.format("Successfully retrieved reservation id %s by IP %s.", reservation.getId(), ipAddress));
     return new ResponseEntity<>(new GetReservationByIdResponse("Reservation retrieved successfully.", reservationDTO),
         HttpStatus.OK);
   }
 
   @RequestMapping(value = "/reservation/{customerLastName}/{reservationId}", method = RequestMethod.GET)
   public ResponseEntity<GetReservationByIdResponse> getReservationByIdAndCustomerLastName(
-      @PathVariable("customerLastName") String customerLastName, @PathVariable("reservationId") Long reservationId) {
+      @PathVariable("customerLastName") String customerLastName, @PathVariable("reservationId") Long reservationId,
+      HttpServletRequest request) {
+    String ipAddress = loginIPAttemptService.getClientIP(request);
     Reservation reservation = reservationService.getReservationByIdAndCustomerLastName(customerLastName, reservationId);
 
     if (reservation == null) {
+      log.debug(String.format(
+          "Failed to retrieve reservation by id %s and customer last name %s by IP %s due to invalid reservation id or incorrect reservation id with customer last name.",
+          reservationId, customerLastName, ipAddress));
       return new ResponseEntity<>(new GetReservationByIdResponse(
           "Invalid reservation id or incorrect reservation id with customer last name.", null), HttpStatus.NOT_FOUND);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(String.format("Successfully retrieved reservation by id %s and customer last name %s by IP %s.",
+        reservation.getId(), customerLastName, ipAddress));
     return new ResponseEntity<>(new GetReservationByIdResponse("Reservation retrieved successfully.", reservationDTO),
         HttpStatus.OK);
   }
@@ -94,19 +131,24 @@ public class ReservationController {
         message: ...
     } */
   @RequestMapping(value = "/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
-  public ResponseEntity<CancelResponse> cancelReservation(@PathVariable("reservationId") Long reservationId) {
+  public ResponseEntity<CancelResponse> cancelReservation(@PathVariable("reservationId") Long reservationId,
+      HttpServletRequest request) {
+    String ipAddress = loginIPAttemptService.getClientIP(request);
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
     if (reservation == null) {
+      log.debug(String.format("Failed to cancel reservation id %s by IP %s due to invalid reservation id.",
+          reservationId, ipAddress));
       return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(String.format("Successfully cancelled reservation id %s by IP %s.", reservation.getId(), ipAddress));
     return new ResponseEntity<>(new CancelResponse("Reservation cancelled successfully.", reservationDTO),
         HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/adm/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/admin/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> adminCancelReservation(@PathVariable("reservationId") Long reservationId) {
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
@@ -131,7 +173,7 @@ public class ReservationController {
   //   return new ResponseEntity<>(new CancelResponse("Reservation deleted successfully.", reservationDTO), HttpStatus.OK);
   // }
 
-  @RequestMapping(value = "/adm/reservation/edit/{reservationId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/admin/reservation/edit/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> adminEditReservation(@PathVariable("reservationId") Long reservationId,
       @RequestBody AdminEditReservationRequest request) {
     Reservation reservation = reservationService.adminEditReservation(reservationId, request);
@@ -145,7 +187,7 @@ public class ReservationController {
   }
 
   // GetCustomerReservationsResponse contains a list of reservationDTOs
-  @RequestMapping(value = "/adm/reservation/all", method = RequestMethod.GET)
+  @RequestMapping(value = "/admin/reservation/all", method = RequestMethod.GET)
   public ResponseEntity<GetCustomerReservationsResponse> getAllReservations() {
     List<ReservationDTO> reservationDTOs = reservationService.getAllReservationDTOs();
 
