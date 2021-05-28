@@ -44,6 +44,13 @@ We inserted some fake data (see `data.sql` in `backend\src\main\resources`) to f
 
 - Clicking cancel when booking a flight cancels the entire booking process, therefore users will have to restart the booking process from scratch.
 
+### Admin create/update/delete flights & reservations notes
+- Admins have access to pages `/flight` and `/reservation` to view all flights and reservations, they can create/update/delete flights/reservations from this page.
+- Creating reservations as an admin does not require payment methods.
+- Editing reservation comes in three flavours: changing the reservation status, editing existing passenger details, and adding/deleting passengers and changing flights.
+- Deleting flights: Flights with existing reservations cannot be removed from the database.
+- Deleting reservations: Reservations are marked as cancelled instead of being removed from the database.
+
 ## Built With
 
 - [Spring-Boot](https://spring.io/projects/spring-boot) - The application framework used
