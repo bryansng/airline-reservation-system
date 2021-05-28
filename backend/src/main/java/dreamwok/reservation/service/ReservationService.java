@@ -111,7 +111,7 @@ public class ReservationService {
       reservation = new Reservation(ReservationStatus.SCHEDULED, 0.00, updatedCustomers.get(0), flight, null);
       reservation = reservationRepository.save(reservation);
     } else {
-      reservation = new Reservation(ReservationStatus.UNPAID, flight.getFlightPrice() * updatedCustomers.size(),
+      reservation = new Reservation(ReservationStatus.SCHEDULED, flight.getFlightPrice() * updatedCustomers.size(),
           updatedCustomers.get(0), flight, null);
       reservation = reservationRepository.save(reservation);
     }
@@ -240,8 +240,8 @@ public class ReservationService {
     } else {
       reservation.editReservation(request.getReservationStatus(), request.getTotalCost(), payingCustomer, newFlight,
           updatedBookings);
-      reservationRepository.save(reservation);
     }
+    reservationRepository.save(reservation);
 
     return reservation;
   }
