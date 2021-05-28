@@ -136,8 +136,8 @@ const ShowAllFlights = ({ location }) => {
 
   const handleDelete = (flightId) => (e) => {
     e.preventDefault();
-    console.log(flightId);
-    console.log(flight_apis.delete + `${flightId}`);
+    // console.log(flightId);
+    // console.log(flight_apis.delete + `${flightId}`);
 
     fetch(flight_apis.delete + `${flightId}`, { method: "DELETE" })
       .then((resp) => {
@@ -145,20 +145,25 @@ const ShowAllFlights = ({ location }) => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`Error deleting flight.`);
+        throw new Error(`Error: Unexpected error while deleting flight.`);
       })
       .then((resp) => {
-        if (resp.flight.id === flightId) {
-          setErrorMessage(`Deleted flight ${resp.flight.id} successfully.`);
-          setIsErrorMessage(false);
-          setFlightsRetrieved(
-            flightsRetrieved.filter((flight) => flight.id !== flightId)
-          );
-        } else throw new Error(`Delete flight response incorrect.`);
+        if (resp.statusCode !== "200") {
+          setErrorMessage(`Error: ${resp.message}`);
+          setIsErrorMessage(true);
+        } else {
+          if (resp.flight.id === flightId) {
+            setErrorMessage(`Deleted flight ${resp.flight.id} successfully.`);
+            setIsErrorMessage(false);
+            setFlightsRetrieved(
+              flightsRetrieved.filter((flight) => flight.id !== flightId)
+            );
+          } else throw new Error(`Delete flight response incorrect.`);
+        }
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(`Error: ${error.message}`);
+        setErrorMessage(error.message);
         setIsErrorMessage(true);
       });
   };

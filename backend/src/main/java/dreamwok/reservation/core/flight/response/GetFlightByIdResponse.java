@@ -11,6 +11,11 @@ public class GetFlightByIdResponse extends Response {
     this.flight = flight;
   }
 
+  public GetFlightByIdResponse(String statusCode, String message, FlightDTO flight) {
+    super(statusCode, message);
+    this.flight = flight;
+  }
+
   public FlightDTO getFlight() {
     return this.flight;
   }

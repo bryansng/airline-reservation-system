@@ -2,6 +2,7 @@ package dreamwok.reservation.service;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -83,10 +84,20 @@ public class FlightService {
     Optional<Flight> flight = flightRepository.findById(flightId);
 
     if (flight.isEmpty())
-      return new ResponseEntity<>(new GetFlightByIdResponse("Flight does not exist.", null), HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(new GetFlightByIdResponse("400", "Flight does not exist.", null), HttpStatus.OK);
 
-    flightRepository.deleteById(flightId);
-    return new ResponseEntity<>(new GetFlightByIdResponse("Flight deleted.", new FlightDTO(flight.get())),
+    try {
+      flightRepository.deleteById(flightId);
+    } catch (HibernateException e) {
+      return new ResponseEntity<>(new GetFlightByIdResponse("400", "Cannot delete flight with reservations.", null),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(new GetFlightByIdResponse("400", "Cannot delete flight with reservations.", null),
+          HttpStatus.OK);
+      // return new ResponseEntity<>(new GetFlightByIdResponse("400", "Failed to delete flight.", null), HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>(new GetFlightByIdResponse("200", "Flight deleted.", new FlightDTO(flight.get())),
         HttpStatus.OK);
   }
 
