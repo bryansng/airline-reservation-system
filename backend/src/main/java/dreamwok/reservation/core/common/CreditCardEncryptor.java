@@ -9,10 +9,10 @@ import dreamwok.reservation.model.CreditCardDetails;
 @Service
 public class CreditCardEncryptor {
 
-    private BasicTextEncryptor textEncryptor;
+    private StrongTextEncryptor textEncryptor;
 
     public CreditCardEncryptor() {
-        textEncryptor = new BasicTextEncryptor();
+        textEncryptor = new StrongTextEncryptor();
         textEncryptor.setPassword("dreamwok");
     }
 
