@@ -32,12 +32,17 @@ const ResultGrid = styled.div.attrs({})`
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 `;
 
-const SearchFlight = () => {
+const SearchFlight = ({ location }) => {
   /*
   1. search flights
   2. display flights */
   const [flights, setFlights] = useState(null);
   const [numberOfPassengers, setNumberOfPassengers] = useState(0);
+  const isEditMode =
+    location && location.state ? location.state.isEditMode : false;
+  const reservation =
+    location && location.state ? location.state.reservation : false;
+  // const reservationId = location ? location.state.reservation.id : false;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -135,7 +140,12 @@ const SearchFlight = () => {
           </Card.Body>
         </Card>
         <div className="flex justify-end">
-          <div>
+          {/* <div className="mr1">
+            <Link to={`/flight/create`}>
+              <Button type="button">Create flight</Button>
+            </Link>
+          </div> */}
+          <div className="ml1">
             <Button type="submit">Search flights</Button>
           </div>
         </div>
@@ -152,13 +162,25 @@ const SearchFlight = () => {
               return (
                 <Link
                   key={currIndex}
-                  to={{
-                    pathname: `/book/${currFlight.id}`,
-                    state: {
-                      flightId: currFlight.id,
-                      numPassengers: numberOfPassengers,
-                    },
-                  }}
+                  to={
+                    isEditMode
+                      ? {
+                          pathname: `/reservation/edit/${reservation.id}/passenger`,
+                          state: {
+                            flightId: currFlight.id,
+                            numPassengers: numberOfPassengers,
+                            isEditMode: true,
+                            reservation: reservation,
+                          },
+                        }
+                      : {
+                          pathname: `/book/${currFlight.id}`,
+                          state: {
+                            flightId: currFlight.id,
+                            numPassengers: numberOfPassengers,
+                          },
+                        }
+                  }
                   style={{ textDecoration: "none", color: "#212529" }}
                 >
                   <ListGroup.Item

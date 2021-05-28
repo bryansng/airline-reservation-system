@@ -11,10 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import dreamwok.reservation.core.booking.request.AdminEditReservationRequest;
 import dreamwok.reservation.core.reservation.response.CancelResponse;
 import dreamwok.reservation.core.reservation.response.GetCustomerReservationsResponse;
 import dreamwok.reservation.core.reservation.response.GetReservationByIdResponse;
@@ -144,5 +146,56 @@ public class ReservationController {
     log.debug(String.format("Successfully cancelled reservation id %s by IP %s.", reservation.getId(), ipAddress));
     return new ResponseEntity<>(new CancelResponse("Reservation cancelled successfully.", reservationDTO),
         HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/admin/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
+  public ResponseEntity<CancelResponse> adminCancelReservation(@PathVariable("reservationId") Long reservationId) {
+    Reservation reservation = reservationService.cancelReservation(reservationId);
+
+    if (reservation == null) {
+      return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
+    }
+
+    ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    return new ResponseEntity<>(new CancelResponse("Reservation cancelled successfully.", reservationDTO),
+        HttpStatus.OK);
+  }
+
+  // @RequestMapping(value = "/reservation/admin/delete/{reservationId}", method = RequestMethod.DELETE)
+  // public ResponseEntity<CancelResponse> adminDeleteReservation(@PathVariable("reservationId") Long reservationId) {
+  //   Reservation reservation = reservationService.adminDeleteReservation(reservationId);
+
+  //   if (reservation == null) {
+  //     return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
+  //   }
+
+  //   ReservationDTO reservationDTO = new ReservationDTO(reservation);
+  //   return new ResponseEntity<>(new CancelResponse("Reservation deleted successfully.", reservationDTO), HttpStatus.OK);
+  // }
+
+  @RequestMapping(value = "/admin/reservation/edit/{reservationId}", method = RequestMethod.PUT)
+  public ResponseEntity<CancelResponse> adminEditReservation(@PathVariable("reservationId") Long reservationId,
+      @RequestBody AdminEditReservationRequest request) {
+    Reservation reservation = reservationService.adminEditReservation(reservationId, request);
+
+    if (reservation == null) {
+      return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
+    }
+
+    ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    return new ResponseEntity<>(new CancelResponse("Reservation edited successfully.", reservationDTO), HttpStatus.OK);
+  }
+
+  // GetCustomerReservationsResponse contains a list of reservationDTOs
+  @RequestMapping(value = "/admin/reservation/all", method = RequestMethod.GET)
+  public ResponseEntity<GetCustomerReservationsResponse> getAllReservations() {
+    List<ReservationDTO> reservationDTOs = reservationService.getAllReservationDTOs();
+
+    if (reservationDTOs == null) {
+      return new ResponseEntity<>(new GetCustomerReservationsResponse("Invalid reservations id.", null),
+          HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(
+        new GetCustomerReservationsResponse("Reservation retrieved successfully.", reservationDTOs), HttpStatus.OK);
   }
 }

@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "auth")
 public class Auth {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	@NotEmpty
 	private String email;
 
@@ -32,6 +35,14 @@ public class Auth {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getEmail() {

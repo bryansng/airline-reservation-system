@@ -2,6 +2,8 @@ package dreamwok.reservation.model;
 
 import javax.persistence.*;
 
+import dreamwok.reservation.dto.BookingDTO;
+
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -66,5 +68,11 @@ public class Booking {
 
   public void setIsCancelled(Boolean isCancelled) {
     this.isCancelled = isCancelled;
+  }
+
+  public void update(BookingDTO booking, Customer customerToUpdate) {
+    this.setIsCheckedIn(booking.getIsCheckedIn());
+    this.setIsCancelled(booking.getIsCancelled());
+    this.setCustomer(customerToUpdate);
   }
 }

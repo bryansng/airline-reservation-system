@@ -19,17 +19,30 @@ function Navigation({
   return (
     <Container>
       <Logo />
-      <Link to="/">
-        <div>Search Flights</div>
-      </Link>
+      {user && user.roles === "ADMIN" ? (
+        <>
+          <Link to="/flight">
+            <div>Manage Flights</div>
+          </Link>
+          <Link to={`/reservation`}>
+            <div>Manage Reservations</div>
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link to="/">
+            <div>Search Flights</div>
+          </Link>
+          <Link to={`/retrieve/booking`}>
+            <div>Retrieve Booking</div>
+          </Link>
+        </>
+      )}
       {/* <Link
         to={{ pathname: `/book/5`, state: { flightId: 5, numPassengers: 2 } }}
       >
         <div>Book a Reservation</div>
       </Link> */}
-      <Link to={`/retrieve/booking`}>
-        <div>Retrieve Booking</div>
-      </Link>
       {/* <Link to={`/show/reservation/1`}>
         <div>Show Reservation</div>
         </Link> */}

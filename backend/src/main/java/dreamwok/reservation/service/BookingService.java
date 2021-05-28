@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dreamwok.reservation.core.booking.request.AdminBookReservationRequest;
 import dreamwok.reservation.core.common.CreditCardEncryptor;
 import dreamwok.reservation.dto.BookingCreditCardDetailsDTO;
 import dreamwok.reservation.dto.CustomerDTO;
@@ -38,6 +39,10 @@ public class BookingService {
     }
 
     return reservationService.createReservation(flightId, customers, creditCardDetails, principal, httpRequest);
+  }
+
+  public Reservation adminBookReservation(AdminBookReservationRequest request) {
+    return reservationService.adminCreateReservation(request);
   }
 
   public Boolean isValidCreditCardDetails(BookingCreditCardDetailsDTO creditCardDetails) {

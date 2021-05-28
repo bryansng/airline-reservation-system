@@ -98,11 +98,12 @@ public class AuthService {
         // securityConfig.configAuth(auth, securityConfig.getAuth(), customer.getRoles());
         // authenticateUserAndSetSession(customer, request);
 
-        UserDetails userDetails = customerDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = customerDetailsService.loadUserByUsername(customer.getId().toString());
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         try {
-          authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+          authenticationManager
+              .authenticate(new UsernamePasswordAuthenticationToken(customer.getId().toString(), password));
         } catch (DisabledException e) {
           throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
@@ -166,7 +167,7 @@ public class AuthService {
 
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest,
       HttpServletRequest request) throws Exception {
-    String email = registerRequest.getEmail();
+    // String email = registerRequest.getEmail();
     String password = registerRequest.getPassword();
 
     String ipAddress = loginIPAttemptService.getClientIP(request);
@@ -178,11 +179,13 @@ public class AuthService {
       // securityConfig.configAuth(auth, securityConfig.getAuth(), "USER");
       // authenticateUserAndSetSession(customer, request);
 
-      UserDetails userDetails = customerDetailsService.loadUserByUsername(email);
+      Long customerId = registerResponse.getBody().getCustomer().getId();
+
+      UserDetails userDetails = customerDetailsService.loadUserByUsername(customerId.toString());
       final String token = jwtTokenUtil.generateToken(userDetails);
 
       try {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerId.toString(), password));
       } catch (DisabledException e) {
         throw new Exception("USER_DISABLED", e);
       } catch (BadCredentialsException e) {
@@ -217,12 +220,14 @@ public class AuthService {
     if (authentication != null && authentication.isAuthenticated()) {
       try {
         User user = (User) authentication.getPrincipal();
-        return customerRepository.findByEmail(user.getUsername());
+        return customerRepository.findById(Long.parseLong(user.getUsername())).get();
       } catch (ClassCastException e) {
         log.debug(
             "Failed to cast authentication.getPrincipal() to User. Generally due to getPrincipal being type String with value \"AnonymousUser\". Most likely because token is not valid or has expired.");
         log.debug(e.getMessage());
         return null;
+      } catch (Exception e) {
+        log.debug(e.getMessage());
       }
     }
     return null;

@@ -340,6 +340,14 @@ const HandlePaymentDetails = ({
                   <Form.Check type="checkbox" label="Save payment details" />
                 </Form.Group>
               )}
+              {loggedInUser && loggedInUser.roles === "ADMIN" && (
+                <Form.Group className="mh1" controlId="formIsPaid">
+                  <Form.Check
+                    type="checkbox"
+                    label="Mark reservation as paid"
+                  />
+                </Form.Group>
+              )}
             </Grid>
           </Card.Body>
         </Card>

@@ -9,6 +9,7 @@ public class CustomerDTO {
   private String lastName;
   private String mobileNumber = "";
   private String address = "";
+  private String roles = "";
 
   public CustomerDTO() {
   }
@@ -20,6 +21,7 @@ public class CustomerDTO {
     this.lastName = customer.getLastName();
     this.mobileNumber = customer.getPhoneNum();
     this.address = customer.getAddress();
+    this.roles = customer.getRoles();
   }
 
   public Long getId() {
@@ -68,5 +70,13 @@ public class CustomerDTO {
 
   public void setAddress(String address) {
     this.address = address;
+  }
+
+  public String getRoles() {
+    return roles;
+  }
+
+  public void setRoles(String roles) {
+    this.roles = roles;
   }
 }

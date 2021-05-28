@@ -27,6 +27,20 @@
       "create": "https://localhost:8443/customer/creditcard",
       "update": "https://localhost:8443/customer/creditcard",
       "delete": "https://localhost:8443/customer/creditcard"
+    },
+    "admin": {
+      "flight": {
+        "view_all": "https://localhost:8443/admin/flight/all",
+        "create": "https://localhost:8443/admin/flight/create",
+        "edit": "https://localhost:8443/admin/flight/edit/",
+        "delete": "https://localhost:8443/admin/flight/delete/"
+      },
+      "reservation": {
+        "view_all": "https://localhost:8443/admin/reservation/all",
+        "create": "https://localhost:8443/admin/reservation/create",
+        "edit": "https://localhost:8443/admin/reservation/edit/",
+        "delete": "https://localhost:8443/admin/reservation/cancel/"
+      }
     }
   }
 }

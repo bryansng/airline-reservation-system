@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import dreamwok.reservation.model.Auth;
 
 @Repository
-public interface AuthRepository extends JpaRepository<Auth, String> {
+public interface AuthRepository extends JpaRepository<Auth, Long> {
   Auth findByEmail(String email);
 
   @Query("SELECT email FROM Auth AUTH WHERE AUTH.email = ?1")

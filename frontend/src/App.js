@@ -7,6 +7,12 @@ import BookReservation from "./components/Reservation/BookReservation";
 import RetrieveBooking from "./components/Reservation/RetrieveBooking";
 import ShowReservation from "./components/Reservation/ShowReservation";
 import SearchFlight from "./components/Flight/SearchFlight";
+import FlightForm from "./components/Flight/FlightForm";
+import EditFlightForm from "./components/Flight/EditFlightForm";
+import ShowAllFlights from "./components/Flight/ShowAllFlights";
+// import ReservationForm from "./components/Reservation/ReservationForm";
+// import EditReservationForm from "./components/Reservation/EditReservationForm";
+import ShowAllReservations from "./components/Reservation/ShowAllReservations";
 import ShowPersonalDetails from "./components/User/PersonalDetails/ShowPersonalDetails";
 import EditPersonalDetails from "./components/User/PersonalDetails/EditPersonalDetails";
 import EditPassword from "./components/User/PersonalDetails/EditPassword";
@@ -76,6 +82,23 @@ function App() {
             )}
           />
           <Route
+            path="/reservation/edit/:reservationId/passenger"
+            exact
+            render={(props) => (
+              <BookReservation
+                {...props}
+                token={token}
+                user={user}
+                isAuthenticated={isAuthenticated}
+              />
+            )}
+          />
+          <Route
+            path="/reservation/edit/:reservationId"
+            exact
+            render={(props) => <SearchFlight {...props} />}
+          />
+          <Route
             path="/retrieve/booking"
             exact
             render={(props) => <RetrieveBooking {...props} />}
@@ -138,8 +161,31 @@ function App() {
           <Route
             path="/user/profile/reservations"
             exact
-            // component={ShowReservations}
             render={(props) => <ShowReservations {...props} token={token} />}
+          />
+          <Route
+            path="/flight"
+            exact
+            render={(props) => <ShowAllFlights {...props} token={token} />}
+          />
+          <Route
+            path="/flight/create"
+            render={(props) => <FlightForm {...props} token={token} />}
+          />
+          <Route
+            path="/flight/edit/:flightId"
+            exact
+            render={(props) => <EditFlightForm {...props} token={token} />}
+          />
+          <Route
+            path="/reservation"
+            exact
+            render={(props) => <ShowAllReservations {...props} token={token} />}
+          />
+          <Route
+            path="/reservation/create"
+            exact
+            render={(props) => <SearchFlight {...props} token={token} />}
           />
         </Switch>
       </Container>

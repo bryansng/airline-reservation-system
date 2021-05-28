@@ -28,8 +28,10 @@ const HandlePassengersDetails = ({
   numPassengers,
   loggedInUser,
   isAuthenticated,
+  passengersDetails,
 }) => {
   const [passengerForms, setPassengerForms] = useState(null);
+  // console.log(passengersDetails);
 
   useEffect(() => {
     const forms = [];
@@ -41,6 +43,13 @@ const HandlePassengersDetails = ({
           index={ind}
           loggedInUser={loggedInUser}
           isAuthenticated={isAuthenticated}
+          passengerDetails={
+            passengersDetails
+              ? passengersDetails[ind]
+                ? passengersDetails[ind].customer
+                : null
+              : null
+          }
         />
       );
     }
@@ -93,13 +102,19 @@ const HandlePassengersDetails = ({
   );
 };
 
-const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
+const APassengerDetailsForm = ({
+  index,
+  loggedInUser,
+  isAuthenticated,
+  passengerDetails,
+}) => {
   const isFirstUserAndIsAuthenticatedAndIsLoggedInUser = () => {
-    return !!(
+    return (
       index === 0 &&
       isAuthenticated &&
       loggedInUser &&
-      loggedInUser.id
+      loggedInUser.id &&
+      loggedInUser.roles !== "ADMIN"
     );
   };
 
@@ -116,6 +131,7 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
   };
 
   const ActualFormComponent = () => {
+    // console.log(passengerDetails);
     return (
       <Card className="mv3">
         <Card.Header>
@@ -133,7 +149,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
                 type="text"
                 placeholder="John"
                 defaultValue={
-                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                  passengerDetails
+                    ? passengerDetails.firstName
+                    : isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
                     ? loggedInUser.firstName
                     : "testFirstName"
                 }
@@ -146,7 +164,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
                 type="text"
                 placeholder="Doe"
                 defaultValue={
-                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                  passengerDetails
+                    ? passengerDetails.lastName
+                    : isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
                     ? loggedInUser.lastName
                     : "testLastName"
                 }
@@ -159,7 +179,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
                 type="email"
                 placeholder="johndoe@gmail.com"
                 defaultValue={
-                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                  passengerDetails
+                    ? passengerDetails.email
+                    : isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
                     ? loggedInUser.email
                     : "testEmail@test.com"
                 }
@@ -172,7 +194,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
                 type="text"
                 placeholder=""
                 defaultValue={
-                  isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                  passengerDetails
+                    ? passengerDetails.mobileNumber
+                    : isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
                     ? loggedInUser.mobileNumber
                     : "testMobileNumber"
                 }
@@ -187,7 +211,9 @@ const APassengerDetailsForm = ({ index, loggedInUser, isAuthenticated }) => {
               type="text"
               placeholder=""
               defaultValue={
-                isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
+                passengerDetails
+                  ? passengerDetails.address
+                  : isFirstUserAndIsAuthenticatedAndIsLoggedInUser()
                   ? loggedInUser.address
                   : "testAddress"
               }

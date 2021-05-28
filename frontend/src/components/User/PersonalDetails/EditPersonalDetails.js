@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import ErrorMessage from "../../Common/ErrorMessage";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router";
 import rest_endpoints from "../../../config/rest_endpoints.json";
@@ -34,6 +35,9 @@ const EditPersonalDetails = ({ location, token, setUser }) => {
   const url = customerEndpoint + "/" + user.id;
   const [isSave, setIsSave] = useState(null);
 
+  const [hasFormError, setHasFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -58,16 +62,24 @@ const EditPersonalDetails = ({ location, token, setUser }) => {
         if (resp.ok) {
           return resp.json();
         }
-        throw new Error(`${resp.status} Error updating customer.`);
+        throw new Error(`Error: Unexpected error while updating customer.`);
       })
       .then((res) => {
         // console.log(res);
-        setUser(res.customer);
-        setUpdatedUser(res.customer);
-        setIsSave(true);
+        if (res.statusCode !== "200") {
+          setErrorMessage(`Error: ${res.message}`);
+          setHasFormError(true);
+        } else {
+          setHasFormError(false);
+          setUser(res.customer);
+          setUpdatedUser(res.customer);
+          setIsSave(true);
+        }
       })
       .catch((error) => {
         console.error(error);
+        setErrorMessage(error.message);
+        setHasFormError(true);
       });
   };
 
@@ -141,6 +153,7 @@ const EditPersonalDetails = ({ location, token, setUser }) => {
               </Card.Body>
             )}
           </Card>
+          {hasFormError && <ErrorMessage error>{errorMessage}</ErrorMessage>}
           <div className="flex justify-end">
             <div className="mr1">
               <Link
