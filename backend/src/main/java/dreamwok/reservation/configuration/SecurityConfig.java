@@ -93,6 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.hasAnyRole("USER", "ADMIN").antMatchers("/").permitAll().antMatchers("/h2-console/**").permitAll()
 				.and().logout().logoutSuccessUrl("/");
 
+		http.requiresChannel().antMatchers("/css/**", "/js/**", "/images/**").requiresSecure().antMatchers("/admin/**")
+				.requiresSecure().antMatchers("/member/reserve").requiresSecure().antMatchers("/member/**")
+				.requiresSecure().antMatchers("/").requiresSecure().antMatchers("/h2-console/**").requiresSecure().and()
+				.logout().logoutSuccessUrl("/");
+
 		// http.authorizeRequests().antMatchers("/css/**", "/js/**",
 		// "/images/**").permitAll().antMatchers("/admin/**")
 		// .hasRole("ADMIN").antMatchers("/member/**").hasAnyRole("USER",
@@ -103,6 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
+
 	}
 
 	@Bean

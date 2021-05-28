@@ -1,9 +1,13 @@
 package dreamwok.reservation.service;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import dreamwok.reservation.repository.AuthRepository;
+import dreamwok.reservation.repository.CreditCardDetailsRepository;
+import dreamwok.reservation.repository.CustomerRepository;
+import dreamwok.reservation.model.Auth;
+import dreamwok.reservation.model.CreditCardDetails;
+import dreamwok.reservation.model.Customer;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,13 +20,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import dreamwok.reservation.configuration.SecurityConfig;
 import dreamwok.reservation.core.auth.request.RegisterRequest;
 import dreamwok.reservation.core.auth.response.RegisterResponse;
+
 import dreamwok.reservation.core.common.CreditCardEncryptor;
+
 import dreamwok.reservation.core.creditcard.request.CreditCardRequest;
 import dreamwok.reservation.core.creditcard.response.CreditCardResponse;
 import dreamwok.reservation.core.creditcard.response.GetCreditCardResponse;
@@ -54,6 +61,7 @@ public class CustomerService {
 
   @Autowired
   CreditCardEncryptor creditCardEncryptor;
+
 
   public void save(Customer customer, Auth auth) {
     auth.setCustomer(customer);
@@ -99,7 +107,9 @@ public class CustomerService {
    * @throws InvalidKeyException
    */
 
-  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId) {
+  public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(Long customerId)
+      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+      BadPaddingException, IllegalBlockSizeException {
     List<CreditCardDetails> cards = creditCardDetailsRepository.findAllById(customerId);
     List<CreditCardDetails> decryptedCards = new ArrayList<>();
     if (cards.size() > 0) {
@@ -108,11 +118,12 @@ public class CustomerService {
         decryptedCards.add(decrypted);
       }
     }
-
     return new ResponseEntity<>(new CreditCardResponse("Found all cards for customer", decryptedCards), HttpStatus.OK);
   }
 
-  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId) {
+  public ResponseEntity<GetCreditCardResponse> getCardDetails(Long cardId)
+      throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+      BadPaddingException, IllegalBlockSizeException {
     Optional<CreditCardDetails> card = creditCardDetailsRepository.findById(cardId);
 
     if (card.isPresent()) {
@@ -131,9 +142,18 @@ public class CustomerService {
     // if (!creditCardDetailsRepository.existsByCardNumber(cardNumber)) {
 
     CreditCardDetails creditCard = new CreditCardDetails(customerId, ccr);
-
     creditCard = creditCardDetailsRepository.save(creditCard);
     CreditCardDetails decrypted = creditCardEncryptor.decryptCard(creditCard);
+
+    String decryptedNameOnCard = AESUtil.decrypt(algorithm, creditCard.getNameOnCard(), key, iv);
+    String decryptedCardNum = AESUtil.decrypt(algorithm, creditCard.getCardNumber(), key, iv);
+    String decryptedExpiryDate = AESUtil.decrypt(algorithm, creditCard.getExpiryDate(), key, iv);
+    String decryptedSecurityCode = AESUtil.decrypt(algorithm, creditCard.getSecurityCode(), key, iv);
+
+    creditCard.setNameOnCard(decryptedNameOnCard);
+    creditCard.setCardNumber(decryptedCardNum);
+    creditCard.setExpiryDate(decryptedExpiryDate);
+    creditCard.setSecurityCode(decryptedSecurityCode);
 
     return new ResponseEntity<>(
         new GetCreditCardResponse("Card details inserted.", new CreditCardDetailsDTO(decrypted)), HttpStatus.CREATED);

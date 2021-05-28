@@ -1,7 +1,14 @@
 package dreamwok.reservation.service;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +36,8 @@ public class BookingService {
   CreditCardEncryptor creditCardEncryptor;
 
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails) {
+      BookingCreditCardDetailsDTO creditCardDetails) throws InvalidKeyException, NoSuchAlgorithmException,
+      NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }

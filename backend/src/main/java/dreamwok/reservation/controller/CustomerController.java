@@ -48,18 +48,23 @@ public class CustomerController {
      * @throws InvalidKeyException
      */
     @RequestMapping(value = "/creditcard/all/{customerId}", method = RequestMethod.GET)
-    public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId) {
+    public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.getAllCardsByCustomerId(customerId);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
+    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.getCardDetails(cardId);
     }
 
     @RequestMapping(value = "/creditcard/{customerId}", method = RequestMethod.POST)
     public ResponseEntity<GetCreditCardResponse> insertCardDetails(@PathVariable("customerId") Long customerId,
-            @RequestBody CreditCardRequest creditCardRequest) {
+            @RequestBody CreditCardRequest creditCardRequest) throws InvalidKeyException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.insertCardDetails(customerId, creditCardRequest);
     }
 
