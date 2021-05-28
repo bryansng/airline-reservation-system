@@ -1,7 +1,14 @@
 package dreamwok.reservation.service;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +32,8 @@ public class BookingService {
   BookingRepository bookingRepository;
 
   public Reservation bookReservation(Long flightId, List<CustomerDTO> customers,
-      BookingCreditCardDetailsDTO creditCardDetails) {
+      BookingCreditCardDetailsDTO creditCardDetails) throws InvalidKeyException, NoSuchAlgorithmException,
+      NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
     if (!isValidCreditCardDetails(creditCardDetails)) {
       return null;
     }
@@ -45,7 +53,8 @@ public class BookingService {
         .findById(creditCardDetailsId);
 
     if (!realCreditCardDetailsOptional.isPresent()) {
-      // if not present, then credit card details not masked since not in database, therefore not retrieved from database to begin with.
+      // if not present, then credit card details not masked since not in database,
+      // therefore not retrieved from database to begin with.
       return isValidCreditCardDetailsAgainstAPI(creditCardDetails);
     }
 

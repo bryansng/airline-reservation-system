@@ -1,5 +1,13 @@
 package dreamwok.reservation.controller;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,20 +40,31 @@ public class CustomerController {
      *
      * @param customerId
      * @return
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
      */
     @RequestMapping(value = "/creditcard/all/{customerId}", method = RequestMethod.GET)
-    public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId) {
+    public ResponseEntity<CreditCardResponse> getAllCardsByCustomerId(@PathVariable("customerId") Long customerId)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.getAllCardsByCustomerId(customerId);
     }
 
     @RequestMapping(value = "/creditcard/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId) {
+    public ResponseEntity<GetCreditCardResponse> getCardDetails(@PathVariable("cardId") Long cardId)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.getCardDetails(cardId);
     }
 
     @RequestMapping(value = "/creditcard/{customerId}", method = RequestMethod.POST)
     public ResponseEntity<GetCreditCardResponse> insertCardDetails(@PathVariable("customerId") Long customerId,
-            @RequestBody CreditCardRequest creditCardRequest) {
+            @RequestBody CreditCardRequest creditCardRequest) throws InvalidKeyException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
         return customerService.insertCardDetails(customerId, creditCardRequest);
     }
 
@@ -72,8 +91,9 @@ public class CustomerController {
     }
 
     // @RequestMapping(value = "/profile", method = RequestMethod.POST)
-    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
-    //     return customerService.create(customerRequest);
+    // public ResponseEntity<RegisterResponse> createCustomer(@RequestBody
+    // CustomerRequest customerRequest) {
+    // return customerService.create(customerRequest);
     // }
 
     @RequestMapping(value = "/profile/{customerId}", method = RequestMethod.PUT)
