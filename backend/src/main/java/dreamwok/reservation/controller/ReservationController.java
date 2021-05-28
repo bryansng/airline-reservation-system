@@ -149,14 +149,21 @@ public class ReservationController {
   }
 
   @RequestMapping(value = "/admin/reservation/cancel/{reservationId}", method = RequestMethod.PUT)
-  public ResponseEntity<CancelResponse> adminCancelReservation(@PathVariable("reservationId") Long reservationId) {
+  public ResponseEntity<CancelResponse> adminCancelReservation(@PathVariable("reservationId") Long reservationId,
+      HttpServletRequest httpRequest) {
+    String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     Reservation reservation = reservationService.cancelReservation(reservationId);
 
     if (reservation == null) {
+      log.debug(
+          String.format("Failed to cancel reservation id %s by an admin with IP %s due to invalid reservation id.",
+              reservationId, ipAddress));
       return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(String.format("Successfully cancelled reservation id %s by an admin with IP %s.", reservation.getId(),
+        ipAddress));
     return new ResponseEntity<>(new CancelResponse("Reservation cancelled successfully.", reservationDTO),
         HttpStatus.OK);
   }
@@ -175,26 +182,35 @@ public class ReservationController {
 
   @RequestMapping(value = "/admin/reservation/edit/{reservationId}", method = RequestMethod.PUT)
   public ResponseEntity<CancelResponse> adminEditReservation(@PathVariable("reservationId") Long reservationId,
-      @RequestBody AdminEditReservationRequest request) {
+      @RequestBody AdminEditReservationRequest request, HttpServletRequest httpRequest) {
+    String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     Reservation reservation = reservationService.adminEditReservation(reservationId, request);
 
     if (reservation == null) {
+      log.debug(String.format("Failed to edit reservation id %s by an admin with IP %s due to invalid reservation id.",
+          reservationId, ipAddress));
       return new ResponseEntity<>(new CancelResponse("Invalid reservation id.", null), HttpStatus.NOT_FOUND);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(
+        String.format("Successfully edited reservation id %s by an admin with IP %s.", reservation.getId(), ipAddress));
     return new ResponseEntity<>(new CancelResponse("Reservation edited successfully.", reservationDTO), HttpStatus.OK);
   }
 
   // GetCustomerReservationsResponse contains a list of reservationDTOs
   @RequestMapping(value = "/admin/reservation/all", method = RequestMethod.GET)
-  public ResponseEntity<GetCustomerReservationsResponse> getAllReservations() {
+  public ResponseEntity<GetCustomerReservationsResponse> getAllReservations(HttpServletRequest httpRequest) {
+    String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     List<ReservationDTO> reservationDTOs = reservationService.getAllReservationDTOs();
 
     if (reservationDTOs == null) {
-      return new ResponseEntity<>(new GetCustomerReservationsResponse("Invalid reservations id.", null),
+      log.debug(
+          String.format("Failed to get all reservations by an admin with IP %s due to null reservations.", ipAddress));
+      return new ResponseEntity<>(new GetCustomerReservationsResponse("There are null reservations.", null),
           HttpStatus.NOT_FOUND);
     }
+    log.debug(String.format("Successfully retrieved reservations by an admin with IP %s.", ipAddress));
     return new ResponseEntity<>(
         new GetCustomerReservationsResponse("Reservation retrieved successfully.", reservationDTOs), HttpStatus.OK);
   }

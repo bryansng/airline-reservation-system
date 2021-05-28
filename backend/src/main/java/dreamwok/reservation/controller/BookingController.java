@@ -60,15 +60,20 @@ public class BookingController {
   }
 
   @RequestMapping(value = "/admin/reservation/create", method = RequestMethod.POST)
-  public ResponseEntity<BookReservationResponse> adminBookReservation(
-      @RequestBody AdminBookReservationRequest request) {
+  public ResponseEntity<BookReservationResponse> adminBookReservation(@RequestBody AdminBookReservationRequest request,
+      HttpServletRequest httpRequest) {
+    String ipAddress = loginIPAttemptService.getClientIP(httpRequest);
     Reservation reservation = bookingService.adminBookReservation(request);
 
     if (reservation == null) {
+      log.debug(String.format("Failed to create reservation by an admin with IP %s due to creation failed", ipAddress));
       return new ResponseEntity<>(new BookReservationResponse("Reservation failed.", null), HttpStatus.BAD_REQUEST);
     }
 
     ReservationDTO reservationDTO = new ReservationDTO(reservation);
+    log.debug(String.format(
+        "Successfully created reservation with id %s for user with email %s or id %s by an admin with IP %s.",
+        reservation.getId(), reservation.getCustomer().getEmail(), reservation.getCustomer().getId(), ipAddress));
     return new ResponseEntity<>(new BookReservationResponse("Reservation created successfully.", reservationDTO),
         HttpStatus.CREATED);
   }
