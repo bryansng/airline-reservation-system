@@ -7,7 +7,7 @@ A COMP47660 Secure Software Engineering web app project built using React, Sprin
 ### Running the project
 
 1. [Download](https://github.com/bryansng/airline-reservation-system) or run `git clone https://github.com/bryansng/airline-reservation-system.git` for this project
-2. In order to enfrorce the use of HTTPs for localhost in the browser, the browser must be configured to use the newly created local certificate. The certificate will need to be added to your computer’s Trusted Root Certification Authorities. Google and follow the browser’s instructions to add the local certificate. The local certificate is called ars.p12, and can found in /backend/src/main/resources/keystore. Further details on generating and the use of this certificate can be found in "3. Enforce the use of HTTPS" in the attached report.
+2. In order to enforce the use of HTTPs for localhost in the browser, the browser must be configured to use the newly created local certificate. The certificate will need to be added to your computer’s Trusted Root Certification Authorities. Google and follow the browser’s instructions to add the local certificate. The local certificate is called ars.p12, and can found in /backend/src/main/resources/keystore. Further details on generating and the use of this certificate can be found in "3. Enforce the use of HTTPS" in the attached report.
 3. Go to the root of this project and open two (2) terminals
 4. On the first terminal run
    ```
