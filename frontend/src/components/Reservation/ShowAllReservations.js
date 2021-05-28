@@ -118,8 +118,8 @@ const ShowAllReservations = ({ location }) => {
         accessor: "departureArrivalDateTime",
       },
       {
-        Header: "Edit",
-        accessor: "edit",
+        Header: "Edit Flight",
+        accessor: "edit_flight",
         Cell: ({ row }) => (
           <Link
             to={{
@@ -127,7 +127,26 @@ const ShowAllReservations = ({ location }) => {
               state: { reservation: reservationsRetrieved[row.id] },
             }}
           >
-            <Emoji symbol="✏️" label="Edit" />
+            <Emoji symbol="✈" label="Edit flights" />
+          </Link>
+        ),
+      },
+      {
+        Header: "Edit Passengers",
+        accessor: "edit_passenger",
+        Cell: ({ row }) => (
+          <Link
+            to={{
+              pathname: `/reservation/edit/${reservationsRetrieved[row.id].id}`,
+              state: {
+                isEditMode: true,
+                reservation: reservationsRetrieved[row.id],
+                flightId: reservationsRetrieved[row.id].flight.id,
+                numPassengers: reservationsRetrieved[row.id].bookings.length,
+              },
+            }}
+          >
+            <Emoji symbol="🧍" label="Edit passenger details" />
           </Link>
         ),
       },
@@ -139,7 +158,7 @@ const ShowAllReservations = ({ location }) => {
             ""
           ) : (
             <Link onClick={handleDelete(reservationsRetrieved[row.id].id)}>
-              <Emoji symbol="🗑" label="Cancel flight" />
+              <Emoji symbol="🗑" label="Cancel reservation" />
             </Link>
           ),
       },

@@ -203,7 +203,12 @@ public class ReservationService {
     }
 
     // update customer
-    Customer payingCustomer = customerRepository.getOne(request.getCustomer().getId());
+    Customer payingCustomer;
+    if (!customerRepository.existsByEmail(request.getCustomer().getEmail()))
+      payingCustomer = new Customer(request.getCustomer());
+    else
+      payingCustomer = customerRepository.findByEmail(request.getCustomer().getEmail());
+
     payingCustomer.update(request.getCustomer());
     customerRepository.save(payingCustomer);
 

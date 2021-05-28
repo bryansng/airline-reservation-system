@@ -78,6 +78,17 @@ function App() {
             )}
           />
           <Route
+            path="/reservation/edit/:reservationId"
+            exact
+            render={(props) => (
+              <BookReservation
+                {...props}
+                user={user}
+                isAuthenticated={isAuthenticated}
+              />
+            )}
+          />
+          <Route
             path="/retrieve/booking"
             exact
             render={(props) => <RetrieveBooking {...props} />}
@@ -140,11 +151,6 @@ function App() {
             exact
             render={(props) => <SearchFlight />}
           />
-          {/* <Route
-            path="/reservation/edit/:reservationId"
-            exact
-            component={EditReservationForm}
-          /> */}
         </Switch>
       </Container>
     </Router>

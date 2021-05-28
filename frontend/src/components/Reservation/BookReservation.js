@@ -13,6 +13,7 @@ const {
 } = rest_endpoints;
 
 const BookReservation = ({ location, user, isAuthenticated }) => {
+  const [isEditMode] = useState(location.state.isEditMode);
   const [flightId] = useState(location.state.flightId);
   const [flight, setFlight] = useState(null);
   const [numPassengers] = useState(location.state.numPassengers);
@@ -23,6 +24,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   const [bookedReservation, setBookedReservation] = useState(null);
   const [hasFormError, setHasFormError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const reservation = location.state.reservation;
 
   useEffect(() => {
     if (flightId && !flight) {
@@ -66,8 +68,32 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
       ((user && user.roles === "ADMIN") || paymentDetails)
     ) {
       // POST to get actual booking with booking number.
+      const bookings = [];
+      passengersDetails.forEach((passenger) => {
+        bookings.push({
+          isCheckedIn: false,
+          isCancelled: false,
+          customer: passenger,
+        });
+      });
+
       const requestOptions =
-        user && user.roles === "ADMIN"
+        isEditMode && user && user.roles === "ADMIN"
+          ? {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `bearer ${token}`,
+              },
+              body: JSON.stringify({
+                reservationStatus: reservation.reservationStatus,
+                totalCost: reservation.totalCost,
+                bookings: bookings,
+                customer: passengersDetails[0],
+                flightId: reservation.flight.id,
+              }),
+            }
+          : user && user.roles === "ADMIN"
           ? {
               method: "POST",
               headers: {
@@ -93,11 +119,13 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
                 creditCardDetails: paymentDetails,
               }),
             };
-      console.log(requestOptions);
+      // console.log(requestOptions.body);
 
       fetch(
         `${
-          user && user.roles === "ADMIN"
+          isEditMode && user && user.roles === "ADMIN"
+            ? admin_apis.reservation.edit + reservation.id
+            : user && user.roles === "ADMIN"
             ? admin_apis.reservation.create
             : reservation_apis.create
         }`,
@@ -113,7 +141,7 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
           const reservation = res.reservation;
           setBookedReservation(reservation);
           setHasFormError(false);
-          console.log(reservation);
+          // console.log(reservation);
         })
         .catch((error) => {
           error.json().then((body) => {
@@ -137,7 +165,11 @@ const BookReservation = ({ location, user, isAuthenticated }) => {
   */
   return (
     <div>
-      <h2 className="mb2">Reservation</h2>
+      <h2 className="mb2">
+        {isEditMode
+          ? `Edit reservation ${location.state.reservation.id} for ${location.state.reservation.customer.lastName}`
+          : "Reservation"}
+      </h2>
       <Itinerary flight={flight} numPassengers={numPassengers} />
       {!passengersDetails && (
         <HandlePassengersDetails
